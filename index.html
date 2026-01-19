@@ -7,99 +7,122 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
 <style>
-:root { --primary: #FF9933; --bg: #000; --gold: #D4AF37; }
+:root { --primary: #FF9933; --bg: #000; --gold: #D4AF37; --navy: #000080; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden; }
 
-/* 3D FLAG WITH ASHOKA CHAKRA */
+/* STARTUP PAGE - 3D Tiranga */
 #splash { 
     position: fixed; inset: 0; background: #000; 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    z-index: 9999; transition: opacity 0.8s ease; perspective: 1000px;
+    z-index: 9999; transition: opacity 0.8s ease; perspective: 1200px;
 }
-.flag-container { position: relative; width: 250px; height: 150px; margin-bottom: 20px; }
+.flag-wrap { position: relative; width: 260px; height: 160px; margin-bottom: 30px; }
 .flag-3d { width: 100%; height: 100%; display: flex; transform-style: preserve-3d; opacity: 0.7; }
 .flag-slice { 
     flex: 1; height: 100%; 
     background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%); 
-    background-size: 250px 150px; 
+    background-size: 260px 160px; 
     animation: wave 1.2s ease-in-out infinite alternate; 
 }
-.chakra-overlay {
+
+/* ASHOKA CHAKRA - Forced Center */
+.ashoka-chakra {
     position: absolute; top: 50%; left: 50%; 
     transform: translate(-50%, -50%);
-    width: 45px; height: 45px; z-index: 10;
-    opacity: 0.8; animation: rotateChakra 10s linear infinite;
+    width: 48px; height: 48px; z-index: 100;
+    pointer-events: none;
 }
-@keyframes wave { 0% { transform: translateZ(-20px); } 100% { transform: translateZ(50px) translateY(5px); } }
-@keyframes rotateChakra { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-.jay-hind { font-family: 'Playfair Display'; font-size: 26px; color: var(--gold); letter-spacing: 5px; text-align: center; }
+@keyframes wave { 0% { transform: translateZ(-30px); } 100% { transform: translateZ(60px) translateY(8px); } }
 
-/* APP INTERFACE */
+.jay-hind { font-family: 'Playfair Display'; font-size: 28px; color: var(--gold); letter-spacing: 6px; text-align: center; font-weight: 700; }
+
+/* APP LAYOUT */
 .app { display: none; height: 100vh; flex-direction: column; }
-.topbar { 
+.top-nav { 
     padding: 15px; display: flex; align-items: center; 
     border-bottom: 1px solid #1a1a1a; background: #000;
 }
-.topbar img { height: 35px; width: 35px; border-radius: 50%; margin-right: 12px; border: 1px solid var(--primary); }
-.topbar span { color: var(--primary); font-weight: bold; font-size: 20px; letter-spacing: 1px; }
+.top-nav img { height: 38px; width: 38px; border-radius: 50%; border: 1.5px solid var(--primary); margin-right: 12px; }
+.top-nav h1 { font-family: 'Playfair Display'; font-size: 24px; color: var(--primary); }
 
-.reels { flex: 1; background: #050505; display: flex; align-items: center; justify-content: center; }
+.feed { flex: 1; background: #050505; display: flex; align-items: center; justify-content: center; position: relative; }
 
-/* FULL NAV BAR */
-.navbar { 
-    height: 75px; background: #000; display: flex; 
+/* FULL NAV BAR - Home, Search, Create, Profile */
+.bottom-nav { 
+    height: 80px; background: #000; display: flex; 
     justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a;
 }
-.nav-btn { background: none; border: none; color: #666; font-size: 22px; cursor: pointer; }
-.nav-btn.active { color: var(--primary); }
+.icon-btn { background: none; border: none; color: #666; font-size: 24px; cursor: pointer; transition: 0.3s; }
+.icon-btn.active { color: var(--primary); transform: scale(1.1); }
 </style>
 </head>
 <body>
 
 <div id="splash">
-    <div class="flag-container">
+    <div class="flag-wrap">
         <div class="flag-3d" id="flagContainer"></div>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg" class="chakra-overlay" alt="Chakra">
+        <svg class="ashoka-chakra" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="256" cy="256" r="236" fill="none" stroke="#000080" stroke-width="12"/>
+            <circle cx="256" cy="256" r="45" fill="#000080"/>
+            <g stroke="#000080" stroke-width="8">
+                <line x1="256" y1="20" x2="256" y2="492"/>
+                <line x1="20" y1="256" x2="492" y2="256"/>
+                <line x1="88.7" y1="88.7" x2="423.3" y2="423.3"/>
+                <line x1="88.7" y1="423.3" x2="423.3" y2="88.7"/>
+            </g>
+            <circle cx="256" cy="256" r="230" fill="none" stroke="#000080" stroke-width="2" stroke-dasharray="10,15"/>
+        </svg>
     </div>
     <div class="jay-hind">JAY HIND<br>JAY BHARAT</div>
 </div>
 
 <div class="app" id="app">
-    <header class="topbar">
-        <img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" alt="Logo">
-        <span>DRIP</span>
+    <header class="top-nav">
+        <img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" alt="D">
+        <h1>DRIP</h1>
     </header>
 
-    <div class="reels">
-        </div>
+    <div class="feed">
+        <p style="color: #333; font-size: 12px;">Waiting for Empire content...</p>
+    </div>
 
-    <nav class="navbar">
-        <button class="nav-btn active">🏠</button>
-        <button class="nav-btn">🔍</button>
-        <button class="nav-btn" style="font-size: 28px; color: var(--primary);">⊕</button>
-        <button class="nav-btn">👤</button>
+    <nav class="bottom-nav">
+        <button class="icon-btn active">🏠</button>
+        <button class="icon-btn">🔍</button>
+        <button class="icon-btn" style="font-size: 32px; color: var(--primary);">⊕</button>
+        <button class="icon-btn">👤</button>
     </nav>
 </div>
 
 <script>
+// Create Flag Slices for 3D effect
 const flag = document.getElementById('flagContainer');
 for (let i = 0; i < 25; i++) {
     const slice = document.createElement('div');
     slice.className = 'flag-slice';
-    slice.style.backgroundPosition = `-${(250 / 25) * i}px 0`;
+    slice.style.backgroundPosition = `-${(260 / 25) * i}px 0`;
     slice.style.animationDelay = `${i * 0.05}s`;
     flag.appendChild(slice);
 }
 
+// Fade out Splash
 setTimeout(() => {
     document.getElementById('splash').style.opacity = '0';
     setTimeout(() => {
         document.getElementById('splash').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
     }, 800);
-}, 4000);
+}, 4500);
+
+// Simple Navigation Logic
+document.querySelectorAll('.icon-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
 </script>
 </body>
 </html>
