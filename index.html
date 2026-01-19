@@ -11,44 +11,44 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden; }
 
-/* STARTUP PAGE - 3D Tiranga with Embedded Chakra */
+/* STARTUP PAGE - True Waving Tiranga */
 #splash { 
     position: fixed; inset: 0; background: #000; 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    z-index: 9999; transition: opacity 0.8s ease; perspective: 1200px;
+    z-index: 9999; transition: opacity 0.8s ease;
 }
-.flag-3d { 
-    width: 280px; height: 180px; display: flex; transform-style: preserve-3d; 
-    opacity: 0.8; margin-bottom: 30px; 
-}
-.flag-slice { 
-    flex: 1; height: 100%; 
-    /* The gradient now includes the colors of the flag */
-    background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%); 
-    background-size: 280px 180px; 
-    animation: wave 1.2s ease-in-out infinite alternate; 
+
+.flag-container {
+    width: 280px; height: 180px;
     position: relative;
+    margin-bottom: 30px;
+    opacity: 0.8; /* Semi-transparent as requested */
+    /* Using a high-quality Tiranga with Chakra */
+    background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg');
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 50px rgba(255, 153, 51, 0.2);
+    animation: waveEffect 2s ease-in-out infinite alternate;
+    border-radius: 4px;
 }
 
-/* Creating the Ashoka Chakra inside the center of the flag */
-.flag-slice:nth-child(13)::after {
-    content: "";
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px; height: 40px;
-    background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center;
-    background-size: contain;
-    z-index: 100;
+@keyframes waveEffect {
+    0% { transform: perspective(1000px) rotateY(-10deg) skewY(2deg); }
+    100% { transform: perspective(1000px) rotateY(10deg) skewY(-2deg); }
 }
 
-@keyframes wave { 0% { transform: translateZ(-30px); } 100% { transform: translateZ(60px) translateY(8px); } }
-
-.jay-hind { font-family: 'Playfair Display'; font-size: 28px; color: var(--gold); letter-spacing: 6px; text-align: center; font-weight: 700; }
+.jay-hind { 
+    font-family: 'Playfair Display'; font-size: 28px; color: var(--gold); 
+    letter-spacing: 6px; text-align: center; font-weight: 700; 
+}
 
 /* APP LAYOUT */
 .app { display: none; height: 100vh; flex-direction: column; }
+
+/* TOP BAR WITH LOGO */
 .top-nav { 
-    padding: 15px; display: flex; align-items: center; 
+    padding: 15px; padding-top: env(safe-area-inset-top);
+    display: flex; align-items: center; 
     border-bottom: 1px solid #1a1a1a; background: #000;
 }
 .top-nav img { height: 38px; width: 38px; border-radius: 50%; border: 1.5px solid var(--primary); margin-right: 12px; }
@@ -58,18 +58,18 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
 
 /* FULL NAV BAR - Home, Search, Create, Profile */
 .bottom-nav { 
-    height: 80px; background: #000; display: flex; 
-    justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a;
-    padding-bottom: 10px;
+    height: 85px; background: #000; display: flex; 
+    justify-content: space-around; align-items: center; 
+    border-top: 1px solid #1a1a1a; padding-bottom: env(safe-area-inset-bottom);
 }
-.icon-btn { background: none; border: none; color: #666; font-size: 24px; cursor: pointer; }
-.icon-btn.active { color: var(--primary); }
+.icon-btn { background: none; border: none; color: #555; font-size: 24px; cursor: pointer; transition: 0.3s; }
+.icon-btn.active { color: var(--primary); transform: scale(1.1); }
 </style>
 </head>
 <body>
 
 <div id="splash">
-    <div class="flag-3d" id="flagContainer"></div>
+    <div class="flag-container"></div>
     <div class="jay-hind">JAY HIND<br>JAY BHARAT</div>
 </div>
 
@@ -80,7 +80,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
     </header>
 
     <div class="feed">
-        <p style="color: #222;">Content Secure</p>
+        <p style="color: #222; font-size: 14px;">DRIP REELS</p>
     </div>
 
     <nav class="bottom-nav">
@@ -88,17 +88,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
 </div>
 
 <script>
-// Create 25 slices for the flag
-const flag = document.getElementById('flagContainer');
-for (let i = 0; i < 25; i++) {
-    const slice = document.createElement('div');
-    slice.className = 'flag-slice';
-    slice.style.backgroundPosition = `-${(280 / 25) * i}px 0`;
-    slice.style.animationDelay = `${i * 0.05}s`;
-    flag.appendChild(slice);
-}
-
-// Fade out Splash
+// Splash Transition
 setTimeout(() => {
     document.getElementById('splash').style.opacity = '0';
     setTimeout(() => {
@@ -107,7 +97,7 @@ setTimeout(() => {
     }, 800);
 }, 4000);
 
-// Simple Navigation Logic
+// Navigation Logic
 document.querySelectorAll('.icon-btn').forEach(btn => {
     btn.onclick = () => {
         document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('active'));
