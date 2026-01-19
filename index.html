@@ -3,63 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DRIP - Bharat</title>
+<title>DRIP</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-:root { --primary: #FF9933; --bg: #000; --gold: #D4AF37; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --primary: #FF9933; --bg: #000; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body { font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden; }
 
-/* STARTUP - Tiranga */
+/* STARTUP SPLASH */
 #splash { 
     position: fixed; inset: 0; background: #000; 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
     z-index: 9999; transition: opacity 0.8s ease;
 }
 .flag-box {
-    width: 280px; height: 180px; margin-bottom: 30px;
+    width: 280px; height: 180px; margin-bottom: 25px;
     background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg');
     background-size: cover; background-position: center;
-    animation: waveEffect 2s ease-in-out infinite alternate;
+    animation: waveEffect 2.5s ease-in-out infinite alternate;
     opacity: 0.8;
 }
 @keyframes waveEffect {
-    0% { transform: perspective(1000px) rotateY(-10deg) scale(0.9); }
-    100% { transform: perspective(1000px) rotateY(10deg) scale(1.1); }
+    0% { transform: perspective(1000px) rotateY(-12deg) scale(0.95); }
+    100% { transform: perspective(1000px) rotateY(12deg) scale(1.05); }
 }
-.jay-hind { font-family: 'Bebas Neue'; font-size: 35px; color: var(--gold); letter-spacing: 4px; text-align: center; }
+.jay-hind { font-family: 'Bebas Neue'; font-size: 32px; color: #D4AF37; letter-spacing: 4px; }
 
 /* APP LAYOUT */
 .app { display: none; height: 100vh; flex-direction: column; }
 
-/* TOP BAR - Bebas Neue Branding */
-.header-bar { 
+/* TOP BAR */
+.header { 
     padding: 15px; display: flex; align-items: center; 
     border-bottom: 1px solid #1a1a1a; background: #000;
 }
 .logo-box {
-    height: 40px; width: 40px; border-radius: 8px;
+    height: 40px; width: 40px; border-radius: 6px;
     border: 1px solid #333; margin-right: 12px;
     display: flex; align-items: center; justify-content: center;
     background: #111; overflow: hidden;
 }
 .logo-box img { width: 100%; height: 100%; object-fit: cover; }
-/* White D Fallback */
-.logo-fallback { font-family: 'Bebas Neue'; font-size: 28px; color: white; }
+.logo-fallback { font-family: 'Bebas Neue'; font-size: 26px; color: white; }
 
-.logo-text { font-family: 'Bebas Neue'; font-size: 32px; color: var(--primary); letter-spacing: 2px; }
+.brand-text { font-family: 'Bebas Neue'; font-size: 30px; color: var(--primary); letter-spacing: 1px; }
 
-.main-view { flex: 1; display: flex; align-items: center; justify-content: center; background: #050505; }
+/* CONTENT AREA */
+.content-area { flex: 1; position: relative; overflow: hidden; }
+.page { display: none; height: 100%; width: 100%; align-items: center; justify-content: center; }
+.page.active { display: flex; }
 
-/* NAVIGATION */
-.nav-bottom { 
+/* BOTTOM NAV */
+.nav-bar { 
     height: 80px; background: #000; display: flex; 
     justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a;
+    padding-bottom: env(safe-area-inset-bottom);
 }
-.nav-icon { background: none; border: none; color: #444; font-size: 24px; cursor: pointer; }
-.nav-icon.active { color: var(--primary); }
+.nav-item { background: none; border: none; color: #444; font-size: 24px; cursor: pointer; transition: 0.2s; }
+.nav-item.active { color: var(--primary); transform: scale(1.1); }
 </style>
 </head>
 <body>
@@ -70,42 +73,52 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
 </div>
 
 <div id="app" class="app">
-    <header class="header-bar">
+    <header class="header">
         <div class="logo-box">
             <img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" 
-                 onerror="this.style.display='none'; document.getElementById('fallback').style.display='block';" alt="">
-            <span id="fallback" class="logo-fallback" style="display:none;">D</span>
+                 onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block';">
+            <span id="alt-logo" class="logo-fallback" style="display:none;">D</span>
         </div>
-        <div class="logo-text">DRIP</div>
+        <div class="brand-text">DRIP</div>
     </header>
 
-    <div class="main-view">
-        <p style="color: #222; font-family: 'Bebas Neue'; font-size: 18px; letter-spacing: 3px;">BHARAT SECURE</p>
-    </div>
+    <main class="content-area">
+        <div id="home" class="page active">
+            </div>
+        <div id="search" class="page"><h3>Search</h3></div>
+        <div id="create" class="page"><h3>Create</h3></div>
+        <div id="profile" class="page"><h3>Profile</h3></div>
+    </main>
 
-    <nav class="nav-bottom">
-        <button class="nav-icon active">🏠</button>
-        <button class="nav-icon">🔍</button>
-        <button class="nav-icon" style="font-size: 30px; color: var(--primary);">⊕</button>
-        <button class="nav-icon">👤</button>
+    <nav class="nav-bar">
+        <button class="nav-item active" onclick="showPage('home', this)">🏠</button>
+        <button class="nav-item" onclick="showPage('search', this)">🔍</button>
+        <button class="nav-item" style="font-size: 32px; color: var(--primary);" onclick="showPage('create', this)">⊕</button>
+        <button class="nav-item" onclick="showPage('profile', this)">👤</button>
     </nav>
 </div>
 
 <script>
+// Splash handling
 setTimeout(() => {
     document.getElementById('splash').style.opacity = '0';
     setTimeout(() => {
         document.getElementById('splash').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
     }, 800);
-}, 4500);
+}, 4000);
 
-document.querySelectorAll('.nav-icon').forEach(btn => {
-    btn.onclick = () => {
-        document.querySelectorAll('.nav-icon').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    };
-});
+// Navigation logic - FIX: Buttons now functional
+function showPage(pageId, btn) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Remove active state from icons
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    
+    // Show selected page and active icon
+    document.getElementById(pageId).classList.add('active');
+    btn.classList.add('active');
+}
 </script>
 </body>
 </html>
