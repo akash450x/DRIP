@@ -11,7 +11,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden; }
 
-/* STARTUP PAGE - True Waving Tiranga */
+/* STARTUP PAGE - High-Def Tiranga with Chakra */
 #splash { 
     position: fixed; inset: 0; background: #000; 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -22,19 +22,18 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
     width: 280px; height: 180px;
     position: relative;
     margin-bottom: 30px;
-    opacity: 0.8; /* Semi-transparent as requested */
-    /* Using a high-quality Tiranga with Chakra */
+    opacity: 0.8; 
+    /* Using official SVG for perfect Ashoka Chakra visibility */
     background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg');
     background-size: cover;
     background-position: center;
-    box-shadow: 0 0 50px rgba(255, 153, 51, 0.2);
-    animation: waveEffect 2s ease-in-out infinite alternate;
-    border-radius: 4px;
+    box-shadow: 0 0 40px rgba(255, 153, 51, 0.15);
+    animation: waveEffect 2.5s ease-in-out infinite alternate;
 }
 
 @keyframes waveEffect {
-    0% { transform: perspective(1000px) rotateY(-10deg) skewY(2deg); }
-    100% { transform: perspective(1000px) rotateY(10deg) skewY(-2deg); }
+    0% { transform: perspective(1000px) rotateY(-12deg) scale(0.95); filter: brightness(0.9); }
+    100% { transform: perspective(1000px) rotateY(12deg) scale(1.05); filter: brightness(1.1); }
 }
 
 .jay-hind { 
@@ -45,13 +44,19 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
 /* APP LAYOUT */
 .app { display: none; height: 100vh; flex-direction: column; }
 
-/* TOP BAR WITH LOGO */
+/* TOP BAR WITH YOUR LOGO */
 .top-nav { 
     padding: 15px; padding-top: env(safe-area-inset-top);
     display: flex; align-items: center; 
     border-bottom: 1px solid #1a1a1a; background: #000;
 }
-.top-nav img { height: 38px; width: 38px; border-radius: 50%; border: 1.5px solid var(--primary); margin-right: 12px; }
+.top-nav img { 
+    height: 40px; width: 40px; 
+    border-radius: 50%; 
+    border: 1px solid var(--primary); 
+    margin-right: 12px;
+    object-fit: cover;
+}
 .top-nav h1 { font-family: 'Playfair Display'; font-size: 24px; color: var(--primary); }
 
 .feed { flex: 1; background: #050505; display: flex; align-items: center; justify-content: center; }
@@ -62,8 +67,8 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
     justify-content: space-around; align-items: center; 
     border-top: 1px solid #1a1a1a; padding-bottom: env(safe-area-inset-bottom);
 }
-.icon-btn { background: none; border: none; color: #555; font-size: 24px; cursor: pointer; transition: 0.3s; }
-.icon-btn.active { color: var(--primary); transform: scale(1.1); }
+.icon-btn { background: none; border: none; color: #444; font-size: 26px; cursor: pointer; transition: 0.3s; }
+.icon-btn.active { color: var(--primary); }
 </style>
 </head>
 <body>
@@ -73,29 +78,35 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
     <div class="jay-hind">JAY HIND<br>JAY BHARAT</div>
 </div>
 
-<div class="app" id="app">
+<div id="app" class="app">
     <header class="top-nav">
-        <img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" alt="D">
+        <img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" alt="Logo">
         <h1>DRIP</h1>
     </header>
 
     <div class="feed">
-        <p style="color: #222; font-size: 14px;">DRIP REELS</p>
+        <p style="color: #1a1a1a; font-size: 14px;">DRIP BHARAT SECURE</p>
     </div>
 
     <nav class="bottom-nav">
-        <button class="icon-btn active">🏠</button> <button class="icon-btn">🔍</button> <button class="icon-btn" style="font-size: 32px; color: var(--primary);">⊕</button> <button class="icon-btn">👤</button> </nav>
+        <button class="icon-btn active">🏠</button>
+        <button class="icon-btn">🔍</button>
+        <button class="icon-btn" style="font-size: 32px; color: var(--primary);">⊕</button>
+        <button class="icon-btn">👤</button>
+    </nav>
 </div>
 
 <script>
 // Splash Transition
 setTimeout(() => {
-    document.getElementById('splash').style.opacity = '0';
+    const splash = document.getElementById('splash');
+    const app = document.getElementById('app');
+    splash.style.opacity = '0';
     setTimeout(() => {
-        document.getElementById('splash').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
+        splash.style.display = 'none';
+        app.style.display = 'flex';
     }, 800);
-}, 4000);
+}, 4500);
 
 // Navigation Logic
 document.querySelectorAll('.icon-btn').forEach(btn => {
