@@ -7,45 +7,157 @@
     <style>
         :root { --primary: #FF9933; --bg: #000; --gold: #D4AF37; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
+        body { font-family: sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
 
-        /* FORCED SPLASH */
-        #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999999; opacity: 1; transition: opacity 0.6s ease; }
-        .flag-box { position: relative; width: 220px; height: 140px; margin-bottom: 25px; background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%); border-radius: 4px; }
-        .ashoka-chakra { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center; background-size: contain; }
+        /* 1. SPLASH - PURE CSS, NO JS NEEDED TO SHOW */
+        #splash { 
+            position: fixed; inset: 0; background: #000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            z-index: 999999; transition: opacity 0.8s ease;
+        }
+        .flag-box { 
+            position: relative; width: 220px; height: 140px; margin-bottom: 25px; 
+            background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%);
+            border-radius: 4px;
+        }
+        .ashoka-chakra {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center;
+            background-size: contain;
+        }
         .jay-hind { font-size: 28px; font-weight: 900; color: var(--gold); letter-spacing: 5px; text-align: center; }
 
-        /* SCREENS */
-        #auth-page, #app { display: none; height: 100vh; flex-direction: column; }
-        .header { padding: 0 15px; display: flex; align-items: center; border-bottom: 1px solid #111; height: 65px; background: #000; }
+        /* 2. APP UI - HIDDEN BY DEFAULT */
+        #app, #auth-page { display: none; height: 100vh; flex-direction: column; }
+        .header { padding: 0 15px; display: flex; align-items: center; border-bottom: 1px solid #111; height: 65px; }
         .logo-box { height: 42px; width: 42px; border-radius: 10px; border: 1px solid #222; margin-right: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
         .brand { font-size: 28px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
 
+        /* 3. NAVIGATION & SCREENS */
         .viewport { flex: 1; position: relative; overflow: hidden; }
-        .screen { display: none; height: 100%; width: 100%; overflow-y: auto; }
+        .screen { display: none; height: 100%; width: 100%; overflow-y: auto; padding: 20px; }
         .screen.active { display: flex; flex-direction: column; }
         
-        .search-bar { background: #111; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; padding: 14px 18px; margin: 15px; }
-        .create-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .card { background: #0A0A0A; border: 1px solid #1A1A1A; padding: 35px 0; border-radius: 18px; text-align: center; font-weight: bold; font-size: 12px; color: var(--primary); }
+        .search-bar { background: #111; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; padding: 14px 18px; margin-bottom: 15px; }
+        .create-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { background: #0A0A0A; border: 1px solid #1A1A1A; padding: 35px 0; border-radius: 18px; text-align: center; color: var(--primary); font-weight: bold; }
 
-        .gender-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; margin: 20px auto; }
+        .gender-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 15px; }
         .g-btn { background: #111; border: 1px solid #222; color: #555; padding: 14px 0; border-radius: 10px; font-weight: 700; font-size: 11px; }
         .g-btn.active { border-color: var(--primary); color: var(--primary); }
 
+        /* BOTTOM NAV */
         .nav { height: 85px; background: #000; display: flex; border-top: 1px solid #111; padding-bottom: 25px; }
-        .nav-btn { flex: 1; display: flex; align-items: center; justify-content: center; color: #333; font-size: 24px; border: none; background: none; cursor: pointer; }
+        .nav-btn { flex: 1; display: flex; align-items: center; justify-content: center; color: #333; font-size: 24px; border: none; background: none; }
         .nav-btn.active { color: var(--primary); }
     </style>
-
-    <script>
-        const forceExitSplash = () => {
-            const s = document.getElementById('splash');
-            if (s) { s.style.opacity = '0'; setTimeout(() => { s.style.display = 'none'; }, 600); }
-        };
-        setTimeout(forceExitSplash, 4000);
-    </script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
+<body>
+
+<div id="splash">
+    <div class="flag-box"><div class="ashoka-chakra"></div></div>
+    <div class="jay-hind">JAY HIND<br>JAY BHARAT</div>
+</div>
+
+<div id="auth-page" style="align-items:center; justify-content:center;">
+    <h1 style="font-size: 60px; font-weight: 900; color: var(--primary); margin-bottom: 30px;">DRIP</h1>
+    <button onclick="signIn()" style="background:white; color:black; padding:16px 32px; border-radius:50px; border:none; font-weight:700;">Sign In with Google</button>
+</div>
+
+<div id="app">
+    <header class="header">
+        <div class="logo-box"><img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" onerror="this.src='https://ui-avatars.com/api/?name=D&background=000&color=fff'"></div>
+        <div class="brand">DRIP</div>
+    </header>
+    <main class="viewport">
+        <div id="scr-home" class="screen active" style="text-align:center;"><h2>HOME</h2></div>
+        <div id="scr-reels" class="screen" style="text-align:center;"><h2>REELS</h2></div>
+        <div id="scr-search" class="screen"><div class="search-bar">🔍 <input type="text" placeholder="Search..." style="background:none;border:none;color:white;margin-left:10px;outline:none;width:100%;"></div></div>
+        <div id="scr-create" class="screen"><div class="create-grid"><div class="card">📹 VIDEO</div><div class="card">📸 PHOTO</div></div></div>
+        <div id="scr-profile" class="screen" style="align-items:center;">
+            <div id="p-pic" style="width:100px; height:100px; border-radius:25px; border:1px solid #333; background:#111 center/cover;"></div>
+            <h1 id="p-name" style="margin-top:10px;">AKASH</h1>
+            <div class="gender-grid">
+                <button class="g-btn" onclick="sG(this)">MALE</button>
+                <button class="g-btn" onclick="sG(this)">FEMALE</button>
+                <button class="g-btn" onclick="sG(this)">TRANS</button>
+            </div>
+            <button onclick="logout()" style="color:red; margin-top:30px; background:none; border:none; font-weight:bold;">LOGOUT</button>
+        </div>
+    </main>
+    <nav class="nav">
+        <button class="nav-btn active" onclick="nav('home', this)">🏠</button>
+        <button class="nav-btn" onclick="nav('reels', this)">📱</button>
+        <button class="nav-btn" style="color:var(--primary); font-size:35px;" onclick="nav('create', this)">⊕</button>
+        <button class="nav-btn" onclick="nav('search', this)">🔍</button>
+        <button class="nav-btn" onclick="nav('profile', this)">👤</button>
+    </nav>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+    // 🔱 1. THE UNBREAKABLE TIMER
+    // This runs immediately and does not wait for any other code.
+    setTimeout(function() {
+        var s = document.getElementById('splash');
+        s.style.opacity = '0';
+        setTimeout(function() { 
+            s.style.display = 'none';
+            initApp(); // Only start logic AFTER splash is gone
+        }, 800);
+    }, 4000);
+
+    // 🔱 2. NAVIGATION
+    function nav(id, btn) {
+        var screens = document.getElementsByClassName('screen');
+        for(var i=0; i<screens.length; i++) screens[i].style.display = 'none';
+        var tabs = document.getElementsByClassName('nav-btn');
+        for(var i=0; i<tabs.length; i++) tabs[i].classList.remove('active');
+        document.getElementById('scr-' + id).style.display = 'flex';
+        btn.classList.add('active');
+    }
+
+    function sG(btn) {
+        var btns = document.getElementsByClassName('g-btn');
+        for(var i=0; i<btns.length; i++) btns[i].classList.remove('active');
+        btn.classList.add('active');
+    }
+
+    // 🔱 3. EMPIRE LOGIC (FIREBASE)
+    function initApp() {
+        const config = {
+            apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
+            authDomain: "drip-india.firebaseapp.com",
+            projectId: "drip-india",
+            storageBucket: "drip-india.firebasestorage.app",
+            messagingSenderId: "40598053043",
+            appId: "1:40598053043:web:b800c05afba716974690c6"
+        };
+
+        try {
+            firebase.initializeApp(config);
+            const auth = firebase.auth();
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    document.getElementById('auth-page').style.display = 'none';
+                    document.getElementById('app').style.display = 'flex';
+                    document.getElementById('p-name').innerText = user.displayName;
+                    if(user.photoURL) document.getElementById('p-pic').style.backgroundImage = 'url('+user.photoURL+')';
+                } else {
+                    document.getElementById('auth-page').style.display = 'flex';
+                }
+            });
+
+            window.signIn = () => auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+            window.logout = () => auth.signOut().then(() => location.reload());
+        } catch(e) {
+            document.getElementById('auth-page').style.display = 'flex';
+        }
+    }
+</script>
+</body>
+</html>
