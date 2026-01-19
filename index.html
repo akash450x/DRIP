@@ -10,7 +10,7 @@
 <style>
 :root { --primary: #FF9933; --bg: #000; }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden; }
+body { font-family: 'Poppins', sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
 
 /* STARTUP SPLASH */
 #splash { 
@@ -32,7 +32,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
 .jay-hind { font-family: 'Bebas Neue'; font-size: 32px; color: #D4AF37; letter-spacing: 4px; }
 
 /* APP LAYOUT */
-.app { display: none; height: 100vh; flex-direction: column; }
+.app { display: none; height: 100vh; flex-direction: column; background: #000; }
 
 /* TOP BAR */
 .header { 
@@ -47,13 +47,20 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
 }
 .logo-box img { width: 100%; height: 100%; object-fit: cover; }
 .logo-fallback { font-family: 'Bebas Neue'; font-size: 26px; color: white; }
-
 .brand-text { font-family: 'Bebas Neue'; font-size: 30px; color: var(--primary); letter-spacing: 1px; }
 
 /* CONTENT AREA */
-.content-area { flex: 1; position: relative; overflow: hidden; }
-.page { display: none; height: 100%; width: 100%; align-items: center; justify-content: center; }
+.content-area { flex: 1; position: relative; width: 100%; background: #000; }
+.page { 
+    display: none; height: 100%; width: 100%; 
+    flex-direction: column; align-items: center; justify-content: center; 
+}
 .page.active { display: flex; }
+
+/* ACCOUNT SECTION STYLING */
+.profile-card { text-align: center; }
+.profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 15px; }
+.profile-name { font-family: 'Bebas Neue'; font-size: 28px; letter-spacing: 1px; }
 
 /* BOTTOM NAV */
 .nav-bar { 
@@ -61,8 +68,11 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
     justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a;
     padding-bottom: env(safe-area-inset-bottom);
 }
-.nav-item { background: none; border: none; color: #444; font-size: 24px; cursor: pointer; transition: 0.2s; }
-.nav-item.active { color: var(--primary); transform: scale(1.1); }
+.nav-item { 
+    background: none; border: none; color: #444; font-size: 26px; 
+    cursor: pointer; width: 25%; height: 100%; display: flex; align-items: center; justify-content: center;
+}
+.nav-item.active { color: var(--primary); }
 </style>
 </head>
 <body>
@@ -83,23 +93,31 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
     </header>
 
     <main class="content-area">
-        <div id="home" class="page active">
+        <div id="home" class="page active"></div>
+        
+        <div id="search" class="page"><h2 style="font-family: 'Bebas Neue';">SEARCH ENGINE</h2></div>
+        
+        <div id="create" class="page"><h2 style="font-family: 'Bebas Neue';">CREATE POST</h2></div>
+        
+        <div id="profile" class="page">
+            <div class="profile-card">
+                <img src="https://ui-avatars.com/api/?name=User&background=333&color=fff" class="profile-pic">
+                <h2 class="profile-name">EMPIRE OWNER</h2>
+                <p style="color: #666; font-size: 14px;">Rank #1 Dreamer</p>
             </div>
-        <div id="search" class="page"><h3>Search</h3></div>
-        <div id="create" class="page"><h3>Create</h3></div>
-        <div id="profile" class="page"><h3>Profile</h3></div>
+        </div>
     </main>
 
     <nav class="nav-bar">
-        <button class="nav-item active" onclick="showPage('home', this)">🏠</button>
-        <button class="nav-item" onclick="showPage('search', this)">🔍</button>
-        <button class="nav-item" style="font-size: 32px; color: var(--primary);" onclick="showPage('create', this)">⊕</button>
-        <button class="nav-item" onclick="showPage('profile', this)">👤</button>
+        <button id="btn-home" class="nav-item active" onclick="showPage('home')">🏠</button>
+        <button id="btn-search" class="nav-item" onclick="showPage('search')">🔍</button>
+        <button id="btn-create" class="nav-item" style="font-size: 32px; color: var(--primary);" onclick="showPage('create')">⊕</button>
+        <button id="btn-profile" class="nav-item" onclick="showPage('profile')">👤</button>
     </nav>
 </div>
 
 <script>
-// Splash handling
+// Splash Logic
 setTimeout(() => {
     document.getElementById('splash').style.opacity = '0';
     setTimeout(() => {
@@ -108,16 +126,29 @@ setTimeout(() => {
     }, 800);
 }, 4000);
 
-// Navigation logic - FIX: Buttons now functional
-function showPage(pageId, btn) {
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    // Remove active state from icons
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+// Navigation Function - Guaranteed to work
+function showPage(pageId) {
+    // 1. Hide all pages
+    const pages = document.getElementsByClassName('page');
+    for (let i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+    }
     
-    // Show selected page and active icon
+    // 2. Remove active from all buttons
+    const buttons = document.getElementsByClassName('nav-item');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+    }
+    
+    // 3. Show requested page
     document.getElementById(pageId).classList.add('active');
-    btn.classList.add('active');
+    
+    // 4. Highlight the button
+    const activeBtn = document.getElementById('btn-' + pageId);
+    if (activeBtn) activeBtn.classList.add('active');
+    
+    // Haptic Feedback Simulation for iPhone
+    if (window.navigator.vibrate) window.navigator.vibrate(10);
 }
 </script>
 </body>
