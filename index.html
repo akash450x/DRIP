@@ -5,151 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DRIP</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <style>
-:root { --primary: #FF9933; --bg: #000; }
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Poppins', sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
+    :root { --primary: #FF9933; --bg: #000; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
 
-/* STARTUP SPLASH */
-#splash { 
-    position: fixed; inset: 0; background: #000; 
-    display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    z-index: 9999; transition: opacity 0.8s ease;
-}
-.flag-box {
-    width: 280px; height: 180px; margin-bottom: 25px;
-    background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg');
-    background-size: cover; background-position: center;
-    animation: waveEffect 2.5s ease-in-out infinite alternate;
-    opacity: 0.8;
-}
-@keyframes waveEffect {
-    0% { transform: perspective(1000px) rotateY(-12deg) scale(0.95); }
-    100% { transform: perspective(1000px) rotateY(12deg) scale(1.05); }
-}
-.jay-hind { font-family: 'Bebas Neue'; font-size: 32px; color: #D4AF37; letter-spacing: 4px; }
+    /* STARTUP SPLASH */
+    #splash { 
+        position: fixed; inset: 0; background: #000; 
+        display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        z-index: 10000; transition: opacity 0.5s;
+    }
+    .flag-img {
+        width: 280px; height: 180px; margin-bottom: 20px;
+        background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') no-repeat center;
+        background-size: contain; opacity: 0.8;
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
+    .jay-hind { font-family: 'Bebas Neue'; font-size: 30px; color: #D4AF37; letter-spacing: 3px; }
 
-/* APP LAYOUT */
-.app { display: none; height: 100vh; flex-direction: column; background: #000; }
+    /* APP STRUCTURE */
+    #app { display: none; height: 100vh; flex-direction: column; }
 
-/* TOP BAR */
-.header { 
-    padding: 15px; display: flex; align-items: center; 
-    border-bottom: 1px solid #1a1a1a; background: #000;
-}
-.logo-box {
-    height: 40px; width: 40px; border-radius: 6px;
-    border: 1px solid #333; margin-right: 12px;
-    display: flex; align-items: center; justify-content: center;
-    background: #111; overflow: hidden;
-}
-.logo-box img { width: 100%; height: 100%; object-fit: cover; }
-.logo-fallback { font-family: 'Bebas Neue'; font-size: 26px; color: white; }
-.brand-text { font-family: 'Bebas Neue'; font-size: 30px; color: var(--primary); letter-spacing: 1px; }
+    /* TOP BAR - LOGO FIXED LEFT */
+    .header { 
+        padding: 10px 20px; display: flex; align-items: center; justify-content: flex-start;
+        border-bottom: 1px solid #222; background: #000; height: 70px;
+    }
+    .logo-box {
+        height: 45px; width: 45px; border-radius: 8px; border: 1px solid #444;
+        display: flex; align-items: center; justify-content: center; background: #111; margin-right: 15px;
+    }
+    .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .white-d { font-family: 'Bebas Neue'; font-size: 32px; color: #fff; }
+    .brand { font-family: 'Bebas Neue'; font-size: 32px; color: var(--primary); letter-spacing: 2px; }
 
-/* CONTENT AREA */
-.content-area { flex: 1; position: relative; width: 100%; background: #000; }
-.page { 
-    display: none; height: 100%; width: 100%; 
-    flex-direction: column; align-items: center; justify-content: center; 
-}
-.page.active { display: flex; }
+    /* SCREEN MANAGEMENT */
+    .viewport { flex: 1; position: relative; width: 100%; background: #000; }
+    .screen { display: none; height: 100%; width: 100%; flex-direction: column; align-items: center; justify-content: center; }
+    .screen.active { display: flex; }
 
-/* ACCOUNT SECTION STYLING */
-.profile-card { text-align: center; }
-.profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 15px; }
-.profile-name { font-family: 'Bebas Neue'; font-size: 28px; letter-spacing: 1px; }
-
-/* BOTTOM NAV */
-.nav-bar { 
-    height: 80px; background: #000; display: flex; 
-    justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a;
-    padding-bottom: env(safe-area-inset-bottom);
-}
-.nav-item { 
-    background: none; border: none; color: #444; font-size: 26px; 
-    cursor: pointer; width: 25%; height: 100%; display: flex; align-items: center; justify-content: center;
-}
-.nav-item.active { color: var(--primary); }
+    /* NAV BAR */
+    .nav { 
+        height: 85px; background: #000; display: flex; border-top: 1px solid #222;
+        padding-bottom: 20px;
+    }
+    .nav-tab { 
+        flex: 1; display: flex; align-items: center; justify-content: center;
+        font-size: 26px; color: #444; border: none; background: none;
+    }
+    .nav-tab.active { color: var(--primary); }
 </style>
 </head>
 <body>
 
 <div id="splash">
-    <div class="flag-box"></div>
+    <div class="flag-img"></div>
     <div class="jay-hind">JAY HIND JAY BHARAT</div>
 </div>
 
-<div id="app" class="app">
+<div id="app">
     <header class="header">
         <div class="logo-box">
             <img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" 
-                 onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block';">
-            <span id="alt-logo" class="logo-fallback" style="display:none;">D</span>
+                 onerror="this.style.display='none'; document.getElementById('alt-d').style.display='block';">
+            <span id="alt-d" class="white-d" style="display:none;">D</span>
         </div>
-        <div class="brand-text">DRIP</div>
+        <div class="brand">DRIP</div>
     </header>
 
-    <main class="content-area">
-        <div id="home" class="page active"></div>
-        
-        <div id="search" class="page"><h2 style="font-family: 'Bebas Neue';">SEARCH ENGINE</h2></div>
-        
-        <div id="create" class="page"><h2 style="font-family: 'Bebas Neue';">CREATE POST</h2></div>
-        
-        <div id="profile" class="page">
-            <div class="profile-card">
-                <img src="https://ui-avatars.com/api/?name=User&background=333&color=fff" class="profile-pic">
-                <h2 class="profile-name">EMPIRE OWNER</h2>
-                <p style="color: #666; font-size: 14px;">Rank #1 Dreamer</p>
-            </div>
+    <main class="viewport">
+        <div id="scr-home" class="screen active"></div>
+        <div id="scr-search" class="screen"><h1 style="font-family:'Bebas Neue'">SEARCH</h1></div>
+        <div id="scr-create" class="screen"><h1 style="font-family:'Bebas Neue'">CREATE</h1></div>
+        <div id="scr-profile" class="screen">
+            <div style="width:100px; height:100px; border-radius:50%; background:#222; border:2px solid var(--primary); margin-bottom:10px;"></div>
+            <h1 style="font-family:'Bebas Neue'; font-size:35px;">AKASH</h1>
+            <p style="color:#666">EMPIRE OWNER</p>
         </div>
     </main>
 
-    <nav class="nav-bar">
-        <button id="btn-home" class="nav-item active" onclick="showPage('home')">🏠</button>
-        <button id="btn-search" class="nav-item" onclick="showPage('search')">🔍</button>
-        <button id="btn-create" class="nav-item" style="font-size: 32px; color: var(--primary);" onclick="showPage('create')">⊕</button>
-        <button id="btn-profile" class="nav-item" onclick="showPage('profile')">👤</button>
+    <nav class="nav">
+        <button class="nav-tab active" data-target="home">🏠</button>
+        <button class="nav-tab" data-target="search">🔍</button>
+        <button class="nav-tab" data-target="create" style="font-size:35px; color:var(--primary)">⊕</button>
+        <button class="nav-tab" data-target="profile">👤</button>
     </nav>
 </div>
 
 <script>
-// Splash Logic
-setTimeout(() => {
-    document.getElementById('splash').style.opacity = '0';
+    // 1. Splash Timer
     setTimeout(() => {
-        document.getElementById('splash').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-    }, 800);
-}, 4000);
+        document.getElementById('splash').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+        }, 500);
+    }, 4000);
 
-// Navigation Function - Guaranteed to work
-function showPage(pageId) {
-    // 1. Hide all pages
-    const pages = document.getElementsByClassName('page');
-    for (let i = 0; i < pages.length; i++) {
-        pages[i].classList.remove('active');
-    }
-    
-    // 2. Remove active from all buttons
-    const buttons = document.getElementsByClassName('nav-item');
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove('active');
-    }
-    
-    // 3. Show requested page
-    document.getElementById(pageId).classList.add('active');
-    
-    // 4. Highlight the button
-    const activeBtn = document.getElementById('btn-' + pageId);
-    if (activeBtn) activeBtn.classList.add('active');
-    
-    // Haptic Feedback Simulation for iPhone
-    if (window.navigator.vibrate) window.navigator.vibrate(10);
-}
+    // 2. Navigation Engine (REBUILT FOR IPHONE)
+    const tabs = document.querySelectorAll('.nav-tab');
+    const screens = document.querySelectorAll('.screen');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-target');
+
+            // Reset all
+            tabs.forEach(t => t.classList.remove('active'));
+            screens.forEach(s => s.classList.remove('active'));
+
+            // Activate target
+            tab.classList.add('active');
+            document.getElementById('scr-' + target).classList.add('active');
+        });
+    });
 </script>
 </body>
 </html>
