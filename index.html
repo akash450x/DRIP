@@ -14,58 +14,48 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Poppins', sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
 
-        /* INDEPENDENT SPLASH */
+        /* THE SPLASH - Highest priority */
         #splash { 
             position: fixed; inset: 0; background: #000; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            z-index: 10000; opacity: 1; transition: opacity 0.8s ease;
+            z-index: 99999; opacity: 1; transition: opacity 0.6s ease;
         }
-        .flag { width: 220px; height: 140px; background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') center/contain no-repeat; margin-bottom: 20px; }
-        .jay-hind { font-family: 'Bebas Neue'; font-size: 32px; color: #D4AF37; letter-spacing: 3px; text-align: center; }
+        .flag-box { width: 220px; height: 140px; background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') center/contain no-repeat; margin-bottom: 20px; }
+        .jay-hind { font-family: 'Bebas Neue'; font-size: 30px; color: #D4AF37; letter-spacing: 4px; text-align: center; }
 
-        /* AUTH & APP BOXES */
+        /* SCREENS */
         #auth-page, #app { display: none; height: 100vh; flex-direction: column; }
         #auth-page { align-items: center; justify-content: center; padding: 20px; }
-        
         .google-btn { background: white; color: black; padding: 16px 32px; border-radius: 50px; font-weight: 600; display: flex; align-items: center; gap: 12px; border: none; font-size: 16px; cursor: pointer; }
 
-        /* TOP BAR */
+        /* HEADER */
         .header { padding: 10px 20px; display: flex; align-items: center; border-bottom: 1px solid #222; height: 70px; }
         .logo-box { height: 42px; width: 42px; border-radius: 8px; border: 1px solid #444; margin-right: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #111; }
         .logo-box img { width: 100%; height: 100%; object-fit: cover; }
         .brand { font-family: 'Bebas Neue'; font-size: 32px; color: var(--primary); letter-spacing: 1px; }
 
-        /* VIEWPORT & SCREENS */
-        .viewport { flex: 1; position: relative; overflow: hidden; }
-        .screen { display: none; height: 100%; width: 100%; overflow-y: auto; }
-        .screen.active { display: flex; flex-direction: column; }
-
-        /* SEARCH BAR WITH MAGNIFYING GLASS */
-        .search-container { padding: 20px; }
+        /* SEARCH BAR */
+        .search-wrap { padding: 20px; }
         .search-bar { background: #111; border: 1px solid #333; border-radius: 12px; display: flex; align-items: center; padding: 14px 18px; }
-        .search-icon { font-size: 18px; color: #666; margin-right: 12px; }
-        .search-input { background: transparent; border: none; color: white; font-size: 16px; outline: none; width: 100%; }
-
-        /* CREATE TILES */
-        .create-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .option-card { background: #111; border: 1px solid #222; padding: 40px 10px; border-radius: 15px; text-align: center; cursor: pointer; font-family: 'Bebas Neue'; letter-spacing: 1px; }
-
-        /* REELS & AUTO-SCROLL */
-        #reels-container { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; }
-        .reel { height: 100%; width: 100%; scroll-snap-align: start; background: #050505; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; color: #111; font-size: 24px; }
-        .auto-scroll-btn { position: absolute; right: 20px; top: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #777; padding: 8px 15px; border-radius: 20px; font-size: 9px; backdrop-filter: blur(8px); z-index: 100; font-weight: bold; }
-        .auto-scroll-btn.on { color: var(--primary); border-color: var(--primary); background: rgba(255, 153, 51, 0.1); }
+        .search-input { background: transparent; border: none; color: white; font-size: 16px; outline: none; width: 100%; margin-left: 10px; }
 
         /* NAV BAR */
         .nav { height: 85px; background: #000; display: flex; border-top: 1px solid #222; padding-bottom: 25px; }
         .nav-tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #444; border: none; background: none; }
         .nav-tab.active { color: var(--primary); }
+
+        .screen { display: none; height: 100%; width: 100%; flex-direction: column; }
+        .screen.active { display: flex; }
+        
+        /* REELS AUTO SCROLL */
+        .auto-scroll-btn { position: absolute; right: 20px; top: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; z-index: 100; }
+        .auto-scroll-btn.on { color: var(--primary); border-color: var(--primary); }
     </style>
 </head>
 <body>
 
 <div id="splash">
-    <div class="flag"></div>
+    <div class="flag-box"></div>
     <div class="jay-hind">JAY HIND<br>JAY BHARAT</div>
 </div>
 
@@ -86,42 +76,39 @@
         <div class="brand">DRIP</div>
     </header>
 
-    <main class="viewport">
-        <div id="scr-home" class="screen active" style="padding:40px 20px; text-align:center;">
-            <h2 id="welcome-name" style="font-family:'Bebas Neue'; font-size:30px;">MY EMPIRE</h2>
-            <p id="user-email" style="font-size:12px; color:#444; margin-top:10px;"></p>
+    <main style="flex:1; position:relative;">
+        <div id="scr-home" class="screen active" style="padding:20px; text-align:center;">
+            <h2 id="user-name-title" style="font-family:'Bebas Neue'; font-size:30px;">MY EMPIRE</h2>
         </div>
 
         <div id="scr-reels" class="screen">
             <button class="auto-scroll-btn" id="autoBtn" onclick="toggleAutoScroll()">AUTO-SCROLL</button>
-            <div id="reels-container">
-                <div class="reel">REEL 1</div>
-                <div class="reel">REEL 2</div>
+            <div id="reels-list" style="height:100%; overflow-y:scroll; scroll-snap-type:y mandatory;">
+                <div style="height:100%; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; color:#222;">REEL 1</div>
+                <div style="height:100%; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; color:#222;">REEL 2</div>
             </div>
         </div>
 
         <div id="scr-search" class="screen">
-            <div class="search-container">
+            <div class="search-wrap">
                 <div class="search-bar">
-                    <span class="search-icon">🔍</span>
+                    <span>🔍</span>
                     <input type="text" class="search-input" placeholder="Search creators...">
                 </div>
             </div>
         </div>
 
-        <div id="scr-create" class="screen">
-            <div class="create-menu">
-                <div class="option-card" onclick="openPicker()">📹<br>VIDEO</div>
-                <div class="option-card" onclick="openPicker()">📸<br>PHOTO</div>
-                <div class="option-card" onclick="openPicker()">📄<br>DOCS</div>
-                <div class="option-card" onclick="openPicker()">🎵<br>AUDIO</div>
+        <div id="scr-create" class="screen" style="padding:20px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                <div onclick="openPicker()" style="background:#111; padding:40px 10px; border-radius:15px; text-align:center;">📹 VIDEO</div>
+                <div onclick="openPicker()" style="background:#111; padding:40px 10px; border-radius:15px; text-align:center;">📸 PHOTO</div>
             </div>
-            <input type="file" id="global-picker" style="display:none;">
+            <input type="file" id="file-picker" style="display:none;">
         </div>
 
         <div id="scr-profile" class="screen" style="align-items:center; justify-content:center;">
-            <div id="profile-pic" style="width:100px; height:100px; border-radius:50%; background:#111; border:2px solid var(--primary); margin-bottom:15px; background-size:cover;"></div>
-            <h1 id="prof-user" style="font-family:'Bebas Neue'; font-size:40px;">AKASH</h1>
+            <div id="prof-pic" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--primary); margin-bottom:10px; background-size:cover;"></div>
+            <h1 id="prof-name" style="font-family:'Bebas Neue'; font-size:35px;">AKASH</h1>
             <button onclick="logout()" style="color:red; background:none; border:none; margin-top:20px; font-weight:bold;">LOGOUT</button>
         </div>
     </main>
@@ -136,7 +123,18 @@
 </div>
 
 <script>
-    // --- FIREBASE CONFIG ---
+    // --- GUARANTEED TIMER ---
+    // This runs independently of all other code
+    const killSplash = () => {
+        const s = document.getElementById('splash');
+        if(s) {
+            s.style.opacity = '0';
+            setTimeout(() => { s.style.display = 'none'; }, 600);
+        }
+    };
+    setTimeout(killSplash, 4000);
+
+    // --- FIREBASE SAFE INIT ---
     const firebaseConfig = {
         apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
         authDomain: "drip-india.firebaseapp.com",
@@ -145,49 +143,37 @@
         messagingSenderId: "40598053043",
         appId: "1:40598053043:web:b800c05afba716974690c6"
     };
-    
-    // Initialize Firebase safely
+
     try {
         firebase.initializeApp(firebaseConfig);
-    } catch (e) { console.log("Firebase Error"); }
+        const auth = firebase.auth();
 
-    const auth = firebase.auth();
-
-    // --- NUCLEAR BYPASS TIMER ---
-    // This removes the splash screen after 4s regardless of code status
-    window.onload = function() {
-        setTimeout(() => {
-            const splash = document.getElementById('splash');
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.display = 'none';
-                initApp();
-            }, 800);
-        }, 4000);
-    };
-
-    function initApp() {
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('auth-page').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
-                document.getElementById('welcome-name').innerText = user.displayName.toUpperCase();
-                document.getElementById('prof-user').innerText = user.displayName.split(' ')[0].toUpperCase();
-                if(user.photoURL) document.getElementById('profile-pic').style.backgroundImage = `url(${user.photoURL})`;
+                document.getElementById('user-name-title').innerText = user.displayName.toUpperCase();
+                document.getElementById('prof-name').innerText = user.displayName.split(' ')[0].toUpperCase();
+                if(user.photoURL) document.getElementById('prof-pic').style.backgroundImage = `url(${user.photoURL})`;
             } else {
                 document.getElementById('auth-page').style.display = 'flex';
                 document.getElementById('app').style.display = 'none';
             }
         });
+
+        window.signIn = () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(e => alert(e.message));
+        };
+        window.logout = () => auth.signOut().then(() => location.reload());
+
+    } catch (e) {
+        console.log("Firebase Load Error");
+        // If Firebase fails, still show the auth page so user isn't stuck
+        document.getElementById('auth-page').style.display = 'flex';
     }
 
-    function signIn() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).catch(e => alert("Error: " + e.message));
-    }
-
-    function logout() { auth.signOut().then(() => location.reload()); }
-
+    // --- UI LOGIC ---
     function showPage(id, btn) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -195,18 +181,18 @@
         btn.classList.add('active');
     }
 
-    function openPicker() { document.getElementById('global-picker').click(); }
+    function openPicker() { document.getElementById('file-picker').click(); }
 
-    let autoOn = false;
-    let autoInt;
+    let aOn = false;
+    let aInt;
     function toggleAutoScroll() {
-        autoOn = !autoOn;
+        aOn = !aOn;
         document.getElementById('autoBtn').classList.toggle('on');
-        if(autoOn) {
-            autoInt = setInterval(() => {
-                document.getElementById('reels-container').scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-            }, 6000);
-        } else { clearInterval(autoInt); }
+        if(aOn) {
+            aInt = setInterval(() => {
+                document.getElementById('reels-list').scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+            }, 5000);
+        } else { clearInterval(aInt); }
     }
 </script>
 </body>
