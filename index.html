@@ -4,196 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DRIP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <style>
-        :root { --primary: #FF9933; --bg: #000; }
+        :root { --primary: #FF9933; --bg: #000; --nav-bg: rgba(10, 10, 10, 0.8); --card: #0A0A0A; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Poppins', sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
 
-        /* THE SPLASH - Highest priority */
-        #splash { 
-            position: fixed; inset: 0; background: #000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            z-index: 99999; opacity: 1; transition: opacity 0.6s ease;
+        /* SPLASH & AUTH (Keeping your working logic) */
+        #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; transition: 0.8s ease; }
+        .flag-minimal { width: 180px; height: 110px; background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') center/contain no-repeat; margin-bottom: 20px; filter: saturate(0.8); }
+        .jay-hind { font-family: 'Bebas Neue'; font-size: 28px; color: #D4AF37; letter-spacing: 5px; }
+
+        #auth-page { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; background: #000; }
+        .google-btn { background: #fff; color: #000; padding: 14px 28px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; border: none; cursor: pointer; }
+
+        /* APP BOX */
+        #app { display: none; height: 100vh; flex-direction: column; }
+        .header { padding: 0 20px; display: flex; align-items: center; border-bottom: 1px solid #111; height: 64px; }
+        .brand { font-family: 'Bebas Neue'; font-size: 28px; color: var(--primary); letter-spacing: 1.5px; }
+
+        /* VIEWPORT */
+        .screen { display: none; height: 100%; width: 100%; overflow-y: auto; padding-bottom: 100px; }
+        .screen.active { display: flex; flex-direction: column; }
+
+        /* PROFILE SCREEN UPGRADES */
+        .profile-container { align-items: center; padding: 30px 20px; }
+        .prof-pic-box { width: 100px; height: 100px; border-radius: 30px; border: 1.5px solid #222; background: var(--card) center/cover; margin-bottom: 16px; }
+        .user-title { font-family: 'Bebas Neue'; font-size: 32px; letter-spacing: 1px; margin-bottom: 4px; }
+        
+        /* GENDER SELECTOR STYLING */
+        .section-label { font-size: 11px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 1.5px; margin: 25px 0 12px; align-self: flex-start; }
+        .gender-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
+        .gender-btn { 
+            background: var(--card); border: 1px solid #1A1A1A; color: #666; 
+            padding: 12px 0; border-radius: 12px; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: 0.3s;
         }
-        .flag-box { width: 220px; height: 140px; background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') center/contain no-repeat; margin-bottom: 20px; }
-        .jay-hind { font-family: 'Bebas Neue'; font-size: 30px; color: #D4AF37; letter-spacing: 4px; text-align: center; }
-
-        /* SCREENS */
-        #auth-page, #app { display: none; height: 100vh; flex-direction: column; }
-        #auth-page { align-items: center; justify-content: center; padding: 20px; }
-        .google-btn { background: white; color: black; padding: 16px 32px; border-radius: 50px; font-weight: 600; display: flex; align-items: center; gap: 12px; border: none; font-size: 16px; cursor: pointer; }
-
-        /* HEADER */
-        .header { padding: 10px 20px; display: flex; align-items: center; border-bottom: 1px solid #222; height: 70px; }
-        .logo-box { height: 42px; width: 42px; border-radius: 8px; border: 1px solid #444; margin-right: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #111; }
-        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
-        .brand { font-family: 'Bebas Neue'; font-size: 32px; color: var(--primary); letter-spacing: 1px; }
-
-        /* SEARCH BAR */
-        .search-wrap { padding: 20px; }
-        .search-bar { background: #111; border: 1px solid #333; border-radius: 12px; display: flex; align-items: center; padding: 14px 18px; }
-        .search-input { background: transparent; border: none; color: white; font-size: 16px; outline: none; width: 100%; margin-left: 10px; }
+        .gender-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255, 153, 51, 0.05); }
 
         /* NAV BAR */
-        .nav { height: 85px; background: #000; display: flex; border-top: 1px solid #222; padding-bottom: 25px; }
-        .nav-tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #444; border: none; background: none; }
-        .nav-tab.active { color: var(--primary); }
-
-        .screen { display: none; height: 100%; width: 100%; flex-direction: column; }
-        .screen.active { display: flex; }
-        
-        /* REELS AUTO SCROLL */
-        .auto-scroll-btn { position: absolute; right: 20px; top: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px; z-index: 100; }
-        .auto-scroll-btn.on { color: var(--primary); border-color: var(--primary); }
-    </style>
-</head>
-<body>
-
-<div id="splash">
-    <div class="flag-box"></div>
-    <div class="jay-hind">JAY HIND<br>JAY BHARAT</div>
-</div>
-
-<div id="auth-page">
-    <h1 style="font-family:'Bebas Neue'; font-size: 60px; color: var(--primary); margin-bottom: 30px;">DRIP</h1>
-    <button class="google-btn" onclick="signIn()">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="22">
-        Sign in with Google
-    </button>
-</div>
-
-<div id="app">
-    <header class="header">
-        <div class="logo-box">
-            <img src="https://instasize.com/p/3776c8600fcb246ca66cfc837639e2f68227eeee65fc763c5eef7cc1bb88206f" onerror="this.style.display='none'">
-            <span style="font-family:'Bebas Neue'; color:white; font-size:24px;">D</span>
-        </div>
-        <div class="brand">DRIP</div>
-    </header>
-
-    <main style="flex:1; position:relative;">
-        <div id="scr-home" class="screen active" style="padding:20px; text-align:center;">
-            <h2 id="user-name-title" style="font-family:'Bebas Neue'; font-size:30px;">MY EMPIRE</h2>
-        </div>
-
-        <div id="scr-reels" class="screen">
-            <button class="auto-scroll-btn" id="autoBtn" onclick="toggleAutoScroll()">AUTO-SCROLL</button>
-            <div id="reels-list" style="height:100%; overflow-y:scroll; scroll-snap-type:y mandatory;">
-                <div style="height:100%; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; color:#222;">REEL 1</div>
-                <div style="height:100%; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; color:#222;">REEL 2</div>
-            </div>
-        </div>
-
-        <div id="scr-search" class="screen">
-            <div class="search-wrap">
-                <div class="search-bar">
-                    <span>🔍</span>
-                    <input type="text" class="search-input" placeholder="Search creators...">
-                </div>
-            </div>
-        </div>
-
-        <div id="scr-create" class="screen" style="padding:20px;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                <div onclick="openPicker()" style="background:#111; padding:40px 10px; border-radius:15px; text-align:center;">📹 VIDEO</div>
-                <div onclick="openPicker()" style="background:#111; padding:40px 10px; border-radius:15px; text-align:center;">📸 PHOTO</div>
-            </div>
-            <input type="file" id="file-picker" style="display:none;">
-        </div>
-
-        <div id="scr-profile" class="screen" style="align-items:center; justify-content:center;">
-            <div id="prof-pic" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--primary); margin-bottom:10px; background-size:cover;"></div>
-            <h1 id="prof-name" style="font-family:'Bebas Neue'; font-size:35px;">AKASH</h1>
-            <button onclick="logout()" style="color:red; background:none; border:none; margin-top:20px; font-weight:bold;">LOGOUT</button>
-        </div>
-    </main>
-
-    <nav class="nav">
-        <button class="nav-tab active" onclick="showPage('home', this)">🏠</button>
-        <button class="nav-tab" onclick="showPage('reels', this)">📱</button>
-        <button class="nav-tab" style="font-size:32px; color:var(--primary)" onclick="showPage('create', this)">⊕</button>
-        <button class="nav-tab" onclick="showPage('search', this)">🔍</button>
-        <button class="nav-tab" onclick="showPage('profile', this)">👤</button>
-    </nav>
-</div>
-
-<script>
-    // --- GUARANTEED TIMER ---
-    // This runs independently of all other code
-    const killSplash = () => {
-        const s = document.getElementById('splash');
-        if(s) {
-            s.style.opacity = '0';
-            setTimeout(() => { s.style.display = 'none'; }, 600);
-        }
-    };
-    setTimeout(killSplash, 4000);
-
-    // --- FIREBASE SAFE INIT ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
-        authDomain: "drip-india.firebaseapp.com",
-        projectId: "drip-india",
-        storageBucket: "drip-india.firebasestorage.app",
-        messagingSenderId: "40598053043",
-        appId: "1:40598053043:web:b800c05afba716974690c6"
-    };
-
-    try {
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('auth-page').style.display = 'none';
-                document.getElementById('app').style.display = 'flex';
-                document.getElementById('user-name-title').innerText = user.displayName.toUpperCase();
-                document.getElementById('prof-name').innerText = user.displayName.split(' ')[0].toUpperCase();
-                if(user.photoURL) document.getElementById('prof-pic').style.backgroundImage = `url(${user.photoURL})`;
-            } else {
-                document.getElementById('auth-page').style.display = 'flex';
-                document.getElementById('app').style.display = 'none';
-            }
-        });
-
-        window.signIn = () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(e => alert(e.message));
-        };
-        window.logout = () => auth.signOut().then(() => location.reload());
-
-    } catch (e) {
-        console.log("Firebase Load Error");
-        // If Firebase fails, still show the auth page so user isn't stuck
-        document.getElementById('auth-page').style.display = 'flex';
-    }
-
-    // --- UI LOGIC ---
-    function showPage(id, btn) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById('scr-' + id).classList.add('active');
-        btn.classList.add('active');
-    }
-
-    function openPicker() { document.getElementById('file-picker').click(); }
-
-    let aOn = false;
-    let aInt;
-    function toggleAutoScroll() {
-        aOn = !aOn;
-        document.getElementById('autoBtn').classList.toggle('on');
-        if(aOn) {
-            aInt = setInterval(() => {
-                document.getElementById('reels-list').scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-            }, 5000);
-        } else { clearInterval(aInt); }
-    }
-</script>
-</body>
-</html>
+        .nav { height: 80px; background: var(--nav-bg); display: flex; border-top: 1px solid #111; padding-bottom: env(safe-area-inset-bottom); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: fixed; bottom: 0; width: 100%; }
+        .nav-tab { flex: 1; display: flex; flex-direction: column; align
