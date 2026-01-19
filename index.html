@@ -7,31 +7,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
 <style>
-:root { --primary: #FF9933; --bg: #000; --gold: #D4AF37; --navy: #000080; }
+:root { --primary: #FF9933; --bg: #000; --gold: #D4AF37; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden; }
 
-/* STARTUP PAGE - 3D Tiranga */
+/* STARTUP PAGE - 3D Tiranga with Embedded Chakra */
 #splash { 
     position: fixed; inset: 0; background: #000; 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
     z-index: 9999; transition: opacity 0.8s ease; perspective: 1200px;
 }
-.flag-wrap { position: relative; width: 260px; height: 160px; margin-bottom: 30px; }
-.flag-3d { width: 100%; height: 100%; display: flex; transform-style: preserve-3d; opacity: 0.7; }
+.flag-3d { 
+    width: 280px; height: 180px; display: flex; transform-style: preserve-3d; 
+    opacity: 0.8; margin-bottom: 30px; 
+}
 .flag-slice { 
     flex: 1; height: 100%; 
+    /* The gradient now includes the colors of the flag */
     background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%); 
-    background-size: 260px 160px; 
+    background-size: 280px 180px; 
     animation: wave 1.2s ease-in-out infinite alternate; 
+    position: relative;
 }
 
-/* ASHOKA CHAKRA - Forced Center */
-.ashoka-chakra {
-    position: absolute; top: 50%; left: 50%; 
+/* Creating the Ashoka Chakra inside the center of the flag */
+.flag-slice:nth-child(13)::after {
+    content: "";
+    position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 48px; height: 48px; z-index: 100;
-    pointer-events: none;
+    width: 40px; height: 40px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center;
+    background-size: contain;
+    z-index: 100;
 }
 
 @keyframes wave { 0% { transform: translateZ(-30px); } 100% { transform: translateZ(60px) translateY(8px); } }
@@ -47,34 +54,22 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
 .top-nav img { height: 38px; width: 38px; border-radius: 50%; border: 1.5px solid var(--primary); margin-right: 12px; }
 .top-nav h1 { font-family: 'Playfair Display'; font-size: 24px; color: var(--primary); }
 
-.feed { flex: 1; background: #050505; display: flex; align-items: center; justify-content: center; position: relative; }
+.feed { flex: 1; background: #050505; display: flex; align-items: center; justify-content: center; }
 
 /* FULL NAV BAR - Home, Search, Create, Profile */
 .bottom-nav { 
     height: 80px; background: #000; display: flex; 
     justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a;
+    padding-bottom: 10px;
 }
-.icon-btn { background: none; border: none; color: #666; font-size: 24px; cursor: pointer; transition: 0.3s; }
-.icon-btn.active { color: var(--primary); transform: scale(1.1); }
+.icon-btn { background: none; border: none; color: #666; font-size: 24px; cursor: pointer; }
+.icon-btn.active { color: var(--primary); }
 </style>
 </head>
 <body>
 
 <div id="splash">
-    <div class="flag-wrap">
-        <div class="flag-3d" id="flagContainer"></div>
-        <svg class="ashoka-chakra" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="256" cy="256" r="236" fill="none" stroke="#000080" stroke-width="12"/>
-            <circle cx="256" cy="256" r="45" fill="#000080"/>
-            <g stroke="#000080" stroke-width="8">
-                <line x1="256" y1="20" x2="256" y2="492"/>
-                <line x1="20" y1="256" x2="492" y2="256"/>
-                <line x1="88.7" y1="88.7" x2="423.3" y2="423.3"/>
-                <line x1="88.7" y1="423.3" x2="423.3" y2="88.7"/>
-            </g>
-            <circle cx="256" cy="256" r="230" fill="none" stroke="#000080" stroke-width="2" stroke-dasharray="10,15"/>
-        </svg>
-    </div>
+    <div class="flag-3d" id="flagContainer"></div>
     <div class="jay-hind">JAY HIND<br>JAY BHARAT</div>
 </div>
 
@@ -85,24 +80,20 @@ body { font-family: 'Poppins', sans-serif; background: #000; color: white; overf
     </header>
 
     <div class="feed">
-        <p style="color: #333; font-size: 12px;">Waiting for Empire content...</p>
+        <p style="color: #222;">Content Secure</p>
     </div>
 
     <nav class="bottom-nav">
-        <button class="icon-btn active">🏠</button>
-        <button class="icon-btn">🔍</button>
-        <button class="icon-btn" style="font-size: 32px; color: var(--primary);">⊕</button>
-        <button class="icon-btn">👤</button>
-    </nav>
+        <button class="icon-btn active">🏠</button> <button class="icon-btn">🔍</button> <button class="icon-btn" style="font-size: 32px; color: var(--primary);">⊕</button> <button class="icon-btn">👤</button> </nav>
 </div>
 
 <script>
-// Create Flag Slices for 3D effect
+// Create 25 slices for the flag
 const flag = document.getElementById('flagContainer');
 for (let i = 0; i < 25; i++) {
     const slice = document.createElement('div');
     slice.className = 'flag-slice';
-    slice.style.backgroundPosition = `-${(260 / 25) * i}px 0`;
+    slice.style.backgroundPosition = `-${(280 / 25) * i}px 0`;
     slice.style.animationDelay = `${i * 0.05}s`;
     flag.appendChild(slice);
 }
@@ -114,14 +105,14 @@ setTimeout(() => {
         document.getElementById('splash').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
     }, 800);
-}, 4500);
+}, 4000);
 
 // Simple Navigation Logic
 document.querySelectorAll('.icon-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.onclick = () => {
         document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-    });
+    };
 });
 </script>
 </body>
