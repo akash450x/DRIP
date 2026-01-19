@@ -4,48 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DRIP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <style>
-        :root { --primary: #FF9933; --bg: #000; --nav-bg: rgba(10, 10, 10, 0.8); --card: #0A0A0A; }
+        :root { --primary: #FF9933; --bg: #000; --card: #0A0A0A; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
 
-        /* SPLASH & AUTH (Keeping your working logic) */
-        #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; transition: 0.8s ease; }
-        .flag-minimal { width: 180px; height: 110px; background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') center/contain no-repeat; margin-bottom: 20px; filter: saturate(0.8); }
+        /* SPLASH - Forced Independence */
+        #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: 0.6s; }
+        .flag-min { width: 180px; height: 110px; background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') center/contain no-repeat; margin-bottom: 20px; }
         .jay-hind { font-family: 'Bebas Neue'; font-size: 28px; color: #D4AF37; letter-spacing: 5px; }
 
-        #auth-page { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; background: #000; }
-        .google-btn { background: #fff; color: #000; padding: 14px 28px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; border: none; cursor: pointer; }
+        #app, #auth-page { display: none; height: 100vh; flex-direction: column; }
+        #auth-page { align-items: center; justify-content: center; padding: 20px; }
+        .google-btn { background: #fff; color: #000; padding: 15px 30px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 10px; border: none; cursor: pointer; }
 
-        /* APP BOX */
-        #app { display: none; height: 100vh; flex-direction: column; }
-        .header { padding: 0 20px; display: flex; align-items: center; border-bottom: 1px solid #111; height: 64px; }
-        .brand { font-family: 'Bebas Neue'; font-size: 28px; color: var(--primary); letter-spacing: 1.5px; }
+        .header { padding: 0 20px; display: flex; align-items: center; border-bottom: 1px solid #111; height: 64px; background: #000; }
+        .brand { font-family: 'Bebas Neue'; font-size: 28px; color: var(--primary); letter-spacing: 2px; }
 
-        /* VIEWPORT */
-        .screen { display: none; height: 100%; width: 100%; overflow-y: auto; padding-bottom: 100px; }
-        .screen.active { display: flex; flex-direction: column; }
+        .viewport { flex: 1; position: relative; overflow-y: auto; padding-bottom: 100px; }
+        .screen { display: none; width: 100%; flex-direction: column; padding: 20px; }
+        .screen.active { display: flex; }
 
-        /* PROFILE SCREEN UPGRADES */
-        .profile-container { align-items: center; padding: 30px 20px; }
-        .prof-pic-box { width: 100px; height: 100px; border-radius: 30px; border: 1.5px solid #222; background: var(--card) center/cover; margin-bottom: 16px; }
-        .user-title { font-family: 'Bebas Neue'; font-size: 32px; letter-spacing: 1px; margin-bottom: 4px; }
-        
-        /* GENDER SELECTOR STYLING */
-        .section-label { font-size: 11px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 1.5px; margin: 25px 0 12px; align-self: flex-start; }
-        .gender-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-        .gender-btn { 
-            background: var(--card); border: 1px solid #1A1A1A; color: #666; 
-            padding: 12px 0; border-radius: 12px; font-size: 12px; font-weight: 600;
-            cursor: pointer; transition: 0.3s;
-        }
-        .gender-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255, 153, 51, 0.05); }
+        /* GENDER BUTTONS */
+        .section-label { font-size: 11px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: 1.5px; margin: 30px 0 15px; }
+        .gender-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; }
+        .gender-btn { background: #0A0A0A; border: 1px solid #1A1A1A; color: #666; padding: 14px 0; border-radius: 12px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .gender-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255,153,51,0.05); }
 
-        /* NAV BAR */
-        .nav { height: 80px; background: var(--nav-bg); display: flex; border-top: 1px solid #111; padding-bottom: env(safe-area-inset-bottom); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: fixed; bottom: 0; width: 100%; }
-        .nav-tab { flex: 1; display: flex; flex-direction: column; align
+        /* PREMIUM NAV */
+        .nav { height: 85px; background: rgba(10,10,10,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; border-top: 1px solid #111; position: fixed; bottom: 0; width: 100%; padding-bottom: 20px; }
+        .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; border: none; background: none; font-size: 22px; }
+        .nav-tab.active { color: var(--primary); }
+        .nav-label { font-size: 9px; margin-top: 5px; font-weight: 600; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div id="splash">
+    <div class="flag-min"></div>
+    <div class="jay-hind">JAY HIND JAY BHARAT</div>
+</div>
+
+<div id="auth-page">
+    <h1 style="font-family:'Bebas Neue'; font-size: 60px; color: var(--primary); margin-bottom: 30px;">DRIP</h1>
+    <button class="google-btn" onclick="signIn()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18">
+        Sign in with Google
+    </button>
+</div>
+
+<div id="app">
+    <header class="header"><div class="brand">DRIP</div></header>
+    <main class="viewport">
+        <div id="scr-home" class="screen active">
+            <h2
