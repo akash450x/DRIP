@@ -1,98 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DRIP</title>
-    <style>
-        :root { 
-            --primary: #FF9933; 
-            --bg: #000; 
-            --card: #080808; 
-            --border: #181818;
-            --gold: #D4AF37;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg); color: #fff; font-family: -apple-system, system-ui, sans-serif; height: 100vh; overflow: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>DRIP</title>
 
-        /* 1. RESTORED PREMIUM SPLASH */
-        #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
-        
-        .flag-frame {
-            position: relative; width: 210px; height: 130px;
-            border-radius: 4px; overflow: hidden; margin-bottom: 25px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-        }
-        .stripe { height: 33.33%; width: 100%; }
-        .saffron { background: #FF9933; }
-        .white { background: #FFFFFF; display: flex; align-items: center; justify-content: center; }
-        .green { background: #128807; }
-        
-        /* HIGH-DEF ASHOKA CHAKRA */
-        .chakra-hd {
-            width: 36px; height: 36px;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center;
-            background-size: contain;
-        }
+<style>
+:root { 
+  --primary:#FF9933;
+  --bg:#000;
+  --card:#080808;
+  --border:#161616;
+  --text-main:#fff;
+  --text-dim:#444;
+}
 
-        /* JAY HIND CAPTION RESTORED */
-        .splash-caption {
-            font-size: 26px; font-weight: 900; color: var(--gold);
-            letter-spacing: 6px; text-transform: uppercase;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-        }
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);
+  color:var(--text-main);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  height:100vh;
+  overflow:hidden;
+}
 
-        /* 2. HEADER & BRANDING */
-        #app { display: none; flex-direction: column; height: 100vh; }
-        .header { height: 65px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; }
-        
-        /* BEBAS STYLE D LOGO */
-        .d-logo { 
-            width: 40px; height: 40px; border: 1.5px solid #222; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px; font-weight: 900; margin-right: 15px; background: #050505;
-        }
-        .brand { color: var(--primary); font-size: 26px; font-weight: 900; letter-spacing: 1px; }
+/* SPLASH */
+#splash{
+  position:fixed;inset:0;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+  transition:.8s ease;
+}
+.flag-wrap{
+  width:200px;height:125px;
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+.stripe{height:33.33%}
+.saffron{background:#FF9933}
+.white{background:#fff;display:flex;align-items:center;justify-content:center}
+.green{background:#128807}
+.chakra{
+  width:34px;height:34px;
+  background:url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') center/contain no-repeat;
+}
+.jay-hind{
+  font-size:26px;
+  font-weight:900;
+  letter-spacing:8px;
+  color:#D4AF37;
+}
 
-        /* 3. CONTENT AREA (SCALING FIX) */
-        .view { flex: 1; position: relative; overflow: hidden; }
-        .page { display: none; height: 100%; width: 100%; padding: 20px; overflow-y: auto; }
-        .page.active { display: block; }
+/* APP */
+#app{display:none;flex-direction:column;height:100vh}
 
-        /* REELS AUTO-SCROLL (GLASSMORPHISM) */
-        .auto-btn { 
-            position: absolute; top: 20px; right: 20px; z-index: 100;
-            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.5); padding: 9px 18px; border-radius: 30px; font-size: 9px; font-weight: 800;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); text-transform: uppercase;
-        }
-        .auto-btn.active { color: var(--primary); border-color: var(--primary); }
+/* HEADER */
+.header{
+  height:65px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+}
+.d-logo{
+  width:38px;height:38px;
+  border-radius:10px;
+  background:#050505;
+  border:1px solid #222;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:900;
+}
+.brand{
+  margin-left:14px;
+  color:var(--primary);
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:1.5px;
+}
 
-        /* PREMIUM MINIMALIST TILES (SVG GLYPHS) */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .tile { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 18px; 
-            padding: 30px 10px; text-align: center; 
-        }
-        .tile svg { width: 20px; height: 20px; stroke: var(--primary); stroke-width: 1.5; fill: none; margin-bottom: 12px; }
-        .tile p { font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #555; text-transform: uppercase; }
+/* VIEW */
+.view{flex:1;position:relative;overflow:hidden}
+.page{display:none;height:100%;padding:20px;overflow-y:auto}
+.page.active{display:block}
 
-        /* SEARCH BOX */
-        .search-container {
-            background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-            padding: 12px 18px; display: flex; align-items: center;
-        }
-        .search-container input { background: none; border: none; color: #fff; margin-left: 12px; width: 100%; outline: none; font-size: 15px; }
+/* REELS */
+#reels.page{padding:0}
+#reel-list{
+  height:100%;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+#reel-list > div{
+  height:100%;
+  scroll-snap-align:start;
+  border-bottom:1px solid #050505;
+}
 
-        /* GENDER PRESET (PREMIUM) */
-        .g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .g-btn { 
-            background: var(--card); border: 1px solid var(--border); color: #333; 
-            padding: 14px 0; border-radius: 12px; font-weight: 700; font-size: 10px; 
-        }
-        .g-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255,153,51,0.04); }
+/* AUTO BUTTON (PREMIUM) */
+.auto-btn{
+  position:absolute;
+  top:18px;
+  right:18px;
+  padding:6px 14px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.5);
+  backdrop-filter:blur(14px);
+}
+.auto-btn.active{
+  color:var(--primary);
+  border-color:var(--primary);
+  box-shadow:0 0 14px rgba(255,153,51,.4);
+}
 
-        /* BOTTOM NAV (PREMIUM MINIMALIST) */
-        .nav { height: 85px; border-top: 1px solid var(--border); display: flex; padding-bottom: 25px; background: #000; }
-        .tab { flex: 1; display: flex; align-items: center; justify-content: center; border: none; background: none; }
-        .tab svg { width: 22px; height: 22px; stroke: #222; stroke-width: 1.8; fill: none; transition: 0.3s; }
+/* SEARCH */
+.search-box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+}
+.search-box input{
+  background:none;
+  border:none;
+  color:#fff;
+  margin-left:12px;
+  width:100%;
+  font-size:15px;
+  outline:none;
+}
+
+/* CREATE GRID */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.tile{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:30px 10px;
+  text-align:center;
+}
+.tile svg{
+  width:22px;height:22px;
+  stroke:var(--primary);
+  stroke-width:1.5;
+  fill:none;
+  margin-bottom:12px;
+}
+.tile p{
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:1.2px;
+  color:#888;
+  text-transform:uppercase;
+}
+
+/* GENDER */
+.g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}
+.g-btn{
+  background:var(--card);
+  border:1px solid var(--border);
+  color:#444;
+  padding:15px 0;
+  border-radius:12px;
+  font-size:10px;
+  font-weight:700;
+}
+.g-btn.active{
+  color:var(--primary);
+  border-color:var(--primary);
+  background:rgba(255,153,51,.05);
+}
+
+/* PREMIUM NAV */
+.nav{
+  height:88px;
+  padding:0 10px 22px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(20px);
+}
+.tab{
+  flex:1;
+  max-width:68px;
+  height:52px;
+  border-radius:18px;
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.05);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.tab svg{
+  width:20px;height:20px;
+  stroke:#555;
+  stroke-width:1.6;
+  fill:none;
+}
+.tab.active{
+  background:rgba(255,153,51,.12);
+  border-color:rgba(255,153,51,.35);
+  box-shadow:0 6px 18px rgba(255,153,51,.25);
+}
+.tab.active svg{
+  stroke:var(--primary);
+  transform:scale(1.12);
+}
+</style>
+</head>
+
+<body>
+
+<div id="splash">
+  <div class="flag-wrap">
+    <div class="stripe saffron"></div>
+    <div class="stripe white"><div class="chakra"></div></div>
+    <div class="stripe green"></div>
+  </div>
+  <p class="jay-hind">JAY HIND</p>
+</div>
+
+<div id="app">
+<header class="header">
+  <div class="d-logo">D</div>
+  <div class="brand">DRIP</div>
+</header>
+
+<div class="view">
+  <div id="home" class="page active" style="display:flex;align-items:center;justify-content:center;">
+    <p style="color:#111;font-weight:900;font-size:20px;letter-spacing:5px;">VOID</p>
+  </div>
+
+  <div id="reels" class="page">
+    <button class="auto-btn" onclick="toggleAuto(this)">AUTO</button>
+    <div id="reel-list">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <div id="search" class="page">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input placeholder="Search the empire...">
+    </div>
+  </div>
+
+  <div id="create" class="page">
+    <div class="grid">
+      <div class="tile"><p>Video</p></div>
+      <div class="tile"><p>Photo</p></div>
+      <div class="tile"><p>Docs</p></div>
+      <div class="tile"><p>Audio</p></div>
+    </div>
+  </div>
+
+  <div id="profile" class="page" style="text-align:center;">
+    <h1 style="margin-top:15px;font-size:32px;font-weight:900;">AKASH</h1>
+    <div class="g-grid">
+      <button class="g-btn" onclick="setG(this)">MALE</button>
+      <button class="g-btn" onclick="setG(this)">FEMALE</button>
+      <button class="g-btn" onclick="setG(this)">TRANS</button>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="tab active" onclick="go('home',this)">🏠</button>
+  <button class="tab" onclick="go('reels',this)">🎥</button>
+  <button class="tab" onclick="go('create',this)">➕</button>
+  <button class="tab" onclick="go('search',this)">🔍</button>
+  <button class="tab" onclick="go('profile',this)">👤</button>
+</nav>
+</div>
+
+<script>
+setTimeout(()=>{
+  splash.style.opacity=0;
+  setTimeout(()=>{splash.remove();app.style.display='flex'},600);
+},4000);
+
+function go(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function setG(btn){
+  document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+let scrolling=false,scroller;
+function toggleAuto(btn){
+  scrolling=!scrolling;
+  btn.classList.toggle('active');
+  if(scrolling){
+    scroller=setInterval(()=>reel-list.scrollBy({top:innerHeight,behavior:'smooth'}),5000);
+  }else clearInterval(scroller);
+}
+</script>
+</body>
+</html>
