@@ -1,139 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>DRIP</title>
     <style>
-        /* 1. ZERO-DEPENDENCY STYLING */
-        :root { --primary: #FF9933; --bg: #000; --gold: #D4AF37; --card: #111; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: sans-serif; background: #000; color: white; height: 100vh; overflow: hidden; }
+        /* CORE RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
 
-        /* SPLASH - PURE CSS TIRANGA */
-        #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100000; opacity: 1; transition: opacity 0.6s ease; }
-        .flag { position: relative; width: 180px; height: 110px; background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%); border-radius: 4px; }
-        .chakra { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 32px; height: 32px; border: 2px solid #000080; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000080; font-size: 24px; font-weight: bold; }
-        .chakra::after { content: "☸"; }
-        .jh { font-size: 22px; font-weight: 900; color: var(--gold); letter-spacing: 5px; margin-top: 20px; text-align: center; }
+        /* SPLASH SCREEN - HARDCODED */
+        #splash { 
+            position: fixed; inset: 0; background: #000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            z-index: 9999; 
+        }
+        .tiranga { 
+            width: 200px; height: 120px; 
+            background: linear-gradient(to bottom, #FF9933 33%, #FFFFFF 33%, #FFFFFF 66%, #128807 66%);
+            border-radius: 8px; position: relative;
+        }
+        .chakra { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 35px; height: 35px; border: 2px solid #000080; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: #000080; font-weight: bold;
+        }
+        .chakra::after { content: "☸"; font-size: 28px; }
+        .text { margin-top: 20px; color: #D4AF37; letter-spacing: 5px; font-weight: bold; text-align: center; }
 
-        /* APP BOX */
-        #app { display: none; height: 100vh; flex-direction: column; }
-        .header { padding: 0 15px; display: flex; align-items: center; border-bottom: 1px solid #222; height: 65px; background: #000; }
+        /* MAIN APP BOX */
+        #app { display: none; flex-direction: column; height: 100vh; }
+        .header { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; padding: 0 15px; }
         
-        /* D LOGO BEBAS STYLE */
-        .logo-box { height: 40px; width: 40px; border-radius: 10px; border: 1.5px solid #444; margin-right: 12px; display: flex; align-items: center; justify-content: center; background: #050505; font-weight: 900; font-size: 24px; color: white; }
-        .brand { font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: 1.2px; }
+        /* BEBAS STYLE D LOGO */
+        .d-logo { 
+            width: 40px; height: 40px; border: 2px solid #444; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 900; margin-right: 15px;
+        }
+        .brand { color: #FF9933; font-size: 24px; font-weight: 900; letter-spacing: 2px; }
 
-        /* SCREENS & SCALING FIX */
-        .viewport { flex: 1; position: relative; overflow: hidden; }
-        .screen { display: none; height: 100%; width: 100%; overflow-y: auto; padding: 20px; }
-        .screen.active { display: flex; flex-direction: column; }
+        /* NAVIGATION & CONTENT */
+        .content { flex: 1; overflow-y: auto; padding: 20px; position: relative; }
+        .page { display: none; }
+        .page.active { display: block; }
 
-        /* REELS & AUTO-SCROLL */
-        .reels-container { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; position: relative; background: #050505; }
-        .reel-unit { height: 100%; width: 100%; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; color: #222; font-weight: 900; font-size: 20px; }
-        .auto-scroll-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 20px; font-size: 9px; font-weight: 800; backdrop-filter: blur(10px); z-index: 100; }
-        .auto-scroll-btn.active { color: var(--primary); border-color: var(--primary); background: rgba(255,153,51,0.1); }
+        /* REELS AUTO-SCROLL */
+        .reels-view { height: 100%; width: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #050505; }
+        .reel { height: 100%; display: flex; align-items: center; justify-content: center; scroll-snap-align: start; font-size: 12px; color: #111; border-bottom: 1px solid #111; }
+        .auto-btn { 
+            position: absolute; top: 20px; right: 20px; z-index: 100;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 8px 15px; border-radius: 20px; font-size: 10px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
 
-        /* SEARCH & CREATE */
-        .search-bar { background: #111; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; padding: 12px; margin-bottom: 20px; }
-        .create-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .tile { background: #111; border: 1px solid #222; padding: 30px 0; border-radius: 15px; text-align: center; color: var(--primary); font-weight: 700; font-size: 11px; }
+        /* CREATE TILES SCALING */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .tile { background: #111; border: 1px solid #222; border-radius: 15px; padding: 30px 10px; text-align: center; color: #FF9933; font-weight: bold; font-size: 11px; }
 
         /* GENDER */
-        .gender-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 15px; }
-        .g-btn { background: #111; border: 1px solid #222; color: #444; padding: 14px 0; border-radius: 10px; font-weight: 800; font-size: 10px; }
-        .g-btn.active { border-color: var(--primary); color: var(--primary); }
+        .g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .g-btn { background: #111; border: 1px solid #222; color: #666; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 10px; }
+        .g-btn.active { border-color: #FF9933; color: #FF9933; }
 
-        /* NAV - MINIMALIST */
-        .nav { height: 80px; background: #000; display: flex; border-top: 1px solid #222; padding-bottom: 25px; }
-        .nav-btn { flex: 1; display: flex; align-items: center; justify-content: center; color: #444; font-size: 24px; border: none; background: none; }
-        .nav-btn.active { color: var(--primary); }
+        /* NAV BAR - MINIMALIST */
+        .nav { height: 80px; border-top: 1px solid #222; display: flex; padding-bottom: 20px; }
+        .nav-tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #444; border: none; background: none; }
+        .nav-tab.active { color: #FF9933; }
     </style>
 </head>
 <body>
 
-<div id="splash">
-    <div class="flag"><div class="chakra"></div></div>
-    <div class="jh">JAY HIND JAY BHARAT</div>
-</div>
+    <div id="splash">
+        <div class="tiranga"><div class="chakra"></div></div>
+        <div class="text">JAY HIND<br>JAY BHARAT</div>
+    </div>
 
-<div id="app">
-    <header class="header">
-        <div class="logo-box">D</div>
-        <div class="brand">DRIP</div>
-    </header>
-    <main class="viewport">
-        <div id="scr-home" class="screen active" style="justify-content:center; text-align:center;">
-            <h2 style="font-size: 30px; font-weight: 900; color: #111;">FEED</h2>
-        </div>
-        
-        <div id="scr-reels" class="screen" style="padding:0;">
-            <div class="reels-container" id="reels-list">
-                <button class="auto-scroll-btn" id="autoBtn" onclick="toggleAuto()">AUTO-SCROLL</button>
-                <div class="reel-unit">REEL 1</div>
-                <div class="reel-unit">REEL 2</div>
+    <div id="app">
+        <header class="header">
+            <div class="d-logo">D</div>
+            <div class="brand">DRIP</div>
+        </header>
+
+        <main class="content">
+            <div id="page-home" class="page active" style="text-align:center; padding-top:100px;">
+                <h2 style="color:#111">FEED</h2>
             </div>
-        </div>
 
-        <div id="scr-search" class="screen">
-            <div class="search-bar">🔍 <input type="text" placeholder="Search creators..." style="background:none; border:none; color:white; margin-left:10px; outline:none; width:100%;"></div>
-        </div>
-        
-        <div id="scr-create" class="screen"><div class="create-grid"><div class="tile">📹 VIDEO</div><div class="tile">📸 PHOTO</div></div></div>
-
-        <div id="scr-profile" class="screen" style="align-items:center;">
-            <div style="width:85px; height:85px; border-radius:24px; border:1.5px solid #444; background:#111; margin-top:20px;"></div>
-            <h1 style="margin-top:15px; font-weight: 900; font-size: 32px;">AKASH</h1>
-            <div class="gender-grid">
-                <button class="g-btn" onclick="setG(this)">MALE</button>
-                <button class="g-btn" onclick="setG(this)">FEMALE</button>
-                <button class="g-btn" onclick="setG(this)">TRANS</button>
+            <div id="page-reels" class="page" style="height:100%; padding:0; position:absolute; inset:0;">
+                <button class="auto-btn" onclick="toggleAuto(this)">AUTO-SCROLL</button>
+                <div class="reels-view" id="reels-list">
+                    <div class="reel">REEL 1</div>
+                    <div class="reel">REEL 2</div>
+                </div>
             </div>
-        </div>
-    </main>
-    <nav class="nav">
-        <button class="nav-btn active" onclick="nav('home', this)">🏠</button>
-        <button class="nav-btn" onclick="nav('reels', this)">📱</button>
-        <button class="nav-btn" style="color:var(--primary); font-size:32px;" onclick="nav('create', this)">⊕</button>
-        <button class="nav-btn" onclick="nav('search', this)">🔍</button>
-        <button class="nav-btn" onclick="nav('profile', this)">👤</button>
-    </nav>
-</div>
 
-<script>
-    // 🔱 FORCED TIMER - NO EXTERNAL DEPENDENCIES
-    setTimeout(function() {
-        var s = document.getElementById('splash');
-        s.style.opacity = '0';
-        setTimeout(function() { 
-            s.style.display = 'none'; 
-            document.getElementById('app').style.display = 'flex';
-        }, 600);
-    }, 4000);
+            <div id="page-search" class="page">
+                <div style="background:#111; padding:12px; border-radius:12px; display:flex; align-items:center; border:1px solid #222;">
+                    🔍 <input type="text" placeholder="Search..." style="background:none; border:none; color:white; margin-left:10px; width:100%; outline:none;">
+                </div>
+            </div>
 
-    function nav(id, btn) {
-        var screens = document.getElementsByClassName('screen');
-        for(var i=0; i<screens.length; i++) screens[i].style.display = 'none';
-        var tabs = document.getElementsByClassName('nav-btn');
-        for(var i=0; i<tabs.length; i++) tabs[i].classList.remove('active');
-        document.getElementById('scr-' + id).style.display = 'flex';
-        btn.classList.add('active');
-    }
+            <div id="page-create" class="page">
+                <div class="grid">
+                    <div class="tile">📹 VIDEO</div>
+                    <div class="tile">📸 PHOTO</div>
+                </div>
+            </div>
 
-    function setG(btn) {
-        var btns = document.getElementsByClassName('g-btn');
-        for(var i=0; i<btns.length; i++) btns[i].classList.remove('active');
-        btn.classList.add('active');
-    }
+            <div id="page-profile" class="page" style="text-align:center;">
+                <div style="width:80px; height:80px; background:#111; border:1px solid #222; border-radius:20px; margin:0 auto;"></div>
+                <h1 style="margin-top:15px;">AKASH</h1>
+                <div class="g-grid">
+                    <button class="g-btn" onclick="setG(this)">MALE</button>
+                    <button class="g-btn" onclick="setG(this)">FEMALE</button>
+                    <button class="g-btn" onclick="setG(this)">TRANS</button>
+                </div>
+            </div>
+        </main>
 
-    let aOn = false; let aInt;
-    function toggleAuto() {
-        aOn = !aOn; document.getElementById('autoBtn').classList.toggle('active');
-        if(aOn) aInt = setInterval(() => document.getElementById('reels-list').scrollBy({top:window.innerHeight, behavior:'smooth'}), 5000);
-        else clearInterval(aInt);
-    }
-</script>
-</body>
-</html>
+        <nav class="nav">
+            <button class="nav-tab active" onclick="show('home', this)">🏠</button>
+            <button class="nav-tab" onclick="show('reels', this)">📱</button>
+            <button class="nav-tab" style="font-size:35px; color:#FF9933" onclick="show('create', this)">⊕</button>
+            <button class="nav-tab" onclick="show('search', this)">🔍</button>
+            <button class="nav-tab" onclick="show('profile', this)">👤</button>
+        </nav>
+    </div>
+
+    <script>
+        // 🔱 THE FAIL-SAFE TIMER
+        // This is pure vanilla JS. No external libraries.
+        window.onload = function() {
+            setTimeout(function() {
+                var s = document.getElementById('splash');
+                var a = document.getElementById('app');
+                s.style.display = 'none';
+                a.style.display = 'flex';
+            }, 4000);
+        };
+
+        function show(id, btn) {
+            var pages = document.getElementsByClassName('page');
+            for(var i=0; i<pages.length; i++) pages[i].classList.remove('active');
+            var tabs = document.getElementsByClassName('nav-tab');
+            for(var i=0; i<tabs.length; i++) tabs[i].classList.remove('active');
+            document.getElementById('page-' + id).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function setG(btn) {
+            var btns = document.getElementsByClassName('g-btn');
+            for(var i=0; i<btns.length; i++) btns[i].classList.remove('active');
+            btn.classList.add('active');
+        }
+
+        var isAuto = false;
+        var interval;
+        function toggleAuto(btn) {
+            isAuto = !isAuto;
+            if(isAuto) {
+                btn.style.borderColor = "#FF9933";
+                btn.style.color = "#FF9933";
+                interval = setInterval(function() {
+                    document.getElementById('reels-list').scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+                }, 5000
