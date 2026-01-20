@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DRIP</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
@@ -28,34 +27,59 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 #app{display:none;height:100vh;flex-direction:column}
 .header{height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);}
 .brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
-
 .view{flex:1;position:relative;overflow:hidden}
 .page{display:none;height:100%;overflow-y:auto}
 .page.active{display:block}
 
-/* REELS BUTTONS */
-#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; }
+/* REELS & ACTION BUTTONS FIX */
+#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
 #reels::-webkit-scrollbar { display: none; }
 .reel{ height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; overflow: hidden; }
 .reel video, .reel img { width:100%; height:100%; object-fit:cover; }
 
+.reel-actions{ 
+    position:absolute !important; 
+    right:12px !important; 
+    bottom:100px !important; 
+    display:flex !important; 
+    flex-direction:column !important; 
+    gap:18px !important; 
+    align-items:center !important; 
+    z-index:999 !important; 
+}
+.reel-actions button{ 
+    background:rgba(255,255,255,0.12) !important; 
+    border:none !important; 
+    color:#fff !important; 
+    padding:14px !important; 
+    border-radius:50% !important; 
+    font-size:20px !important; 
+    cursor:pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.auto-btn-reel { 
+    font-size:9px!important; 
+    font-weight:bold!important; 
+    padding:10px 8px!important; 
+    background:rgba(255,255,255,0.05)!important; 
+    border:1px solid rgba(255,255,255,0.2)!important; 
+    color:#fff !important; 
+    text-transform:uppercase; 
+    border-radius: 20px !important;
+}
+.auto-btn-reel.active { color:var(--primary)!important; border-color:var(--primary)!important; background:rgba(255,153,51,0.1) !important; }
+
 .heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; animation: heartAnim 0.8s ease-out forwards; z-index: 50; }
 @keyframes heartAnim { 0% { transform: scale(0) translate(-50%,-50%); opacity:0; } 20% { transform: scale(1.2) translate(-50%,-50%); opacity:1; } 100% { transform: scale(1.5) translate(-50%,-150%); opacity:0; } }
-
-.reel-desc{ position:absolute; bottom:25px; left:16px; max-width:65%; font-size:13px; background:rgba(0,0,0,0.5); padding:8px 12px; border-radius:10px; backdrop-filter:blur(8px); z-index:10; }
-.reel-actions{ position:absolute; right:12px; bottom:40px; display:flex; flex-direction:column; gap:16px; align-items:center; z-index:20; }
-.reel-actions button{ background:rgba(255,255,255,0.08); border:none; color:#fff; padding:12px; border-radius:50%; font-size:18px; }
-.auto-btn-reel { font-size:9px!important; font-weight:bold; padding:10px 8px!important; background:rgba(255,255,255,0.05)!important; border:1px solid rgba(255,255,255,0.1)!important; color:#888!important; text-transform:uppercase; }
-.auto-btn-reel.active { color:var(--primary)!important; border-color:var(--primary)!important; }
+.reel-desc{ position:absolute; bottom:25px; left:16px; max-width:65%; font-size:13px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:10px; backdrop-filter:blur(10px); z-index:10; border: 1px solid rgba(255,255,255,0.1); }
 
 /* GENDER & TABS */
-.search-tabs{display:flex; gap:6px; margin-top:12px;}
-.search-tabs button{ flex:1; padding:10px 0; font-size:11px; font-weight:bold; background:#111; border:1px solid var(--border); color:#666; border-radius:10px; }
-.search-tabs button.active{ border-color:var(--primary); color:var(--primary); }
-
 .gender{display:flex; justify-content:center; gap:8px; margin:15px 0;}
 .gender button{ flex:1; padding:10px 0; font-size:11px; background:#0a0a0a; border:1px solid #222; color:#555; border-radius:10px; font-weight:700; }
-.gender button.active{ border-color:var(--primary); color:var(--primary); background:rgba(255,153,51,0.05); }
+.gender button.active{ border-color:var(--primary); color:var(--primary); }
 
 /* NAV */
 .nav{ height:75px; display:flex; border-top:1px solid var(--border); background:#000; padding-bottom:env(safe-area-inset-bottom); }
@@ -94,8 +118,8 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
         <div id="create" class="page" style="padding:20px;">
             <div id="preview-box" style="width:100%; height:180px; background:#111; border-radius:12px; margin-bottom:12px; display:none; overflow:hidden; border:1px solid #222;"></div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
-                <button onclick="pick('video/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">VIDEO</button>
-                <button onclick="pick('image/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">IMAGE</button>
+                <button onclick="pick('video/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; font-weight:bold;">VIDEO</button>
+                <button onclick="pick('image/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; font-weight:bold;">IMAGE</button>
             </div>
             <textarea id="desc" rows="3" placeholder="Description..." style="width:100%; background:#111; border:1px solid #222; padding:12px; color:#fff; border-radius:12px;"></textarea>
             <button onclick="publish()" style="margin-top:14px; width:100%; padding:15px; background:var(--primary); border:none; border-radius:12px; font-weight:bold; color:#000;">PUBLISH</button>
@@ -103,8 +127,12 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
         </div>
 
         <div id="search" class="page" style="padding:20px;">
-            <input placeholder="Search..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
-            <div class="search-tabs"><button class="s-tab" onclick="setTab(this)">TOP</button><button class="s-tab" onclick="setTab(this)">LATEST</button><button class="s-tab" onclick="setTab(this)">USERS</button></div>
+            <input placeholder="Search creators..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
+            <div class="search-tabs" style="display:flex;gap:5px;margin-top:10px;">
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">TOP</button>
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">LATEST</button>
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">USERS</button>
+            </div>
         </div>
 
         <div id="profile" class="page" style="text-align:center; padding:20px;">
@@ -113,7 +141,7 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
             <input type="file" id="avatarFile" hidden accept="image/*" onchange="updateAvatar(this)">
             
             <h2 id="userName" style="margin-top:15px;" contenteditable="true">AKASH</h2>
-            <p id="userHandle" style="color:#444" contenteditable="true">@akash</p>
+            <p style="color:#444" contenteditable="true">@akash</p>
             
             <div class="gender"><button class="g-sel" onclick="setG(this)">Male</button><button class="g-sel" onclick="setG(this)">Female</button><button class="g-sel" onclick="setG(this)">Other</button></div>
             
@@ -157,7 +185,6 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-// 🔱 FIXED ACCOUNT CHOOSER
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
@@ -167,7 +194,6 @@ function googleLogin() {
 function logoutEmpire() { if(confirm("Log out?")) auth.signOut().then(() => location.reload()); }
 function deleteEmpire() { if(confirm("Permanently Delete?")) auth.signOut().then(() => location.reload()); }
 
-// UI LOGIC
 function go(id,btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -203,28 +229,33 @@ function publish(){
     const isVid = file.files[0].type.includes('video');
     const reel = document.createElement("div");
     reel.className = "reel";
+    
+    // Heart Pop Interaction
     reel.onclick = (e) => {
         const now = Date.now();
         if (now - (reel.dataset.lt || 0) < 300) {
             reel.querySelector('.like').style.color = '#FF9933';
             const h = document.createElement('div'); h.className='heart-pop'; h.innerHTML='❤️';
-            h.style.left = (e.clientX || e.touches[0].clientX)+'px'; h.style.top = (e.clientY-reel.getBoundingClientRect().top)+'px';
+            h.style.left = (e.clientX || (e.touches ? e.touches[0].clientX : 0))+'px'; 
+            h.style.top = (e.clientY-reel.getBoundingClientRect().top)+'px';
             reel.appendChild(h); setTimeout(()=>h.remove(), 800);
         }
         reel.dataset.lt = now;
     };
-    // 🔱 RESTORED ALL REEL BUTTONS
+
+    // 🔱 FORCED ACTION BUTTONS - ABSOLUTE VISIBILITY
     reel.innerHTML = `
         ${isVid ? `<video src="${url}" autoplay muted loop playsinline></video>` : `<img src="${url}">`}
-        <div class="reel-desc">${document.getElementById('desc').value || "New Drip"}</div>
+        <div class="reel-desc">${document.getElementById('desc').value || "Bharat Pride"}</div>
         <div class="reel-actions">
             <button class="like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
-            <button onclick="event.stopPropagation(); alert('Comments locked')">💬</button>
+            <button onclick="event.stopPropagation(); alert('Comments coming soon')">💬</button>
             <button onclick="event.stopPropagation(); alert('Sharing...')">↗️</button>
             <button onclick="event.stopPropagation(); alert('Downloading...')">⬇️</button>
             <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
             <button class="auto-btn-reel" onclick="event.stopPropagation(); toggleAuto(this)">AUTO</button>
         </div>`;
+        
     document.getElementById('reels').appendChild(reel);
     document.getElementById('desc').value = ""; file.value = "";
     document.getElementById('preview-box').style.display = "none";
