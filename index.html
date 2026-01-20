@@ -13,8 +13,12 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
 
-/* 🔱 FIXED SPLASH - GUARANTEED EXIT */
-#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
+/* 🔱 STICKY FIX: Splash Screen */
+#splash{ 
+    position:fixed; inset:0; background:#000; 
+    display:flex; flex-direction:column; align-items:center; justify-content:center; 
+    z-index:100000; transition: opacity 0.5s ease;
+}
 .flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
 .namaste-text{margin-top:15px;font-family:'Bebas Neue';letter-spacing:6px;color:#D4AF37;font-size:26px;}
@@ -22,7 +26,7 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 #auth-gate{ display:none; position:fixed; inset:0; background:#000; z-index:9000; flex-direction:column; align-items:center; justify-content:center; }
 .auth-btn{ padding:16px 32px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; width:80%; max-width:300px; margin-top:20px; font-size:14px; }
 
-/* REELS ACTIONS */
+/* REELS & INTERACTIONS */
 #reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
 #reels::-webkit-scrollbar { display: none; }
 .reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; -webkit-transform: translateZ(0); }
@@ -34,4 +38,39 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
     z-index: 8000 !important; align-items: center !important;
 }
 .reel-actions button { 
-    background: none !
+    background: none !important; border: none !important; color: #fff !important; 
+    width: 25px !important; height: 25px !important; font-size: 20px !important; 
+    display: flex !important; align-items: center !important; justify-content: center !important; 
+}
+.auto-btn-mini { font-size: 5px !important; font-weight: 900; color: #555; opacity: 0.6; }
+
+/* HEART POP */
+.heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; z-index: 100000; animation: heartAnim 0.8s ease-out forwards; }
+@keyframes heartAnim { 0% { transform: scale(0) translate(-50%, -50%); opacity: 0; } 20% { transform: scale(1.2) translate(-50%, -50%); opacity: 1; } 100% { transform: scale(1.5) translate(-50%, -150%); opacity: 0; } }
+
+/* APP UI */
+#app{display:none; height:100vh; flex-direction:column; position: relative;}
+.header{height:60px; padding:0 16px; display:flex; align-items:center; border-bottom:1px solid var(--border);}
+.brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
+.view{flex:1;position:relative;overflow:hidden}
+.page{display:none;height:100%;overflow-y:auto}
+.page.active{display:block}
+.nav{ height:75px; display:flex; border-top:1px solid #1b1b1b; background:#000; z-index: 8500; }
+.tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
+.tab.active{color:var(--primary)}
+</style>
+</head>
+
+<body>
+
+<div id="splash">
+    <div class="flag-wrap"><div class="chakra"></div></div>
+    <div class="namaste-text">NAMASTE</div>
+</div>
+
+<div id="auth-gate">
+    <h1 style="font-family:'Bebas Neue'; font-size:50px; color:var(--primary);">DRIP</h1>
+    <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
+</div>
+
+<div
