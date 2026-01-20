@@ -96,6 +96,31 @@ padding:20px;
 }
 .page.active{display:block}
 
+/* HOME */
+.home-wrap{
+height:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+}
+.home-logo-img{
+width:220px;
+max-width:70%;
+margin-bottom:30px;
+}
+.home-caption{
+font-size:1.4rem;
+font-weight:500;
+line-height:1.5;
+color:#fff;
+}
+.home-caption span{
+font-weight:800;
+letter-spacing:2px;
+}
+
 /* SEARCH */
 .search-box{
 display:flex;
@@ -132,11 +157,6 @@ border-radius:16px;
 padding:28px 10px;
 text-align:center;
 }
-.tile svg{
-width:22px;height:22px;
-stroke:var(--primary);
-fill:none;
-}
 .tile p{
 margin-top:12px;
 font-size:11px;
@@ -164,55 +184,38 @@ border-color:var(--primary);
 }
 
 /* PROFILE */
-.profile-box{text-align:center}
+.profile-box{text-align:center;padding-bottom:40px}
+.avatar-wrap{
+position:relative;
+width:90px;height:90px;
+margin:0 auto;
+}
 .avatar{
 width:90px;height:90px;
 border-radius:30px;
 background:#050505;
 border:1px solid #222;
-margin:0 auto;
+}
+.edit-avatar{
+position:absolute;
+bottom:-4px;
+right:-4px;
+background:#111;
+border:1px solid #333;
+width:26px;height:26px;
+border-radius:50%;
+font-size:12px;
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
 }
 .profile-box h1{
 margin-top:15px;
 font-family:'Bebas Neue';
 font-size:32px;
 letter-spacing:2px;
-}
-.profile-box p{
-color:#666;
-margin-top:4px;
-}
-.g-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-top:20px;
-}
-.g-btn{
-background:var(--card);
-border:1px solid var(--border);
-padding:14px 0;
-border-radius:12px;
-font-size:10px;
-letter-spacing:1px;
-color:#444;
-}
-.g-btn.active{
-color:var(--primary);
-border-color:var(--primary);
-}
-.account-actions{
-margin-top:30px;
-}
-.account-actions button{
-width:100%;
-margin-top:12px;
-padding:14px;
-border-radius:14px;
-border:1px solid #222;
-background:#0A0A0A;
-color:#FF4D4D;
-font-weight:700;
 }
 
 /* NAV */
@@ -256,59 +259,30 @@ stroke:#333;
 
 <div class="view">
 
-<div id="home" class="page active"></div>
+<!-- HOME -->
+<div id="home" class="page active">
+<div class="home-wrap">
 
-<div id="reels" class="page" style="padding:0">
-<button class="auto-btn" onclick="toggleAuto(this)">AUTO</button>
-<div id="reel-list" style="height:100%;overflow-y:scroll;scroll-snap-type:y mandatory">
-<div style="height:100%;scroll-snap-align:start;border-bottom:1px solid #050505"></div>
-<div style="height:100%;scroll-snap-align:start;border-bottom:1px solid #050505"></div>
-</div>
-</div>
+<img
+class="home-logo-img"
+src="https://instasize.com/p/99ae199308f7ccee18ccb42fe601dd48f0667b4c999b2b311601666bd14bf0cc"
+alt="DRIP Logo"
+/>
 
-<div id="search" class="page">
-<div class="search-box">
-<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
-<input placeholder="Search creators...">
-</div>
+<div class="home-caption">
+India doesn’t just watch trends 🇮🇳<br>
+<span>INDIA MAKES THEM — DRIP</span>
 </div>
 
-<div id="create" class="page">
-<div class="grid">
-<div class="tile"><svg viewBox="0 0 24 24"><rect x="1" y="5" width="15" height="14" rx="2"/><path d="M23 7l-7 5 7 5z"/></svg><p>VIDEO</p></div>
-<div class="tile"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/></svg><p>PHOTO</p></div>
-<div class="tile"><svg viewBox="0 0 24 24"><path d="M13 2H6v20h12V9z"/></svg><p>DOCS</p></div>
-<div class="tile"><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><p>AUDIO</p></div>
-</div>
-</div>
-
-<div id="profile" class="page">
-<div class="profile-box">
-<div class="avatar"></div>
-<h1>AKASH</h1>
-<p>DOB: 2008</p>
-
-<div class="g-grid">
-<button class="g-btn active">MALE</button>
-<button class="g-btn">FEMALE</button>
-<button class="g-btn">TRANS</button>
-</div>
-
-<div class="account-actions">
-<button>LOG OUT</button>
-<button>DELETE ACCOUNT</button>
-</div>
 </div>
 </div>
 
 </div>
 
 <nav class="nav">
-<button class="tab active" onclick="go('home',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H3z"/></svg></button>
-<button class="tab" onclick="go('reels',this)"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/></svg></button>
-<button class="tab" onclick="go('create',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-<button class="tab" onclick="go('search',this)"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/></svg></button>
-<button class="tab" onclick="go('profile',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8"/></svg></button>
+<button class="tab active" onclick="go('home',this)">
+<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H3z"/></svg>
+</button>
 </nav>
 
 </div>
@@ -327,16 +301,6 @@ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 btn.classList.add("active");
-}
-
-let scrolling=false,scroller;
-function toggleAuto(btn){
-scrolling=!scrolling;
-btn.classList.toggle("active");
-if(scrolling){
-scroller=setInterval(()=>document.getElementById("reel-list")
-.scrollBy({top:innerHeight,behavior:"smooth"}),5000);
-}else clearInterval(scroller);
 }
 </script>
 
