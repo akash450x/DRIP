@@ -13,7 +13,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
 
-/* SPLASH & AUTH */
+/* SPLASH & AUTH GATE */
 #splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
 .flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
@@ -36,11 +36,24 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 }
 .reel-actions button { 
     background: none !important; border: none !important; color: #fff !important; 
-    width: 28px !important; height: 28px !important; font-size: 22px !important; 
+    width: 28px !important; height: 28px !important; font-size: 20px !important; 
     display: flex !important; align-items: center !important; justify-content: center !important; 
     text-shadow: 0 0 10px rgba(0,0,0,0.8);
 }
-.auto-btn-mini { font-size: 7px !important; font-weight: 900; color: #888; letter-spacing: 1px; }
+/* Shrunk Auto Button */
+.auto-btn-mini { font-size: 6px !important; font-weight: 900; color: #666; letter-spacing: 0.5px; opacity: 0.8; }
+
+/* 🔱 SLIDING COMMENT PANEL */
+#comment-panel {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
+    background: #0a0a0a; border-top: 1px solid #222; z-index: 9500;
+    transition: 0.4s cubic-bezier(0.17, 0.84, 0.44, 1);
+    display: flex; flex-direction: column; border-radius: 20px 20px 0 0;
+}
+#comment-panel.active { bottom: 0; }
+.comm-header { padding: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #111; font-weight: bold; }
+.comm-input { padding: 15px; display: flex; gap: 10px; border-top: 1px solid #111; }
+.comm-input input { flex: 1; background: #111; border: 1px solid #222; padding: 12px; border-radius: 12px; color: white; outline: none; }
 
 /* HEART POP */
 .heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; z-index: 100000; animation: heartAnim 0.8s ease-out forwards; }
@@ -56,9 +69,6 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 .nav{ height:75px; display:flex; border-top:1px solid #1b1b1b; background:#000; z-index: 8500; }
 .tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
 .tab.active{color:var(--primary)}
-
-/* PROFILE */
-.p-btn { width:100%; margin-top:10px; padding:14px; background:#111; border: 1px solid var(--border); color:#fff; border-radius:12px; font-weight:bold; }
 </style>
 </head>
 
@@ -74,133 +84,8 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
     <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
 </div>
 
-<div id="app">
-    <header class="header"><div class="brand">DRIP</div></header>
-    
-    <div class="view">
-        <div id="home" class="page active" style="padding:40px; text-align:center;">
-            <p style="color:#666; line-height:1.8;">DRIP is India’s next-generation short-video platform.<br><span>BUILT IN INDIA • EST 2026</span></p>
-        </div>
-        <div id="reels" class="page"></div>
-        <div id="create" class="page" style="padding:20px;">
-            <button onclick="pick('video/*')" style="width:100%; padding:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px;">PICK MEDIA</button>
-            <textarea id="desc" placeholder="Caption..." style="width:100%; margin-top:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px; padding:12px;"></textarea>
-            <button onclick="publish()" style="width:100%; margin-top:15px; padding:15px; background:var(--primary); color:#000; font-weight:bold; border:none; border-radius:12px;">PUBLISH</button>
-            <input type="file" id="file" hidden>
-        </div>
-        <div id="search" class="page" style="padding:20px;"><input placeholder="Search..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;"></div>
-        <div id="profile" class="page" style="text-align:center; padding:20px;">
-            <h2 id="uName">AKASH</h2>
-            <button class="p-btn" onclick="logoutEmpire()">LOG OUT</button>
-        </div>
+<div id="comment-panel">
+    <div class="comm-header">
+        <span>Comments</span>
+        <span onclick="toggleComm()" style="color: #444; font-size: 20px;">✕</span>
     </div>
-
-    <nav class="nav">
-        <button class="tab active" onclick="go('home',this)">🏠</button>
-        <button class="tab" onclick="go('reels',this)">▶</button>
-        <button class="tab" onclick="go('create',this)">＋</button>
-        <button class="tab" onclick="go('search',this)">🔍</button>
-        <button class="tab" onclick="go('profile',this)">👤</button>
-    </nav>
-</div>
-
-<script>
-// FIREBASE CONFIG
-const config = {
-    apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
-    authDomain: "drip-india.firebaseapp.com",
-    projectId: "drip-india",
-    storageBucket: "drip-india.firebasestorage.app",
-    messagingSenderId: "40598053043",
-    appId: "1:40598053043:web:b800c05afba716974690c6"
-};
-firebase.initializeApp(config);
-const auth = firebase.auth();
-
-auth.onAuthStateChanged(user => {
-    document.getElementById('splash').style.display = 'none';
-    if (user) {
-        document.getElementById('auth-gate').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        document.getElementById('uName').innerText = user.displayName || "AKASH";
-    } else {
-        document.getElementById('app').style.display = 'none';
-        document.getElementById('auth-gate').style.display = 'flex';
-    }
-});
-
-function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    auth.signInWithPopup(provider);
-}
-
-function logoutEmpire() { if(confirm("Log Out?")) auth.signOut().then(() => location.reload()); }
-
-function go(id,btn){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    btn.classList.add('active');
-}
-
-function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
-
-// 🔱 REEL INTERACTIONS
-function shareReel(url, title) {
-    if (navigator.share) {
-        navigator.share({ title: 'DRIP Reel', text: title, url: url });
-    } else { alert("Sharing link: " + url); }
-}
-
-function downloadReel(url) {
-    const a = document.createElement('a');
-    a.href = url; a.download = 'DRIP_Reel.mp4';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
-
-let auto=false, autoInt;
-function toggleAuto(btn){
-    auto = !auto; btn.style.color = auto ? "var(--primary)" : "#888";
-    if(auto) autoInt = setInterval(() => document.getElementById('reels').scrollBy({top: window.innerHeight, behavior: 'smooth'}), 4000);
-    else clearInterval(autoInt);
-}
-
-function publish(){
-    const f = document.getElementById('file'); const d = document.getElementById('desc');
-    if(!f.files[0]) return alert("Select media!");
-    const url = URL.createObjectURL(f.files[0]); const isVid = f.files[0].type.includes('video');
-    const reel = document.createElement("div"); reel.className = "reel";
-
-    // 🔱 DOUBLE TAP LIKE SYSTEM
-    reel.onmousedown = (e) => {
-        const now = Date.now();
-        if (now - (reel.dataset.lt || 0) < 300) {
-            const likeBtn = reel.querySelector('.btn-like');
-            likeBtn.style.color = '#FF9933';
-            const h = document.createElement('div'); h.className='heart-pop'; h.innerHTML='❤️';
-            h.style.left = e.clientX+'px'; h.style.top = (e.clientY - reel.getBoundingClientRect().top)+'px';
-            reel.appendChild(h); setTimeout(()=>h.remove(), 800);
-        }
-        reel.dataset.lt = now;
-    };
-
-    reel.innerHTML = `
-        ${isVid ? `<video src="${url}" autoplay muted loop playsinline webkit-playsinline></video>` : `<img src="${url}">`}
-        <div style="position:absolute; bottom:20px; left:16px; font-size:12px; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; z-index:99;">${d.value || "DRIP Empire"}</div>
-        <div class="reel-actions">
-            <button class="btn-like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
-            <button onclick="event.stopPropagation(); alert('Opening Comments...')">💬</button>
-            <button onclick="event.stopPropagation(); shareReel('${url}', '${d.value}')">↗️</button>
-            <button onclick="event.stopPropagation(); downloadReel('${url}')">⬇️</button>
-            <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
-            <button onclick="event.stopPropagation(); toggleAuto(this)" class="auto-btn-mini">AUTO</button>
-        </div>`;
-    
-    document.getElementById('reels').appendChild(reel);
-    d.value = ""; f.value = "";
-    go('reels', document.querySelectorAll('.tab')[1]);
-}
-</script>
-</body>
-</html>
