@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DRIP</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -11,8 +11,8 @@
 :root{
 --primary:#FF9933;
 --bg:#000;
---card:#080808;
---border:#161616;
+--card:#0a0a0a;
+--border:#1a1a1a;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -33,22 +33,12 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 z-index:9999;
-transition:.8s;
-}
-.flag-wrap{width:200px;height:125px;overflow:hidden;border-radius:6px}
-.stripe{height:33.33%}
-.saffron{background:#FF9933}
-.white{background:#fff;display:flex;align-items:center;justify-content:center}
-.green{background:#128807}
-.chakra{
-width:34px;height:34px;
-background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat
 }
 .jay-hind{
 margin-top:20px;
 font-family:'Bebas Neue';
 font-size:28px;
-letter-spacing:8px;
+letter-spacing:6px;
 color:#D4AF37;
 }
 
@@ -63,19 +53,7 @@ display:flex;
 align-items:center;
 padding:0 18px;
 }
-.d-logo{
-width:38px;height:38px;
-border-radius:10px;
-background:#050505;
-border:1px solid #222;
-display:flex;
-align-items:center;
-justify-content:center;
-font-family:'Bebas Neue';
-font-size:26px;
-}
 .brand{
-margin-left:10px;
 font-family:'Bebas Neue';
 font-size:26px;
 letter-spacing:2px;
@@ -83,7 +61,7 @@ color:var(--primary);
 }
 
 /* VIEW */
-.view{flex:1;overflow:hidden;position:relative}
+.view{flex:1;overflow:hidden}
 .page{display:none;height:100%;overflow-y:auto}
 .page.active{display:block}
 
@@ -92,24 +70,23 @@ color:var(--primary);
 height:100%;
 display:flex;
 flex-direction:column;
-align-items:center;
 justify-content:center;
+align-items:center;
 text-align:center;
-padding:20px;
 }
 .home-logo-img{
-width:220px;
-max-width:70%;
-margin-bottom:30px;
+width:260px;
+max-width:80%;
+margin-bottom:25px;
+filter:drop-shadow(0 0 20px rgba(255,153,51,.3));
 }
 .home-caption{
 font-size:1.2rem;
 line-height:1.5;
-color:#fff;
 }
 .home-caption span{
 display:block;
-margin-top:10px;
+margin-top:12px;
 font-weight:800;
 letter-spacing:2px;
 }
@@ -117,8 +94,8 @@ letter-spacing:2px;
 /* REELS */
 #reel-list{
 height:100%;
-overflow-y:scroll;
 scroll-snap-type:y mandatory;
+overflow-y:scroll;
 }
 .reel{
 height:100vh;
@@ -136,24 +113,37 @@ object-fit:cover;
 position:absolute;
 top:14px;
 right:14px;
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.15);
-color:rgba(255,255,255,.6);
+background:rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.2);
+color:#aaa;
 padding:6px 14px;
 border-radius:20px;
 font-size:9px;
-font-weight:800;
-backdrop-filter:blur(10px);
+font-weight:700;
 z-index:10;
 }
-.auto-btn.active{
-color:var(--primary);
-border-color:var(--primary);
-}
+.auto-btn.active{color:var(--primary)}
 
 /* CREATE */
-.create-wrap{
-padding:20px;
+.create-wrap{padding:20px}
+.create-tabs{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-bottom:20px;
+}
+.ctab{
+padding:12px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:12px;
+font-size:11px;
+text-align:center;
+cursor:pointer;
+}
+.ctab.active{
+border-color:var(--primary);
+color:var(--primary);
 }
 .upload-box{
 border:2px dashed #333;
@@ -163,32 +153,24 @@ text-align:center;
 cursor:pointer;
 }
 .upload-box input{display:none}
-.preview{
-margin-top:20px;
-}
-.preview video,.preview img{
-width:100%;
-border-radius:16px;
-}
+.preview{margin-top:20px}
+.preview video,.preview img{width:100%;border-radius:16px}
 
 /* SEARCH */
 .search-box{
+margin:20px;
 display:flex;
-align-items:center;
 background:var(--card);
 border:1px solid var(--border);
 border-radius:14px;
-padding:12px 16px;
-margin:20px;
+padding:12px;
 }
 .search-box input{
 flex:1;
-margin-left:10px;
 background:none;
 border:none;
-outline:none;
 color:#fff;
-font-size:15px;
+outline:none;
 }
 
 /* PROFILE */
@@ -201,19 +183,14 @@ margin:0 auto;
 .avatar{
 width:90px;height:90px;
 border-radius:30px;
-background:#050505;
-border:1px solid #222;
+background:#111;
 }
 .edit-avatar{
 position:absolute;
-bottom:-4px;
-right:-4px;
-background:#111;
-border:1px solid #333;
+bottom:-4px;right:-4px;
 width:26px;height:26px;
 border-radius:50%;
-font-size:12px;
-color:#fff;
+background:#222;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -223,16 +200,15 @@ cursor:pointer;
 margin-top:15px;
 font-family:'Bebas Neue';
 font-size:32px;
-letter-spacing:2px;
 }
 .profile-box input[type="date"]{
-margin-top:10px;
-background:#050505;
+margin-top:12px;
+padding:10px;
+width:100%;
+background:#111;
 border:1px solid #222;
 color:#fff;
-padding:10px;
 border-radius:10px;
-width:100%;
 }
 .g-grid{
 display:grid;
@@ -241,56 +217,55 @@ gap:10px;
 margin-top:20px;
 }
 .g-btn{
+padding:12px;
+border-radius:12px;
 background:var(--card);
 border:1px solid var(--border);
-padding:14px 0;
-border-radius:12px;
-font-size:10px;
-letter-spacing:1px;
-color:#444;
 cursor:pointer;
 }
-.g-btn.active{
-color:var(--primary);
-border-color:var(--primary);
+.g-btn.active{color:var(--primary);border-color:var(--primary)}
+
+.acc-actions{
+margin-top:25px;
+display:grid;
+gap:10px;
 }
+.acc-actions button{
+padding:14px;
+border-radius:12px;
+border:none;
+font-weight:700;
+cursor:pointer;
+}
+.logout{background:#222;color:#fff}
+.delete{background:#300;color:#ff4444}
 
 /* NAV */
 .nav{
-height:85px;
+height:80px;
 border-top:1px solid var(--border);
 display:flex;
-background:#000;
-padding-bottom:25px;
 }
 .tab{
 flex:1;
-border:none;
 background:none;
+border:none;
+font-size:20px;
+color:#444;
 }
-.tab svg{
-width:22px;height:22px;
-stroke:#333;
-}
-.tab.active svg{stroke:var(--primary)}
+.tab.active{color:var(--primary)}
 </style>
 </head>
 
 <body>
 
 <div id="splash">
-<div class="flag-wrap">
-<div class="stripe saffron"></div>
-<div class="stripe white"><div class="chakra"></div></div>
-<div class="stripe green"></div>
-</div>
 <div class="jay-hind">NAMASTE</div>
 </div>
 
 <div id="app">
 
 <header class="header">
-<div class="d-logo">D</div>
 <div class="brand">DRIP</div>
 </header>
 
@@ -303,7 +278,7 @@ stroke:#333;
 src="https://instasize.com/p/99ae199308f7ccee18ccb42fe601dd48f0667b4c999b2b311601666bd14bf0cc">
 <div class="home-caption">
 India doesn’t scroll — India creates 🇮🇳
-<span>BUILT IN INDIA • DRIP DIFFERENT</span>
+<span>BUILT IN BHARAT • DRIP DIFFERENT</span>
 </div>
 </div>
 </div>
@@ -311,18 +286,22 @@ India doesn’t scroll — India creates 🇮🇳
 <!-- REELS -->
 <div id="reels" class="page">
 <button class="auto-btn" onclick="toggleAuto(this)">AUTO</button>
-<div id="reel-list">
-<div class="reel"><video src="https://www.w3schools.com/html/mov_bbb.mp4" autoplay muted loop></video></div>
-<div class="reel"><video src="https://www.w3schools.com/html/movie.mp4" autoplay muted loop></video></div>
-</div>
+<div id="reel-list"></div>
 </div>
 
 <!-- CREATE -->
 <div id="create" class="page">
 <div class="create-wrap">
+<div class="create-tabs">
+<div class="ctab active" onclick="setCreate('video',this)">VIDEO</div>
+<div class="ctab" onclick="setCreate('image',this)">IMAGE</div>
+<div class="ctab" onclick="setCreate('audio',this)">AUDIO</div>
+<div class="ctab" onclick="setCreate('doc',this)">DOC</div>
+</div>
+
 <label class="upload-box">
-Upload Video / Image
-<input type="file" accept="video/*,image/*" onchange="previewFile(this)">
+Upload
+<input id="uploader" type="file" accept="video/*" onchange="handleUpload(this)">
 </label>
 <div class="preview" id="preview"></div>
 </div>
@@ -340,8 +319,8 @@ Upload Video / Image
 <div class="profile-box">
 <div class="avatar-wrap">
 <div class="avatar" id="avatar"></div>
-<label class="edit-avatar">✎
-<input type="file" hidden onchange="changeAvatar(this)">
+<label class="edit-avatar">
+✎<input hidden type="file" onchange="changeAvatar(this)">
 </label>
 </div>
 <h1>AKASH</h1>
@@ -350,6 +329,11 @@ Upload Video / Image
 <button class="g-btn" onclick="setGender(this)">MALE</button>
 <button class="g-btn" onclick="setGender(this)">FEMALE</button>
 <button class="g-btn" onclick="setGender(this)">TRANS</button>
+</div>
+
+<div class="acc-actions">
+<button class="logout">LOG OUT</button>
+<button class="delete">DELETE ACCOUNT</button>
 </div>
 </div>
 </div>
@@ -368,9 +352,9 @@ Upload Video / Image
 
 <script>
 setTimeout(()=>{
-splash.style.opacity=0;
-setTimeout(()=>{splash.style.display="none";app.style.display="flex"},600);
-},2500);
+splash.style.display="none";
+app.style.display="flex";
+},1800);
 
 function go(id,btn){
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -385,28 +369,41 @@ btn.classList.add("active");
 }
 
 function changeAvatar(input){
-if(input.files[0]){
 avatar.style.background=`url(${URL.createObjectURL(input.files[0])}) center/cover`;
 }
+
+let currentType="video";
+function setCreate(type,el){
+currentType=type;
+document.querySelectorAll(".ctab").forEach(t=>t.classList.remove("active"));
+el.classList.add("active");
+uploader.accept={
+video:"video/*",
+image:"image/*",
+audio:"audio/*",
+doc:".pdf,.doc,.docx"
+}[type];
 }
 
-function previewFile(input){
+function handleUpload(input){
 const file=input.files[0];
-const preview=document.getElementById("preview");
 preview.innerHTML="";
 if(!file)return;
 
-if(file.type.startsWith("video")){
+if(currentType==="video"){
 const v=document.createElement("video");
 v.src=URL.createObjectURL(file);
 v.controls=true;
 v.autoplay=true;
 v.muted=true;
 preview.appendChild(v);
+
+const reel=document.createElement("div");
+reel.className="reel";
+reel.innerHTML=`<video src="${v.src}" autoplay muted loop playsinline></video>`;
+document.getElementById("reel-list").prepend(reel);
 }else{
-const img=document.createElement("img");
-img.src=URL.createObjectURL(file);
-preview.appendChild(img);
+preview.textContent=file.name;
 }
 }
 
@@ -415,8 +412,10 @@ function toggleAuto(btn){
 scrolling=!scrolling;
 btn.classList.toggle("active");
 if(scrolling){
-scroller=setInterval(()=>document.getElementById("reel-list")
-.scrollBy({top:innerHeight,behavior:"smooth"}),5000);
+scroller=setInterval(()=>{
+document.getElementById("reel-list")
+.scrollBy({top:innerHeight,behavior:"smooth"});
+},4500);
 }else clearInterval(scroller);
 }
 </script>
