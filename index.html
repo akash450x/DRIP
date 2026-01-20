@@ -7,43 +7,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
 :root{ --primary:#FF9933; --bg:#000; --card:#0b0b0b; --border:#1b1b1b; }
 *{margin:0;padding:0;box-sizing:border-box}
-body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,sans-serif; height:100vh; overflow:hidden; }
+body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
 
-/* SPLASH */
+/* SPLASH - CAPTION FIXED TO NAMASTE */
 #splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
 .flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
-.jay-hind{margin-top:15px;font-family:'Bebas Neue';letter-spacing:5px;color:#D4AF37}
+.namaste-text{margin-top:15px;font-family:'Bebas Neue';letter-spacing:6px;color:#D4AF37;font-size:26px;}
 
-/* AUTH */
-#auth-page{ display:none; height:100vh; flex-direction:column; align-items:center; justify-content:center; }
-.auth-btn{ padding:15px 30px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; margin-top:20px; width:80%; max-width:300px; }
-
-/* APP CORE */
 #app{display:none; height:100vh; flex-direction:column}
-.header{height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);}
-.brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
 .view{flex:1;position:relative;overflow:hidden}
 .page{display:none;height:100%;overflow-y:auto}
 .page.active{display:block}
 
-/* 🔱 REELS ACTION BAR - FORCED CSS */
+/* 🔱 REELS BUTTONS - GUARANTEED VISIBILITY */
 #reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
 #reels::-webkit-scrollbar { display: none; }
-.reel{ height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; overflow: hidden; }
+.reel{ height: 100%; width: 100%; position:relative; scroll-snap-align: start; overflow: hidden; background: #000; }
 .reel video, .reel img { width:100%; height:100%; object-fit:cover; pointer-events: none; }
 
-.reel-actions{ 
+.reel-actions { 
     position: absolute !important; 
     right: 15px !important; 
-    bottom: 110px !important; 
+    bottom: 120px !important; 
     display: flex !important; 
     flex-direction: column !important; 
-    gap: 20px !important; 
+    gap: 18px !important; 
     z-index: 9999 !important; 
     align-items: center !important;
 }
@@ -54,12 +48,13 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
     width: 45px !important; 
     height: 45px !important; 
     border-radius: 50% !important; 
-    font-size: 22px !important; 
+    font-size: 20px !important; 
     display: flex !important; 
     align-items: center !important; 
     justify-content: center !important; 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .auto-btn-reel { 
@@ -73,15 +68,25 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 }
 .auto-btn-reel.active { color: var(--primary) !important; border-color: var(--primary) !important; background: rgba(255, 153, 51, 0.1) !important; }
 
-.reel-desc{ position:absolute; bottom:25px; left:16px; max-width:65%; font-size:13px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:10px; backdrop-filter:blur(10px); z-index:10; border: 1px solid rgba(255,255,255,0.1); }
+/* COMMENT PANEL */
+#comment-panel {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
+    background: #080808; border-top: 1px solid #222; z-index: 10001;
+    transition: 0.4s cubic-bezier(0.17, 0.84, 0.44, 1);
+    display: flex; flex-direction: column; border-radius: 25px 25px 0 0;
+}
+#comment-panel.open { bottom: 0; }
+.comment-header { padding: 15px; border-bottom: 1px solid #111; display: flex; justify-content: space-between; font-weight: bold; }
+.comment-list { flex: 1; overflow-y: auto; padding: 15px; }
+.comment-item { margin-bottom: 15px; display: flex; gap: 10px; }
+.comment-avatar { width: 30px; height: 30px; border-radius: 10px; background: #222; }
+.comment-text b { display: block; font-size: 11px; color: var(--primary); }
+.comment-text p { font-size: 13px; color: #ddd; }
+.comment-input-area { padding: 15px; border-top: 1px solid #111; display: flex; gap: 10px; background: #000; }
+.comment-input-area input { flex: 1; background: #111; border: 1px solid #222; border-radius: 12px; padding: 10px; color: #fff; outline: none; }
 
-/* GENDER & TABS */
-.gender{display:flex; justify-content:center; gap:8px; margin:15px 0;}
-.gender button{ flex:1; padding:10px 0; font-size:11px; background:#0a0a0a; border:1px solid #222; color:#555; border-radius:10px; font-weight:700; }
-.gender button.active{ border-color:var(--primary); color:var(--primary); }
-
-/* NAV */
-.nav{ height:75px; display:flex; border-top:1px solid var(--border); background:#000; padding-bottom:env(safe-area-inset-bottom); }
+/* NAVIGATION */
+.nav{ height:75px; display:flex; border-top:1px solid #1b1b1b; background:#000; padding-bottom: env(safe-area-inset-bottom); }
 .tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
 .tab.active{color:var(--primary)}
 </style>
@@ -90,17 +95,24 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 <body>
 
 <div id="splash">
-  <div class="flag-wrap"><div class="chakra"></div></div>
-  <div class="jay-hind">JAY HIND</div>
+    <div class="flag-wrap"><div class="chakra"></div></div>
+    <div class="namaste-text">NAMASTE</div>
 </div>
 
-<div id="auth-page">
-    <h1 style="font-family:'Bebas Neue'; font-size:60px; color:var(--primary);">DRIP</h1>
-    <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
+<div id="comment-panel">
+    <div class="comment-header"><span>Comments</span><span onclick="toggleComments()" style="color:#555;">✕</span></div>
+    <div class="comment-list" id="comment-list"></div>
+    <div class="comment-input-area">
+        <input type="text" id="new-comment" placeholder="Add a comment...">
+        <button onclick="postComment()" style="background:var(--primary); border:none; padding:0 15px; border-radius:10px; font-weight:bold; color:black;">POST</button>
+    </div>
 </div>
 
 <div id="app">
-    <header class="header"><div class="brand">DRIP</div></header>
+    <header style="height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid #1b1b1b;">
+        <div style="font-family:'Bebas Neue'; font-size:28px; color:#FF9933;">DRIP</div>
+    </header>
+    
     <div class="view">
         <div id="home" class="page active" style="padding:40px; text-align:center;">
             <p style="color:#666; line-height:1.8;">
@@ -111,9 +123,7 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
                 <span style="color:var(--primary); font-weight:900; display:block; margin-top:15px;">BUILT IN INDIA • EST 2026 • DRIP DIFFERENT</span>
             </p>
         </div>
-
         <div id="reels" class="page"></div>
-
         <div id="create" class="page" style="padding:20px;">
             <div id="preview-box" style="width:100%; height:180px; background:#111; border-radius:12px; margin-bottom:12px; display:none; overflow:hidden; border:1px solid #222;"></div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
@@ -121,31 +131,29 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
                 <button onclick="pick('image/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; font-weight:bold;">IMAGE</button>
             </div>
             <textarea id="desc" rows="3" placeholder="Description..." style="width:100%; background:#111; border:1px solid #222; padding:12px; color:#fff; border-radius:12px;"></textarea>
-            <button onclick="publish()" style="margin-top:14px; width:100%; padding:15px; background:var(--primary); border:none; border-radius:12px; font-weight:bold; color:#000;">PUBLISH</button>
+            <button onclick="publish()" style="margin-top:14px; width:100%; padding:15px; background:var(--primary); border:none; border-radius:12px; font-weight:bold; color:black;">PUBLISH</button>
             <input type="file" id="file" hidden onchange="handlePreview(this)">
         </div>
-
         <div id="search" class="page" style="padding:20px;">
-            <input placeholder="Search creators..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
-            <div class="search-tabs" style="display:flex;gap:5px;margin-top:10px;">
-                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">TOP</button>
-                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">LATEST</button>
-                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">USERS</button>
+            <input placeholder="Search..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
+            <div style="display:flex; gap:6px; margin-top:12px;">
+                <button style="flex:1; padding:10px; background:#111; border:1px solid #222; color:#666; border-radius:10px; font-size:11px; font-weight:bold;">TOP</button>
+                <button style="flex:1; padding:10px; background:#111; border:1px solid #222; color:#666; border-radius:10px; font-size:11px; font-weight:bold;">LATEST</button>
+                <button style="flex:1; padding:10px; background:#111; border:1px solid #222; color:#666; border-radius:10px; font-size:11px; font-weight:bold;">USERS</button>
             </div>
         </div>
-
         <div id="profile" class="page" style="text-align:center; padding:20px;">
-            <div id="userAvatar" style="width:90px; height:90px; border-radius:30px; background:#111 center/cover; margin:auto; border:1px solid #222;"></div>
-            <button onclick="document.getElementById('avatarFile').click()" style="width:100%; margin-top:10px; padding:12px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">Edit Profile Picture</button>
-            <input type="file" id="avatarFile" hidden accept="image/*" onchange="updateAvatar(this)">
-            <h2 id="userName" style="margin-top:15px;" contenteditable="true">AKASH</h2>
-            <p style="color:#444" contenteditable="true">@akash</p>
-            <div class="gender"><button class="g-sel" onclick="setG(this)">Male</button><button class="g-sel" onclick="setG(this)">Female</button><button class="g-sel" onclick="setG(this)">Other</button></div>
-            <input type="date" style="width:100%; background:#111; padding:12px; color:#fff; border:1px solid #222; border-radius:12px; margin-bottom:10px;">
-            <button onclick="logoutEmpire()" style="width:100%; margin-top:20px; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
-            <button onclick="deleteEmpire()" style="width:100%; margin-top:10px; padding:15px; background:#111; border:1px solid #331111; color:#ff4d4d; border-radius:12px;">DELETE ACCOUNT</button>
+            <div style="width:90px; height:90px; border-radius:30px; background:#111; margin:auto; border:1px solid #222;"></div>
+            <h2 style="margin-top:15px;">AKASH</h2>
+            <div style="display:flex; justify-content:center; gap:8px; margin:20px 0;">
+                <button style="flex:1; padding:10px; background:#111; border:1px solid #222; color:#555; border-radius:10px; font-size:11px;">Male</button>
+                <button style="flex:1; padding:10px; background:#111; border:1px solid #222; color:#555; border-radius:10px; font-size:11px;">Female</button>
+                <button style="flex:1; padding:10px; background:#111; border:1px solid #222; color:#555; border-radius:10px; font-size:11px;">Other</button>
+            </div>
+            <button onclick="location.reload()" style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
         </div>
     </div>
+
     <nav class="nav">
         <button class="tab active" onclick="go('home',this)">🏠</button>
         <button class="tab" onclick="go('reels',this)">▶</button>
@@ -156,39 +164,7 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 </div>
 
 <script>
-// FIREBASE CONFIG
-const config = {
-    apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
-    authDomain: "drip-india.firebaseapp.com",
-    projectId: "drip-india",
-    storageBucket: "drip-india.firebasestorage.app",
-    messagingSenderId: "40598053043",
-    appId: "1:40598053043:web:b800c05afba716974690c6"
-};
-firebase.initializeApp(config);
-const auth = firebase.auth();
-
-auth.onAuthStateChanged(user => {
-    document.getElementById('splash').style.display = 'none';
-    if (user) {
-        document.getElementById('auth-page').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        document.getElementById('userName').innerText = user.displayName || "AKASH";
-        if(user.photoURL) document.getElementById('userAvatar').style.backgroundImage = `url(${user.photoURL})`;
-    } else {
-        document.getElementById('app').style.display = 'none';
-        document.getElementById('auth-page').style.display = 'flex';
-    }
-});
-
-function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    auth.signInWithPopup(provider);
-}
-
-function logoutEmpire() { if(confirm("Log out?")) auth.signOut().then(() => location.reload()); }
-function deleteEmpire() { if(confirm("Permanently Delete?")) auth.signOut().then(() => location.reload()); }
+setTimeout(() => { document.getElementById('splash').style.display='none'; document.getElementById('app').style.display='flex'; }, 1500);
 
 function go(id,btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -196,20 +172,31 @@ function go(id,btn){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     btn.classList.add('active');
 }
-function setG(btn) { document.querySelectorAll('.g-sel').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-function setTab(btn) { document.querySelectorAll('.s-tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-function pick(type){ const f = document.getElementById('file'); f.accept = type; f.click(); }
+
+function toggleComments() { document.getElementById('comment-panel').classList.toggle('open'); }
+
+function postComment() {
+    const input = document.getElementById('new-comment');
+    const list = document.getElementById('comment-list');
+    if(!input.value) return;
+    const div = document.createElement('div');
+    div.className = 'comment-item';
+    div.innerHTML = `<div class="comment-avatar"></div><div class="comment-text"><b>@AKASH</b><p>${input.value}</p></div>`;
+    list.prepend(div);
+    input.value = "";
+}
+
 function handlePreview(input) {
     const box = document.getElementById('preview-box');
     box.innerHTML = "";
     if (input.files[0]) {
         box.style.display = "block";
         const url = URL.createObjectURL(input.files[0]);
-        if (input.files[0].type.includes('video')) box.innerHTML = `<video src="${url}" autoplay muted loop></video>`;
-        else box.innerHTML = `<img src="${url}">`;
+        box.innerHTML = input.files[0].type.includes('video') ? `<video src="${url}" autoplay muted loop></video>` : `<img src="${url}">`;
     }
 }
-function updateAvatar(input){ if(input.files[0]) document.getElementById('userAvatar').style.backgroundImage = `url(${URL.createObjectURL(input.files[0])})`; }
+
+function pick(type){ const f = document.getElementById('file'); f.accept = type; f.click(); }
 
 let auto=false, autoInt;
 function toggleAuto(btn){
@@ -219,40 +206,42 @@ function toggleAuto(btn){
 }
 
 function publish(){
-    const file = document.getElementById('file');
-    if(!file.files[0]) return alert("Select media!");
-    const url = URL.createObjectURL(file.files[0]);
-    const isVid = file.files[0].type.includes('video');
+    const fileIn = document.getElementById('file');
+    const descIn = document.getElementById('desc');
+    if(!fileIn.files[0]) return alert("Select media!");
+    const url = URL.createObjectURL(fileIn.files[0]);
+    const isVid = fileIn.files[0].type.includes('video');
     const reel = document.createElement("div");
     reel.className = "reel";
-    
-    // Tap interaction
+
+    // Double-tap heart interaction
     reel.onmousedown = (e) => {
         const now = Date.now();
         if (now - (reel.dataset.lt || 0) < 300) {
-            reel.querySelector('.btn-like').style.color = '#FF9933';
-            const h = document.createElement('div'); h.className='heart-pop'; h.innerHTML='❤️';
+            reel.querySelector('.like-icon').style.color = '#FF9933';
+            const h = document.createElement('div'); h.innerHTML='❤️'; h.style.position='absolute'; h.style.fontSize='80px';
             h.style.left = e.clientX+'px'; h.style.top = (e.clientY - reel.getBoundingClientRect().top)+'px';
-            reel.appendChild(h); setTimeout(()=>h.remove(), 800);
+            h.style.zIndex='50'; h.style.pointerEvents='none'; reel.appendChild(h);
+            setTimeout(()=>h.remove(), 800);
         }
         reel.dataset.lt = now;
     };
 
-    // 🔱 FORCED ACTION BUTTONS - ABSOLUTE SEQUENCE
+    // 🔱 FORCED ACTION BUTTONS - ABSOLUTE VISIBILITY
     reel.innerHTML = `
         ${isVid ? `<video src="${url}" autoplay muted loop playsinline></video>` : `<img src="${url}">`}
-        <div class="reel-desc">${document.getElementById('desc').value || "Bharat Pride"}</div>
+        <div style="position:absolute; bottom:25px; left:16px; font-size:13px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:10px; z-index:10;">${descIn.value || "New Post"}</div>
         <div class="reel-actions">
-            <button class="btn-like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
-            <button onclick="event.stopPropagation(); alert('Comments coming soon')">💬</button>
+            <button class="like-icon" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
+            <button onclick="event.stopPropagation(); toggleComments()">💬</button>
             <button onclick="event.stopPropagation(); alert('Sharing...')">↗️</button>
             <button onclick="event.stopPropagation(); alert('Downloading...')">⬇️</button>
             <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
             <button class="auto-btn-reel" onclick="event.stopPropagation(); toggleAuto(this)">AUTO</button>
         </div>`;
-        
+    
     document.getElementById('reels').appendChild(reel);
-    document.getElementById('desc').value = ""; file.value = "";
+    descIn.value = ""; fileIn.value = "";
     document.getElementById('preview-box').style.display = "none";
     go('reels', document.querySelectorAll('.tab')[1]);
 }
