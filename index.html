@@ -13,11 +13,11 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
 
-/* 🔱 STICKY FIX: Splash Screen */
+/* 🔱 ULTIMATE SPLASH FIX */
 #splash{ 
     position:fixed; inset:0; background:#000; 
     display:flex; flex-direction:column; align-items:center; justify-content:center; 
-    z-index:100000; transition: opacity 0.5s ease;
+    z-index:99999; opacity:1; transition: opacity 0.4s ease;
 }
 .flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
@@ -26,7 +26,7 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 #auth-gate{ display:none; position:fixed; inset:0; background:#000; z-index:9000; flex-direction:column; align-items:center; justify-content:center; }
 .auth-btn{ padding:16px 32px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; width:80%; max-width:300px; margin-top:20px; font-size:14px; }
 
-/* REELS & INTERACTIONS */
+/* REELS & MINI ACTIONS */
 #reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
 #reels::-webkit-scrollbar { display: none; }
 .reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; -webkit-transform: translateZ(0); }
@@ -42,11 +42,16 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
     width: 25px !important; height: 25px !important; font-size: 20px !important; 
     display: flex !important; align-items: center !important; justify-content: center !important; 
 }
-.auto-btn-mini { font-size: 5px !important; font-weight: 900; color: #555; opacity: 0.6; }
+/* Shrunk Auto Button */
+.auto-btn-mini { font-size: 5px !important; font-weight: 900; color: #444; opacity: 0.5; }
 
-/* HEART POP */
-.heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; z-index: 100000; animation: heartAnim 0.8s ease-out forwards; }
-@keyframes heartAnim { 0% { transform: scale(0) translate(-50%, -50%); opacity: 0; } 20% { transform: scale(1.2) translate(-50%, -50%); opacity: 1; } 100% { transform: scale(1.5) translate(-50%, -150%); opacity: 0; } }
+/* 🔱 SLIDING COMMENTS */
+#comment-panel {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
+    background: #0a0a0a; border-top: 1px solid #222; z-index: 9500;
+    transition: 0.4s ease; display: flex; flex-direction: column; border-radius: 20px 20px 0 0;
+}
+#comment-panel.active { bottom: 0; }
 
 /* APP UI */
 #app{display:none; height:100vh; flex-direction:column; position: relative;}
@@ -68,9 +73,78 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
     <div class="namaste-text">NAMASTE</div>
 </div>
 
+<script>
+// 🔱 IMMEDIATE SPLASH EXIT
+const hideSplash = () => {
+    const s = document.getElementById('splash');
+    if(s) { s.style.opacity = '0'; setTimeout(()=>s.style.display='none', 400); }
+};
+// If app hasn't shown in 2 seconds, force it.
+setTimeout(hideSplash, 2000);
+</script>
+
 <div id="auth-gate">
     <h1 style="font-family:'Bebas Neue'; font-size:50px; color:var(--primary);">DRIP</h1>
     <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
 </div>
 
-<div
+<div id="comment-panel">
+    <div style="padding:15px; border-bottom:1px solid #111; display:flex; justify-content:space-between;">
+        <b>Comments</b><span onclick="toggleComm()" style="color:#444;">✕</span>
+    </div>
+    <div id="comm-list" style="flex:1; overflow-y:auto; padding:20px;"></div>
+    <div style="padding:15px; display:flex; gap:10px; border-top:1px solid #111;">
+        <input type="text" id="c-input" placeholder="Add a comment..." style="flex:1; background:#111; border:1px solid #222; border-radius:10px; color:#fff; padding:10px;">
+        <button onclick="postComm()" style="background:var(--primary); border:none; padding:0 15px; border-radius:10px; font-weight:bold;">POST</button>
+    </div>
+</div>
+
+<div id="app">
+    <header class="header"><div class="brand">DRIP</div></header>
+    <div class="view">
+        <div id="home" class="page active" style="padding:40px; text-align:center;">
+            <p style="color:#666; line-height:1.8;">DRIP: Bharat's Creator Empire.<br><span>EST 2026</span></p>
+        </div>
+        <div id="reels" class="page"></div>
+        <div id="create" class="page" style="padding:20px;">
+            <button onclick="pick('video/*')" style="width:100%; padding:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px;">PICK MEDIA</button>
+            <textarea id="desc" placeholder="Caption..." style="width:100%; margin-top:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px; padding:12px;"></textarea>
+            <button onclick="publish()" style="width:100%; margin-top:15px; padding:15px; background:var(--primary); color:#000; font-weight:bold; border:none; border-radius:12px;">PUBLISH</button>
+            <input type="file" id="file" hidden>
+        </div>
+        <div id="profile" class="page" style="text-align:center; padding:20px;">
+            <h2 id="uName">AKASH</h2>
+            <button onclick="logoutEmpire()" style="width:100%; margin-top:20px; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
+        </div>
+    </div>
+    <nav class="nav">
+        <button class="tab active" onclick="go('home',this)">🏠</button>
+        <button class="tab" onclick="go('reels',this)">▶</button>
+        <button class="tab" onclick="go('create',this)">＋</button>
+        <button class="tab" onclick="go('search',this)">🔍</button>
+        <button class="tab" onclick="go('profile',this)">👤</button>
+    </nav>
+</div>
+
+<script>
+// FIREBASE CONFIG
+const config = {
+    apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
+    authDomain: "drip-india.firebaseapp.com",
+    projectId: "drip-india",
+    storageBucket: "drip-india.firebasestorage.app",
+    messagingSenderId: "40598053043",
+    appId: "1:40598053043:web:b800c05afba716974690c6"
+};
+firebase.initializeApp(config);
+const auth = firebase.auth();
+
+auth.onAuthStateChanged(user => {
+    hideSplash(); // Triggered on Firebase response
+    if (user) {
+        document.getElementById('auth-gate').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        document.getElementById('uName').innerText = user.displayName || "AKASH";
+    } else {
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('auth-gate').
