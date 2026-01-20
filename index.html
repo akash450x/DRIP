@@ -41,7 +41,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 /* HOME */
 .home-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
 .home-logo-img{width:220px;max-width:70%;margin-bottom:30px}
-.home-caption{font-size:1.3rem;line-height:1.6;color:#fff;text-align:center}
+.home-caption{font-size:1.2rem;line-height:1.6;color:#fff;text-align:center}
 .home-caption span{display:block;margin-top:15px;font-weight:800;letter-spacing:2px}
 
 /* REELS */
@@ -111,13 +111,14 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 <!-- HOME -->
 <div id="home" class="page active">
   <div class="home-wrap">
-    <!-- Visible Base64 DRIP Logo -->
-    <img class="home-logo-img" 
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAA..." 
-      alt="DRIP Logo">
+    <img class="home-logo-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAA..." alt="DRIP Logo">
     <div class="home-caption">
-      DRIP app • Built in 2026 • Established 2026 • Designed for Gen-Z creators in India to share reels, go viral, follow trends, express creativity, monetize content, and build a community of millions 🚀
-      <span>BUILT IN INDIA • DRIP DIFFERENT • GO VIRAL • CREATE • SHARE • INSPIRE</span>
+      DRIP app • Built in 2026 • Established 2026 • Designed for Gen-Z creators in India to share reels, go viral, follow trends, express creativity, monetize content, build communities, and dominate social feeds worldwide 🚀
+      <br>Showcase your talents, inspire millions, create epic content, and go viral daily.
+      <br>Upload videos, images, audio, and documents easily with our Creator Suite.
+      <br>Follow your favorite creators, engage with content, and grow your personal brand.
+      <br>BUILT IN INDIA • DRIP DIFFERENT • GO VIRAL • CREATE • SHARE • INSPIRE
+      <span></span>
     </div>
   </div>
 </div>
@@ -137,14 +138,9 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
       <div class="ctab" onclick="setCreate('audio', this)">AUDIO</div>
       <div class="ctab" onclick="setCreate('doc', this)">DOC</div>
     </div>
-    <input type="file" id="uploader" onchange="handleUpload(this)" style="display:none">
+    <input type="file" id="uploader" style="display:none" onchange="handleUpload(this)">
     <div class="preview" id="preview"></div>
   </div>
-</div>
-
-<!-- SEARCH -->
-<div id="search" class="page">
-  <div class="search-box"><input placeholder="Search creators..."></div>
 </div>
 
 <!-- PROFILE -->
