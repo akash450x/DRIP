@@ -15,14 +15,14 @@
 body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,sans-serif; height:100vh; overflow:hidden; }
 
 /* SPLASH */
-#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; transition:0.5s; }
-.flag-wrap{width:180px;height:110px;border-radius:4px;overflow:hidden;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;}
+#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
+.flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
-.namaste{margin-top:15px;font-family:'Bebas Neue';letter-spacing:5px;color:#D4AF37}
+.jay-hind{margin-top:15px;font-family:'Bebas Neue';letter-spacing:5px;color:#D4AF37}
 
-/* LOGIN PAGE */
-#auth-page{ display:none; height:100vh; flex-direction:column; align-items:center; justify-content:center; background:#000; padding: 20px; text-align: center;}
-.auth-btn{ padding:15px 30px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; margin-top:20px; width:100%; max-width:280px; cursor: pointer;}
+/* AUTH */
+#auth-page{ display:none; height:100vh; flex-direction:column; align-items:center; justify-content:center; }
+.auth-btn{ padding:15px 30px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; margin-top:20px; width:80%; max-width:300px; }
 
 /* APP CORE */
 #app{display:none;height:100vh;flex-direction:column}
@@ -33,8 +33,8 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 .page{display:none;height:100%;overflow-y:auto}
 .page.active{display:block}
 
-/* REELS */
-#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
+/* REELS BUTTONS */
+#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; }
 #reels::-webkit-scrollbar { display: none; }
 .reel{ height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; overflow: hidden; }
 .reel video, .reel img { width:100%; height:100%; object-fit:cover; }
@@ -45,16 +45,15 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 .reel-desc{ position:absolute; bottom:25px; left:16px; max-width:65%; font-size:13px; background:rgba(0,0,0,0.5); padding:8px 12px; border-radius:10px; backdrop-filter:blur(8px); z-index:10; }
 .reel-actions{ position:absolute; right:12px; bottom:40px; display:flex; flex-direction:column; gap:16px; align-items:center; z-index:20; }
 .reel-actions button{ background:rgba(255,255,255,0.08); border:none; color:#fff; padding:12px; border-radius:50%; font-size:18px; }
-
 .auto-btn-reel { font-size:9px!important; font-weight:bold; padding:10px 8px!important; background:rgba(255,255,255,0.05)!important; border:1px solid rgba(255,255,255,0.1)!important; color:#888!important; text-transform:uppercase; }
 .auto-btn-reel.active { color:var(--primary)!important; border-color:var(--primary)!important; }
 
-/* TABS & BUTTONS */
-.search-tabs{display:flex; gap:6px; margin-top:12px; padding: 0 20px;}
+/* GENDER & TABS */
+.search-tabs{display:flex; gap:6px; margin-top:12px;}
 .search-tabs button{ flex:1; padding:10px 0; font-size:11px; font-weight:bold; background:#111; border:1px solid var(--border); color:#666; border-radius:10px; }
 .search-tabs button.active{ border-color:var(--primary); color:var(--primary); }
 
-.gender{display:flex; justify-content:center; gap:8px; margin:20px 0;}
+.gender{display:flex; justify-content:center; gap:8px; margin:15px 0;}
 .gender button{ flex:1; padding:10px 0; font-size:11px; background:#0a0a0a; border:1px solid #222; color:#555; border-radius:10px; font-weight:700; }
 .gender button.active{ border-color:var(--primary); color:var(--primary); background:rgba(255,153,51,0.05); }
 
@@ -69,24 +68,31 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 
 <div id="splash">
   <div class="flag-wrap"><div class="chakra"></div></div>
-  <div class="namaste">NAMASTE</div>
+  <div class="jay-hind">JAY HIND</div>
 </div>
 
 <div id="auth-page">
-    <h1 style="font-family:'Bebas Neue'; font-size:80px; color:var(--primary);">DRIP</h1>
-    <button class="auth-btn" id="loginBtn" onclick="googleLogin()">Sign In with Google</button>
-    <div id="loading-msg" style="display:none; margin-top:10px; color:var(--primary); font-size:12px;">Entering the Empire...</div>
+    <h1 style="font-family:'Bebas Neue'; font-size:60px; color:var(--primary);">DRIP</h1>
+    <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
 </div>
 
 <div id="app">
     <header class="header"><div class="brand">DRIP</div></header>
     <div class="view">
         <div id="home" class="page active" style="padding:40px; text-align:center;">
-            <p style="color:#666; line-height:1.8;">DRIP is India’s next-generation short-video platform built for creators who move fast and think bold.<br><span>BUILT IN INDIA • EST 2026</span></p>
+            <p style="color:#666; line-height:1.8;">
+                DRIP is India’s next-generation short-video platform built for creators who move fast and think bold.<br>
+                Create reels, share moments, and build a digital identity that actually matters.<br>
+                Designed for Gen-Z creators who want speed, simplicity, and real reach.<br>
+                No noise. No clutter. Just content that hits different.<br>
+                <span style="color:var(--primary); font-weight:900; display:block; margin-top:15px;">BUILT IN INDIA • EST 2026 • DRIP DIFFERENT</span>
+            </p>
         </div>
+
         <div id="reels" class="page"></div>
+
         <div id="create" class="page" style="padding:20px;">
-            <div id="preview-box" style="width:100%; height:180px; background:#111; border-radius:12px; margin-bottom:12px; display:none; overflow:hidden; border:1px solid var(--border);"></div>
+            <div id="preview-box" style="width:100%; height:180px; background:#111; border-radius:12px; margin-bottom:12px; display:none; overflow:hidden; border:1px solid #222;"></div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
                 <button onclick="pick('video/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">VIDEO</button>
                 <button onclick="pick('image/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">IMAGE</button>
@@ -95,15 +101,26 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
             <button onclick="publish()" style="margin-top:14px; width:100%; padding:15px; background:var(--primary); border:none; border-radius:12px; font-weight:bold; color:#000;">PUBLISH</button>
             <input type="file" id="file" hidden onchange="handlePreview(this)">
         </div>
+
         <div id="search" class="page" style="padding:20px;">
             <input placeholder="Search..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
             <div class="search-tabs"><button class="s-tab" onclick="setTab(this)">TOP</button><button class="s-tab" onclick="setTab(this)">LATEST</button><button class="s-tab" onclick="setTab(this)">USERS</button></div>
         </div>
+
         <div id="profile" class="page" style="text-align:center; padding:20px;">
             <div id="userAvatar" style="width:90px; height:90px; border-radius:30px; background:#111 center/cover; margin:auto; border:1px solid #222;"></div>
-            <h2 id="userName" style="margin-top:15px;">AKASH</h2>
+            <button onclick="document.getElementById('avatarFile').click()" style="width:100%; margin-top:10px; padding:12px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">Edit Profile Picture</button>
+            <input type="file" id="avatarFile" hidden accept="image/*" onchange="updateAvatar(this)">
+            
+            <h2 id="userName" style="margin-top:15px;" contenteditable="true">AKASH</h2>
+            <p id="userHandle" style="color:#444" contenteditable="true">@akash</p>
+            
             <div class="gender"><button class="g-sel" onclick="setG(this)">Male</button><button class="g-sel" onclick="setG(this)">Female</button><button class="g-sel" onclick="setG(this)">Other</button></div>
-            <button onclick="logoutEmpire()" style="width:100%; margin-top:20px; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
+            
+            <input type="date" id="dob" style="width:100%; background:#111; padding:12px; color:#fff; border:1px solid #222; border-radius:12px; margin-bottom:10px;">
+
+            <button onclick="logoutEmpire()" style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
+            <button onclick="deleteEmpire()" style="width:100%; margin-top:10px; padding:15px; background:#111; border:1px solid #331111; color:#ff4d4d; border-radius:12px;">DELETE ACCOUNT</button>
         </div>
     </div>
     <nav class="nav">
@@ -116,7 +133,6 @@ body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,
 </div>
 
 <script>
-// FIREBASE CORE
 const config = {
     apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
     authDomain: "drip-india.firebaseapp.com",
@@ -128,62 +144,42 @@ const config = {
 firebase.initializeApp(config);
 const auth = firebase.auth();
 
-// PERSISTENCE STATE
 auth.onAuthStateChanged(user => {
-    const splash = document.getElementById('splash');
-    const authPage = document.getElementById('auth-page');
-    const app = document.getElementById('app');
-
+    document.getElementById('splash').style.display = 'none';
     if (user) {
-        document.getElementById('userName').innerText = user.displayName.toUpperCase();
+        document.getElementById('auth-page').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        document.getElementById('userName').innerText = user.displayName || "AKASH";
         if(user.photoURL) document.getElementById('userAvatar').style.backgroundImage = `url(${user.photoURL})`;
-        splash.style.display = 'none';
-        authPage.style.display = 'none';
-        app.style.display = 'flex';
     } else {
-        setTimeout(() => {
-            splash.style.display = 'none';
-            authPage.style.display = 'flex';
-            app.style.display = 'none';
-        }, 1500);
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('auth-page').style.display = 'flex';
     }
 });
 
+// 🔱 FIXED ACCOUNT CHOOSER
 function googleLogin() {
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('loading-msg').style.display = 'block';
-    
-    // Switch to Popup for better reliability on GitHub Pages
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => {
-        alert("Login Error: Please check if 'akash.github.io' is added in Firebase Authorized Domains.");
-        document.getElementById('loginBtn').style.display = 'block';
-        document.getElementById('loading-msg').style.display = 'none';
-    });
+    provider.setCustomParameters({ prompt: 'select_account' });
+    auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
 }
 
-function logoutEmpire() {
-    if(confirm("Exit the Empire?")) {
-        auth.signOut().then(() => {
-            location.reload();
-        });
-    }
-}
+function logoutEmpire() { if(confirm("Log out?")) auth.signOut().then(() => location.reload()); }
+function deleteEmpire() { if(confirm("Permanently Delete?")) auth.signOut().then(() => location.reload()); }
 
-// UI HANDLERS
+// UI LOGIC
 function go(id,btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     btn.classList.add('active');
 }
-
 function setG(btn) { document.querySelectorAll('.g-sel').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
 function setTab(btn) { document.querySelectorAll('.s-tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-function pick(type){ document.getElementById('file').accept = type; document.getElementById('file').click(); }
-
+function pick(type){ const f = document.getElementById('file'); f.accept = type; f.click(); }
 function handlePreview(input) {
-    const box = document.getElementById('preview-box'); box.innerHTML = "";
+    const box = document.getElementById('preview-box');
+    box.innerHTML = "";
     if (input.files[0]) {
         box.style.display = "block";
         const url = URL.createObjectURL(input.files[0]);
@@ -191,6 +187,7 @@ function handlePreview(input) {
         else box.innerHTML = `<img src="${url}">`;
     }
 }
+function updateAvatar(input){ if(input.files[0]) document.getElementById('userAvatar').style.backgroundImage = `url(${URL.createObjectURL(input.files[0])})`; }
 
 let auto=false, autoInt;
 function toggleAuto(btn){
@@ -216,13 +213,14 @@ function publish(){
         }
         reel.dataset.lt = now;
     };
+    // 🔱 RESTORED ALL REEL BUTTONS
     reel.innerHTML = `
         ${isVid ? `<video src="${url}" autoplay muted loop playsinline></video>` : `<img src="${url}">`}
-        <div class="reel-desc">${document.getElementById('desc').value || "Bharat Pride"}</div>
+        <div class="reel-desc">${document.getElementById('desc').value || "New Drip"}</div>
         <div class="reel-actions">
             <button class="like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
-            <button onclick="event.stopPropagation(); alert('Comment logged')">💬</button>
-            <button onclick="event.stopPropagation(); alert('Share requested')">↗️</button>
+            <button onclick="event.stopPropagation(); alert('Comments locked')">💬</button>
+            <button onclick="event.stopPropagation(); alert('Sharing...')">↗️</button>
             <button onclick="event.stopPropagation(); alert('Downloading...')">⬇️</button>
             <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
             <button class="auto-btn-reel" onclick="event.stopPropagation(); toggleAuto(this)">AUTO</button>
