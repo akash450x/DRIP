@@ -13,7 +13,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
 
-/* SPLASH & AUTH GATE */
+/* 🔱 FIXED SPLASH - GUARANTEED EXIT */
 #splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
 .flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
@@ -22,70 +22,16 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 #auth-gate{ display:none; position:fixed; inset:0; background:#000; z-index:9000; flex-direction:column; align-items:center; justify-content:center; }
 .auth-btn{ padding:16px 32px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; width:80%; max-width:300px; margin-top:20px; font-size:14px; }
 
-/* REELS ENGINE */
+/* REELS ACTIONS */
 #reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
 #reels::-webkit-scrollbar { display: none; }
 .reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; -webkit-transform: translateZ(0); }
 .reel video, .reel img { width:100%; height:100%; object-fit:cover; position: absolute; top: 0; left: 0; z-index: 1; }
 
-/* 🔱 MINI ACTION BAR */
 .reel-actions { 
     position: absolute !important; right: 12px !important; bottom: 100px !important; 
     display: flex !important; flex-direction: column !important; gap: 20px !important; 
     z-index: 8000 !important; align-items: center !important;
 }
 .reel-actions button { 
-    background: none !important; border: none !important; color: #fff !important; 
-    width: 28px !important; height: 28px !important; font-size: 20px !important; 
-    display: flex !important; align-items: center !important; justify-content: center !important; 
-    text-shadow: 0 0 10px rgba(0,0,0,0.8);
-}
-/* Shrunk Auto Button */
-.auto-btn-mini { font-size: 6px !important; font-weight: 900; color: #666; letter-spacing: 0.5px; opacity: 0.8; }
-
-/* 🔱 SLIDING COMMENT PANEL */
-#comment-panel {
-    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
-    background: #0a0a0a; border-top: 1px solid #222; z-index: 9500;
-    transition: 0.4s cubic-bezier(0.17, 0.84, 0.44, 1);
-    display: flex; flex-direction: column; border-radius: 20px 20px 0 0;
-}
-#comment-panel.active { bottom: 0; }
-.comm-header { padding: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #111; font-weight: bold; }
-.comm-input { padding: 15px; display: flex; gap: 10px; border-top: 1px solid #111; }
-.comm-input input { flex: 1; background: #111; border: 1px solid #222; padding: 12px; border-radius: 12px; color: white; outline: none; }
-
-/* HEART POP */
-.heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; z-index: 100000; animation: heartAnim 0.8s ease-out forwards; }
-@keyframes heartAnim { 0% { transform: scale(0) translate(-50%, -50%); opacity: 0; } 20% { transform: scale(1.2) translate(-50%, -50%); opacity: 1; } 100% { transform: scale(1.5) translate(-50%, -150%); opacity: 0; } }
-
-/* APP UI */
-#app{display:none; height:100vh; flex-direction:column; position: relative;}
-.header{height:60px; padding:0 16px; display:flex; align-items:center; border-bottom:1px solid var(--border);}
-.brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
-.view{flex:1;position:relative;overflow:hidden}
-.page{display:none;height:100%;overflow-y:auto}
-.page.active{display:block}
-.nav{ height:75px; display:flex; border-top:1px solid #1b1b1b; background:#000; z-index: 8500; }
-.tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
-.tab.active{color:var(--primary)}
-</style>
-</head>
-
-<body>
-
-<div id="splash">
-    <div class="flag-wrap"><div class="chakra"></div></div>
-    <div class="namaste-text">NAMASTE</div>
-</div>
-
-<div id="auth-gate">
-    <h1 style="font-family:'Bebas Neue'; font-size:50px; color:var(--primary);">DRIP</h1>
-    <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
-</div>
-
-<div id="comment-panel">
-    <div class="comm-header">
-        <span>Comments</span>
-        <span onclick="toggleComm()" style="color: #444; font-size: 20px;">✕</span>
-    </div>
+    background: none !
