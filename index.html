@@ -5,56 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DRIP</title>
     <style>
-        :root { --primary: #FF9933; --bg: #000; --card: #080808; --border: #181818; --gold: #D4AF37; }
+        :root { --primary: #FF9933; --bg: #000; --card: #0A0A0A; --border: #181818; --gold: #D4AF37; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #000; color: #fff; font-family: -apple-system, sans-serif; height: 100vh; overflow: hidden; }
+        body { background-color: #000; color: #fff; font-family: -apple-system, system-ui, sans-serif; height: 100vh; overflow: hidden; }
 
-        /* 1. INSTANT SPLASH (PURE CSS - NO IMAGES) */
+        /* 1. INSTANT SPLASH (PURE CSS CHAKRA) */
         #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
-        
-        .flag-box { 
-            position: relative; width: 210px; height: 130px; border-radius: 4px; overflow: hidden; margin-bottom: 25px; 
-            background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%);
-        }
-        /* CSS CHAKRA - Loads instantly without image */
-        .chakra-css {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 36px; height: 36px; border: 2px solid #000080; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; color: #000080; font-size: 26px; font-weight: bold;
-        }
+        .flag-box { position: relative; width: 210px; height: 130px; border-radius: 4px; overflow: hidden; margin-bottom: 25px; background: linear-gradient(to bottom, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #128807 66.6%); }
+        .chakra-css { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; border: 2.5px solid #000080; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000080; font-size: 26px; font-weight: bold; }
         .chakra-css::after { content: "☸"; }
-
         .jay-hind { font-size: 28px; font-weight: 900; color: var(--gold); letter-spacing: 6px; text-transform: uppercase; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
 
-        /* 2. APP UI */
+        /* 2. APP CORE */
         #app { display: none; flex-direction: column; height: 100vh; }
         .header { height: 65px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; }
-        
-        /* BEBAS STYLE D LOGO */
         .d-logo { width: 40px; height: 40px; border: 1.5px solid #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; margin-right: 15px; background: #050505; color: #FFF; }
-        .brand { color: var(--primary); font-size: 26px; font-weight: 900; letter-spacing: 1.5px; }
+        .brand { color: var(--primary); font-size: 26px; font-weight: 900; letter-spacing: 1px; }
 
-        /* CONTENT */
+        /* VIEWPORT */
         .view { flex: 1; position: relative; overflow: hidden; }
         .page { display: none; height: 100%; width: 100%; padding: 20px; overflow-y: auto; }
         .page.active { display: block; }
 
-        /* REELS AUTO-SCROLL (PREMIUM GLASS) */
-        .auto-btn { 
-            position: absolute; top: 20px; right: 20px; z-index: 100;
-            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.4); padding: 9px 18px; border-radius: 30px; font-size: 9px; font-weight: 800;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); text-transform: uppercase;
-        }
+        /* REELS GLASS BUTTON */
+        .auto-btn { position: absolute; top: 20px; right: 20px; z-index: 100; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 9px 18px; border-radius: 30px; font-size: 9px; font-weight: 800; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); text-transform: uppercase; }
         .auto-btn.active { color: var(--primary); border-color: var(--primary); }
 
-        /* PREMIUM TILES (MINIMALIST SVG) */
+        /* SEARCH SECTION RESTORED */
+        .search-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 18px; display: flex; align-items: center; width: 100%; }
+        .search-box input { background: none; border: none; color: #fff; margin-left: 12px; width: 100%; outline: none; font-size: 15px; }
+        .search-icon { width: 18px; height: 18px; stroke: #333; fill: none; stroke-width: 2.5; }
+
+        /* CREATE SECTION RESTORED */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .tile { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 30px 10px; text-align: center; }
         .tile svg { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 1.5; fill: none; margin-bottom: 12px; }
         .tile p { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #555; text-transform: uppercase; }
 
-        /* BOTTOM NAV (ULTRA MINIMAL) */
+        /* ACCOUNT SECTION RESTORED */
+        .p-pic-frame { width: 85px; height: 85px; border-radius: 28px; border: 1.5px solid #222; background: #050505; margin: 0 auto 15px; }
+        .g-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .g-btn { background: var(--card); border: 1px solid var(--border); color: #333; padding: 14px 0; border-radius: 12px; font-weight: 700; font-size: 10px; }
+        .g-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255,153,51,0.04); }
+        .danger-zone { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; }
+        .danger-btn { background: none; border: 1px solid #1a0505; color: #444; padding: 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* BOTTOM NAV (PREMIUM SVG) */
         .nav { height: 85px; border-top: 1px solid var(--border); display: flex; padding-bottom: 25px; background: #000; }
         .tab { flex: 1; display: flex; align-items: center; justify-content: center; border: none; background: none; }
         .tab svg { width: 22px; height: 22px; stroke: #222; stroke-width: 1.5; fill: none; transition: 0.3s; }
@@ -75,19 +71,19 @@
         </header>
 
         <div class="view">
-            <div id="scr-home" class="page active" style="display:flex; align-items:center; justify-content:center; color:#111; font-weight:900; letter-spacing:4px;">FEED</div>
+            <div id="scr-home" class="page active" style="display:flex; align-items:center; justify-content:center; color:#0a0a0a; font-weight:900; letter-spacing:5px;">FEED EMPTY</div>
 
             <div id="scr-reels" class="page" style="padding:0;">
                 <button class="auto-btn" onclick="toggleAuto(this)">AUTO-SCROLL</button>
                 <div id="reel-list" style="height:100%; overflow-y:scroll; scroll-snap-type:y mandatory;">
-                    <div style="height:100%; scroll-snap-align:start; border-bottom:1px solid #111;"></div>
+                    <div style="height:100%; scroll-snap-align:start; border-bottom:1px solid #050505;"></div>
                 </div>
             </div>
 
             <div id="scr-search" class="page">
-                <div style="background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px 18px; display:flex; align-items:center;">
-                    <svg style="width:18px; height:18px; stroke:#333; stroke-width:2;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" placeholder="Search creators..." style="background:none; border:none; color:#fff; margin-left:12px; width:100%; outline:none;">
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search the empire...">
                 </div>
             </div>
 
@@ -101,16 +97,28 @@
                         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                         <p>Photo</p>
                     </div>
+                    <div class="tile">
+                        <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                        <p>Docs</p>
+                    </div>
+                    <div class="tile">
+                        <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        <p>Audio</p>
+                    </div>
                 </div>
             </div>
 
             <div id="scr-profile" class="page" style="text-align:center;">
-                <div style="width:85px; height:85px; border-radius:26px; border:1px solid #222; background:#050505; margin:0 auto;"></div>
-                <h1 style="margin-top:15px; font-weight:900; font-size:32px; letter-spacing:1px;">AKASH</h1>
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:20px;">
-                    <button style="background:var(--card); border:1px solid var(--border); color:#333; padding:14px 0; border-radius:12px; font-weight:700; font-size:10px;">MALE</button>
-                    <button style="background:var(--card); border:1px solid var(--border); color:#333; padding:14px 0; border-radius:12px; font-weight:700; font-size:10px;">FEMALE</button>
-                    <button style="background:var(--card); border:1px solid var(--border); color:#333; padding:14px 0; border-radius:12px; font-weight:700; font-size:10px;">TRANS</button>
+                <div class="p-pic-frame"></div>
+                <h1 style="font-weight:900; font-size:32px; letter-spacing:1px;">AKASH</h1>
+                <div class="g-grid">
+                    <button class="g-btn" onclick="setG(this)">MALE</button>
+                    <button class="g-btn" onclick="setG(this)">FEMALE</button>
+                    <button class="g-btn" onclick="setG(this)">TRANS</button>
+                </div>
+                <div class="danger-zone">
+                    <button class="danger-btn" onclick="location.reload()">Sign Out</button>
+                    <button class="danger-btn" style="border-color:#1a0000; color:#300;" onclick="alert('Account deletion requested')">Delete Empire Account</button>
                 </div>
             </div>
         </div>
@@ -141,6 +149,10 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById('scr-' + id).classList.add('active');
+            btn.classList.add('active');
+        }
+        function setG(btn) {
+            document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
         let isAuto = false; let scrollInt;
