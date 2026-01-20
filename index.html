@@ -2,115 +2,213 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DRIP</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
 <style>
 :root{
---primary:#FF9933;
---bg:#000;
---card:#080808;
---border:#161616;
+  --primary:#FF9933;
+  --bg:#000;
+  --card:#080808;
+  --border:#161616;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;height:100vh;overflow:hidden;}
+body{
+  background:#000;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  height:100vh;
+  overflow:hidden;
+}
 
 /* SPLASH */
 #splash{
-position:fixed;inset:0;
-background:#000;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-z-index:9999;
-transition:.8s;
+  position:fixed;inset:0;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
 }
-.flag-wrap{width:200px;height:125px;overflow:hidden;border-radius:6px;margin-bottom:15px;}
+.flag-wrap{width:200px;height:125px;overflow:hidden;border-radius:6px}
 .stripe{height:33.33%}
 .saffron{background:#FF9933}
 .white{background:#fff;display:flex;align-items:center;justify-content:center}
 .green{background:#128807}
-.chakra{width:34px;height:34px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
-.jay-hind{margin-top:10px;font-family:'Bebas Neue';font-size:28px;letter-spacing:8px;color:#D4AF37;}
+.chakra{
+  width:34px;height:34px;
+  background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat
+}
+.jay-hind{
+  margin-top:15px;
+  font-family:'Bebas Neue';
+  font-size:28px;
+  letter-spacing:8px;
+  color:#D4AF37;
+}
 
 /* APP */
 #app{display:none;flex-direction:column;height:100vh}
 
 /* HEADER */
 .header{
-height:65px;border-bottom:1px solid var(--border);
-display:flex;align-items:center;padding:0 18px;
+  height:65px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 18px;
 }
 .d-logo{
-width:38px;height:38px;border-radius:10px;background:#050505;border:1px solid #222;
-display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:26px;
+  width:38px;height:38px;
+  border-radius:10px;
+  background:#050505;
+  border:1px solid #222;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Bebas Neue';
+  font-size:26px;
 }
-.brand{margin-left:10px;font-family:'Bebas Neue';font-size:26px;letter-spacing:2px;color:var(--primary);}
+.brand{
+  margin-left:10px;
+  font-family:'Bebas Neue';
+  font-size:26px;
+  letter-spacing:2px;
+  color:var(--primary);
+}
 
 /* VIEW */
 .view{flex:1;overflow:hidden;position:relative}
-.page{display:none;height:100%;overflow-y:auto;}
-.page.active{display:block;}
+.page{display:none;height:100%;overflow-y:auto}
+.page.active{display:block}
 
 /* HOME */
-.home-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 20px;}
-.home-logo-img{width:70vw;max-width:300px;height:auto;margin-bottom:20px;filter:drop-shadow(0 0 15px var(--primary));}
-.home-caption{font-size:1.4rem;line-height:1.5;color:#fff;text-align:center;}
-.home-caption span{display:block;margin-top:10px;font-weight:800;letter-spacing:2px;}
+.home-wrap{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
+}
+.home-logo-img{
+  width:220px;
+  max-width:70%;
+  margin-bottom:30px;
+}
+.home-caption{
+  font-size:1.25rem;
+  line-height:1.6;
+}
+.home-caption span{
+  display:block;
+  margin-top:14px;
+  font-weight:800;
+  letter-spacing:2px;
+}
 
 /* REELS */
-#reel-list{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;}
-.reel{height:100vh;scroll-snap-align:start;position:relative;}
-.reel video{width:100%;height:100%;object-fit:cover;}
+#reel-list{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory}
+.reel{height:100vh;scroll-snap-align:start}
+.reel video{width:100%;height:100%;object-fit:cover}
 
-/* AUTO SCROLL */
+/* AUTO */
 .auto-btn{
-position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);
-padding:6px 14px;border-radius:20px;font-size:9px;font-weight:800;backdrop-filter:blur(10px);z-index:10;
+  position:absolute;
+  top:14px;
+  right:14px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.6);
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:9px;
+  font-weight:800;
 }
-.auto-btn.active{color:var(--primary);border-color:var(--primary);}
 
 /* CREATE */
-.create-tabs{display:flex;gap:10px;margin-bottom:15px;}
-.ctab{flex:1;padding:10px;border-radius:12px;text-align:center;background:var(--card);border:1px solid var(--border);cursor:pointer;}
-.ctab.active{border-color:var(--primary);color:var(--primary);}
-.create-wrap{padding:0 20px;}
-.upload-box{border:2px dashed #333;border-radius:16px;padding:30px;text-align:center;cursor:pointer;margin-bottom:20px;}
-.upload-box input{display:none;}
-.preview{margin-top:10px;}
-.preview video,.preview img{width:100%;border-radius:16px;}
+.create-wrap{padding:20px}
+.ctabs{display:flex;gap:10px}
+.ctab{
+  flex:1;
+  padding:12px;
+  background:#111;
+  border-radius:10px;
+  text-align:center;
+  cursor:pointer;
+}
+.ctab.active{background:var(--primary);color:#000;font-weight:700}
+.preview{margin-top:20px}
+.preview video,.preview img{width:100%;border-radius:16px}
 
 /* SEARCH */
-.search-box{display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:20px;}
-.search-box input{flex:1;margin-left:10px;background:none;border:none;outline:none;color:#fff;font-size:15px;}
+.search-box{
+  display:flex;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px 16px;
+  margin:20px;
+}
+.search-box input{
+  flex:1;
+  background:none;
+  border:none;
+  color:#fff;
+  font-size:15px;
+}
 
 /* PROFILE */
 .profile-box{text-align:center;padding:20px}
-.avatar-wrap{position:relative;width:90px;height:90px;margin:0 auto;}
-.avatar{width:90px;height:90px;border-radius:30px;background:#050505;border:1px solid #222;}
-.edit-avatar{position:absolute;bottom:-4px;right:-4px;background:#111;border:1px solid #333;width:26px;height:26px;border-radius:50%;font-size:12px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.profile-box h1{margin-top:15px;font-family:'Bebas Neue';font-size:32px;letter-spacing:2px;}
-.profile-box input[type="text"], .profile-box input[type="date"]{margin-top:10px;background:#050505;border:1px solid #222;color:#fff;padding:10px;border-radius:10px;width:100%;}
-
-.g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;}
-.g-btn{background:var(--card);border:1px solid var(--border);padding:14px 0;border-radius:12px;font-size:10px;letter-spacing:1px;color:#444;cursor:pointer;}
-.g-btn.active{color:var(--primary);border-color:var(--primary);}
-
-.account-actions{margin-top:20px;}
-.account-actions button{width:100%;margin-top:12px;padding:14px;border-radius:14px;border:1px solid #222;background:#0A0A0A;color:#FF4D4D;font-weight:700;cursor:pointer;}
+.avatar-wrap{position:relative;width:90px;height:90px;margin:0 auto}
+.avatar{
+  width:90px;height:90px;
+  border-radius:30px;
+  background:#050505;
+  border:1px solid #222;
+}
+.edit-avatar{
+  position:absolute;
+  bottom:-4px;right:-4px;
+  background:#111;
+  border:1px solid #333;
+  width:26px;height:26px;
+  border-radius:50%;
+  cursor:pointer;
+}
+.profile-box h1{
+  margin-top:15px;
+  font-family:'Bebas Neue';
+  font-size:32px;
+}
+.account-actions button{
+  width:100%;
+  margin-top:12px;
+  padding:14px;
+  background:#0A0A0A;
+  border:1px solid #222;
+  color:#FF4D4D;
+  font-weight:700;
+}
 
 /* NAV */
-.nav{height:85px;border-top:1px solid var(--border);display:flex;background:#000;padding-bottom:25px;}
-.tab{flex:1;border:none;background:none;cursor:pointer;}
-.tab svg{width:22px;height:22px;stroke:#333;}
-.tab.active svg{stroke:var(--primary);}
+.nav{
+  height:85px;
+  border-top:1px solid var(--border);
+  display:flex;
+  padding-bottom:25px;
+}
+.tab{flex:1;background:none;border:none;font-size:20px;color:#666}
+.tab.active{color:var(--primary)}
 </style>
 </head>
+
 <body>
 
-<!-- SPLASH -->
 <div id="splash">
   <div class="flag-wrap">
     <div class="stripe saffron"></div>
@@ -123,8 +221,8 @@ padding:6px 14px;border-radius:20px;font-size:9px;font-weight:800;backdrop-filte
 <div id="app">
 
 <header class="header">
-<div class="d-logo">D</div>
-<div class="brand">DRIP</div>
+  <div class="d-logo">D</div>
+  <div class="brand">DRIP</div>
 </header>
 
 <div class="view">
@@ -132,10 +230,13 @@ padding:6px 14px;border-radius:20px;font-size:9px;font-weight:800;backdrop-filte
 <!-- HOME -->
 <div id="home" class="page active">
   <div class="home-wrap">
-    <img class="home-logo-img" src="file:///C:/users/user/Downloads/drip.png">
+    <img class="home-logo-img"
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAA..." />
     <div class="home-caption">
-      India doesn’t scroll — India creates 🇮🇳
-      <span>BUILT IN INDIA • DRIP DIFFERENT</span>
+      DRIP built in India 🇮🇳 • DRIP App established 2026 • A next-gen social platform
+      for Gen-Z creators to go viral, create fearless content, start trends,
+      own the feed and dominate the future.
+      <span>BUILT IN INDIA • DRIP DIFFERENT • EST. 2026</span>
     </div>
   </div>
 </div>
@@ -149,16 +250,13 @@ padding:6px 14px;border-radius:20px;font-size:9px;font-weight:800;backdrop-filte
 <!-- CREATE -->
 <div id="create" class="page">
   <div class="create-wrap">
-    <div class="create-tabs">
-      <div class="ctab active" onclick="setCreate('video', this)">Video</div>
-      <div class="ctab" onclick="setCreate('image', this)">Image</div>
-      <div class="ctab" onclick="setCreate('audio', this)">Audio</div>
-      <div class="ctab" onclick="setCreate('doc', this)">Docs</div>
+    <div class="ctabs">
+      <div class="ctab active" onclick="setCreate('video',this)">VIDEO</div>
+      <div class="ctab" onclick="setCreate('image',this)">IMAGE</div>
+      <div class="ctab" onclick="setCreate('audio',this)">AUDIO</div>
+      <div class="ctab" onclick="setCreate('doc',this)">DOC</div>
     </div>
-    <label class="upload-box" id="uploader-label">
-      Click to Upload
-      <input type="file" id="uploader" onchange="handleUpload(this)">
-    </label>
+    <input type="file" id="uploader" hidden onchange="handleUpload(this)">
     <div class="preview" id="preview"></div>
   </div>
 </div>
@@ -175,17 +273,11 @@ padding:6px 14px;border-radius:20px;font-size:9px;font-weight:800;backdrop-filte
   <div class="profile-box">
     <div class="avatar-wrap">
       <div class="avatar" id="avatar"></div>
-      <label class="edit-avatar">✎
-        <input type="file" hidden onchange="changeAvatar(this)">
+      <label class="edit-avatar">
+        ✎ <input type="file" hidden onchange="changeAvatar(this)">
       </label>
     </div>
-    <input type="text" id="username" placeholder="AKASH">
-    <input type="date" id="dob">
-    <div class="g-grid">
-      <button class="g-btn" onclick="setGender(this)">MALE</button>
-      <button class="g-btn" onclick="setGender(this)">FEMALE</button>
-      <button class="g-btn" onclick="setGender(this)">TRANS</button>
-    </div>
+    <h1 contenteditable="true">AKASH</h1>
     <div class="account-actions">
       <button onclick="logout()">LOG OUT</button>
       <button onclick="deleteAccount()">DELETE ACCOUNT</button>
@@ -196,20 +288,21 @@ padding:6px 14px;border-radius:20px;font-size:9px;font-weight:800;backdrop-filte
 </div>
 
 <nav class="nav">
-<button class="tab active" onclick="go('home',this)">🏠</button>
-<button class="tab" onclick="go('reels',this)">▶</button>
-<button class="tab" onclick="go('create',this)">＋</button>
-<button class="tab" onclick="go('search',this)">🔍</button>
-<button class="tab" onclick="go('profile',this)">👤</button>
+  <button class="tab active" onclick="go('home',this)">🏠</button>
+  <button class="tab" onclick="go('reels',this)">▶</button>
+  <button class="tab" onclick="go('create',this)">＋</button>
+  <button class="tab" onclick="go('search',this)">🔍</button>
+  <button class="tab" onclick="go('profile',this)">👤</button>
 </nav>
+
+</div>
 
 <script>
 setTimeout(()=>{
-  splash.style.opacity=0;
-  setTimeout(()=>{splash.style.display="none";app.style.display="flex"},600);
-},2500);
+  splash.style.display="none";
+  app.style.display="flex";
+},2000);
 
-/* NAV */
 function go(id,btn){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -217,95 +310,40 @@ function go(id,btn){
   btn.classList.add("active");
 }
 
-/* GENDER */
-function setGender(btn){
-  document.querySelectorAll(".g-btn").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  localStorage.setItem("gender", btn.innerText);
-}
-
-/* NAME & AVATAR */
-document.getElementById("username").oninput=function(){localStorage.setItem("username", this.value);}
-function changeAvatar(input){
-  const url = URL.createObjectURL(input.files[0]);
-  avatar.style.background = `url(${url}) center/cover`;
-  localStorage.setItem("avatar", url);
-}
-
-/* CREATE LOGIC */
 let currentType="video";
-function setCreate(type, el){
+function setCreate(type,el){
   currentType=type;
   document.querySelectorAll(".ctab").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
-  const uploader=document.getElementById("uploader");
-  uploader.accept={
-    video:"video/*",
-    image:"image/*",
-    audio:"audio/*",
-    doc:".pdf,.doc,.docx"
-  }[type];
+  uploader.accept={video:"video/*",image:"image/*",audio:"audio/*",doc:".pdf,.doc,.docx"}[type];
+  uploader.click();
 }
 
 function handleUpload(input){
   const file=input.files[0];
-  const preview=document.getElementById("preview");
-  preview.innerHTML="";
   if(!file) return;
-
+  preview.innerHTML="";
   if(currentType==="video"){
     const v=document.createElement("video");
     v.src=URL.createObjectURL(file);
-    v.controls=true; v.autoplay=true; v.muted=true;
+    v.controls=true;v.autoplay=true;v.muted=true;
     preview.appendChild(v);
 
-    // Push to Reels
     const reel=document.createElement("div");
     reel.className="reel";
-    reel.innerHTML=`<video src="${v.src}" autoplay muted loop playsinline></video>`;
+    reel.innerHTML=`<video src="${v.src}" autoplay muted loop></video>`;
     document.getElementById("reel-list").prepend(reel);
-  }else if(currentType==="image"){
-    const img=document.createElement("img");
-    img.src=URL.createObjectURL(file);
-    preview.appendChild(img);
-  }else{
-    preview.innerHTML=`<p>${file.name}</p>`;
   }
 }
 
-/* AUTO SCROLL */
-let scrolling=false,scroller;
-function toggleAuto(btn){
-  scrolling=!scrolling;
-  btn.classList.toggle("active");
-  if(scrolling){
-    scroller=setInterval(()=>{
-      document.getElementById("reel-list").scrollBy({top:innerHeight,behavior:"smooth"});
-    },4500);
-  } else clearInterval(scroller);
+function toggleAuto(btn){}
+
+function changeAvatar(input){
+  avatar.style.background=`url(${URL.createObjectURL(input.files[0])}) center/cover`;
 }
 
-/* ACCOUNT */
-function logout(){
-  localStorage.clear();
-  location.reload();
-}
-function deleteAccount(){
-  if(confirm("This will delete your account data. Continue?")){
-    localStorage.clear();
-    alert("Account deleted");
-    location.reload();
-  }
-}
-
-/* LOAD SAVED DATA */
-window.onload=()=>{
-  if(localStorage.avatar){avatar.style.background=`url(${localStorage.avatar}) center/cover`;}
-  if(localStorage.gender){
-    [...document.querySelectorAll(".g-btn")].find(b=>b.innerText===localStorage.gender)?.classList.add("active");
-  }
-  if(localStorage.username){document.getElementById("username").value=localStorage.username;}
-};
+function logout(){localStorage.clear();location.reload()}
+function deleteAccount(){if(confirm("Delete account?")){localStorage.clear();location.reload()}}
 </script>
 
 </body>
