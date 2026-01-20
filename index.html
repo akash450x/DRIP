@@ -41,8 +41,8 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 /* HOME */
 .home-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
 .home-logo-img{width:220px;max-width:70%;margin-bottom:30px}
-.home-caption{font-size:1.2rem;line-height:1.5;color:#fff;text-align:center}
-.home-caption span{display:block;margin-top:10px;font-weight:800;letter-spacing:2px}
+.home-caption{font-size:1.3rem;line-height:1.6;color:#fff;text-align:center}
+.home-caption span{display:block;margin-top:15px;font-weight:800;letter-spacing:2px}
 
 /* REELS */
 #reel-list{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory}
@@ -61,7 +61,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 .ctab{flex:1;text-align:center;padding:10px;background:#111;border-radius:10px;cursor:pointer}
 .ctab.active{background:var(--primary);color:#000;font-weight:700}
 .preview{margin-top:20px}
-.preview video,.preview img{width:100%;border-radius:16px}
+.preview video,.preview img,.preview audio,.preview iframe{width:100%;border-radius:16px}
 
 /* SEARCH */
 .search-box{display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:20px}
@@ -72,7 +72,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 .avatar-wrap{position:relative;width:90px;height:90px;margin:0 auto}
 .avatar{width:90px;height:90px;border-radius:30px;background:#050505;border:1px solid #222}
 .edit-avatar{position:absolute;bottom:-4px;right:-4px;background:#111;border:1px solid #333;width:26px;height:26px;border-radius:50%;font-size:12px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.profile-box h1{margin-top:15px;font-family:'Bebas Neue';font-size:32px;letter-spacing:2px}
+.profile-box h1, #username{margin-top:10px;font-family:'Bebas Neue';font-size:28px;letter-spacing:1px}
 .profile-box input[type="date"]{margin-top:10px;background:#050505;border:1px solid #222;color:#fff;padding:10px;border-radius:10px;width:100%}
 .g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
 .g-btn{background:var(--card);border:1px solid var(--border);padding:14px 0;border-radius:12px;font-size:10px;letter-spacing:1px;color:#444;cursor:pointer}
@@ -82,7 +82,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 
 /* NAV */
 .nav{height:85px;border-top:1px solid var(--border);display:flex;background:#000;padding-bottom:25px}
-.tab{flex:1;border:none;background:none}
+.tab{flex:1;border:none;background:none;cursor:pointer}
 .tab svg{width:22px;height:22px;stroke:#333}
 .tab.active svg{stroke:var(--primary)}
 </style>
@@ -111,6 +111,74 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 <!-- HOME -->
 <div id="home" class="page active">
   <div class="home-wrap">
-    <!-- DRIP Logo as visible Base64 -->
+    <!-- Visible Base64 DRIP Logo -->
     <img class="home-logo-img" 
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAAACXBIWXMAAAsTAAALEwEAmpwYAAABYklEQVR4nO3dMQ0AIAzEsP1/6aegCCwR7yUbFTLgYAAAAAAD8wAaAVYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAFYAHkAF
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAA..." 
+      alt="DRIP Logo">
+    <div class="home-caption">
+      DRIP app • Built in 2026 • Established 2026 • Designed for Gen-Z creators in India to share reels, go viral, follow trends, express creativity, monetize content, and build a community of millions 🚀
+      <span>BUILT IN INDIA • DRIP DIFFERENT • GO VIRAL • CREATE • SHARE • INSPIRE</span>
+    </div>
+  </div>
+</div>
+
+<!-- REELS -->
+<div id="reels" class="page">
+  <button class="auto-btn" onclick="toggleAuto(this)">AUTO</button>
+  <div id="reel-list"></div>
+</div>
+
+<!-- CREATE -->
+<div id="create" class="page">
+  <div class="create-wrap">
+    <div class="ctabs">
+      <div class="ctab active" onclick="setCreate('video', this)">VIDEO</div>
+      <div class="ctab" onclick="setCreate('image', this)">IMAGE</div>
+      <div class="ctab" onclick="setCreate('audio', this)">AUDIO</div>
+      <div class="ctab" onclick="setCreate('doc', this)">DOC</div>
+    </div>
+    <input type="file" id="uploader" onchange="handleUpload(this)" style="display:none">
+    <div class="preview" id="preview"></div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div id="search" class="page">
+  <div class="search-box"><input placeholder="Search creators..."></div>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="page">
+  <div class="profile-box">
+    <div class="avatar-wrap">
+      <div class="avatar" id="avatar"></div>
+      <label class="edit-avatar">✎<input type="file" hidden onchange="changeAvatar(this)"></label>
+    </div>
+    <h1 contenteditable="true" id="profile-name">AKASH</h1>
+    <h1 contenteditable="true" id="username">@akash123</h1>
+    <input type="date" id="dob">
+    <div class="g-grid">
+      <button class="g-btn" onclick="setGender(this)">MALE</button>
+      <button class="g-btn" onclick="setGender(this)">FEMALE</button>
+      <button class="g-btn" onclick="setGender(this)">TRANS</button>
+    </div>
+    <div class="account-actions">
+      <button onclick="logout()">LOG OUT</button>
+      <button onclick="deleteAccount()">DELETE ACCOUNT</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<nav class="nav">
+  <button class="tab active" onclick="go('home',this)">🏠</button>
+  <button class="tab" onclick="go('reels',this)">▶</button>
+  <button class="tab" onclick="go('create',this)">＋</button>
+  <button class="tab" onclick="go('search',this)">🔍</button>
+  <button class="tab" onclick="go('profile',this)">👤</button>
+</nav>
+
+<script src="app.js" defer></script>
+</body>
+</html>
