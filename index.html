@@ -9,61 +9,90 @@
             --primary: #FF9933; 
             --bg: #000; 
             --card: #080808; 
-            --border: #161616;
-            --text-main: #FFFFFF;
-            --text-dim: #444;
+            --border: #181818;
+            --gold: #D4AF37;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; height: 100vh; overflow: hidden; }
+        body { background-color: var(--bg); color: #fff; font-family: -apple-system, system-ui, sans-serif; height: 100vh; overflow: hidden; }
 
         /* 1. RESTORED PREMIUM SPLASH */
         #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
-        .flag-wrap { position: relative; width: 200px; height: 125px; border-radius: 4px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .flag-frame {
+            position: relative; width: 210px; height: 130px;
+            border-radius: 4px; overflow: hidden; margin-bottom: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
         .stripe { height: 33.33%; width: 100%; }
         .saffron { background: #FF9933; }
-        .white { background: #FFF; display: flex; align-items: center; justify-content: center; }
+        .white { background: #FFFFFF; display: flex; align-items: center; justify-content: center; }
         .green { background: #128807; }
-        .chakra { width: 34px; height: 34px; background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center/contain; }
-        .jay-hind { font-size: 26px; font-weight: 900; color: #D4AF37; letter-spacing: 8px; text-transform: uppercase; }
+        
+        /* HIGH-DEF ASHOKA CHAKRA */
+        .chakra-hd {
+            width: 36px; height: 36px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center;
+            background-size: contain;
+        }
+
+        /* JAY HIND CAPTION RESTORED */
+        .splash-caption {
+            font-size: 26px; font-weight: 900; color: var(--gold);
+            letter-spacing: 6px; text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
 
         /* 2. HEADER & BRANDING */
         #app { display: none; flex-direction: column; height: 100vh; }
         .header { height: 65px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; }
-        .d-logo { width: 38px; height: 38px; border: 1.2px solid #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin-right: 15px; background: #050505; color: #FFF; }
-        .brand { color: var(--primary); font-size: 24px; font-weight: 900; letter-spacing: 1.5px; }
+        
+        /* BEBAS STYLE D LOGO */
+        .d-logo { 
+            width: 40px; height: 40px; border: 1.5px solid #222; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 900; margin-right: 15px; background: #050505;
+        }
+        .brand { color: var(--primary); font-size: 26px; font-weight: 900; letter-spacing: 1px; }
 
-        /* 3. CONTENT AREA */
+        /* 3. CONTENT AREA (SCALING FIX) */
         .view { flex: 1; position: relative; overflow: hidden; }
         .page { display: none; height: 100%; width: 100%; padding: 20px; overflow-y: auto; }
         .page.active { display: block; }
 
-        /* PREMIUM MINIMALIST TILES (Create Section) */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .tile { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 16px; 
-            padding: 30px 10px; text-align: center; transition: 0.2s; 
-        }
-        .tile svg { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 1.5; fill: none; margin-bottom: 12px; }
-        .tile p { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; color: #888; text-transform: uppercase; }
-
-        /* PREMIUM SEARCH BAR */
-        .search-box { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 14px; 
-            padding: 12px 18px; display: flex; align-items: center; 
-        }
-        .search-box input { background: none; border: none; color: #fff; margin-left: 12px; width: 100%; outline: none; font-size: 15px; }
-
-        /* PREMIUM GENDER BUTTONS */
-        .g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .g-btn { 
-            background: var(--card); border: 1px solid var(--border); color: #444; 
-            padding: 15px 0; border-radius: 12px; font-weight: 700; font-size: 10px; 
-            letter-spacing: 1px; transition: 0.3s;
-        }
-        .g-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255,153,51,0.03); }
-
-        /* REELS AUTO-SCROLL */
+        /* REELS AUTO-SCROLL (GLASSMORPHISM) */
         .auto-btn { 
             position: absolute; top: 20px; right: 20px; z-index: 100;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 20px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5); padding: 9px 18px; border-radius: 30px; font-size: 9px; font-weight: 800;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); text-transform: uppercase;
+        }
+        .auto-btn.active { color: var(--primary); border-color: var(--primary); }
+
+        /* PREMIUM MINIMALIST TILES (SVG GLYPHS) */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .tile { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 18px; 
+            padding: 30px 10px; text-align: center; 
+        }
+        .tile svg { width: 20px; height: 20px; stroke: var(--primary); stroke-width: 1.5; fill: none; margin-bottom: 12px; }
+        .tile p { font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #555; text-transform: uppercase; }
+
+        /* SEARCH BOX */
+        .search-container {
+            background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+            padding: 12px 18px; display: flex; align-items: center;
+        }
+        .search-container input { background: none; border: none; color: #fff; margin-left: 12px; width: 100%; outline: none; font-size: 15px; }
+
+        /* GENDER PRESET (PREMIUM) */
+        .g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .g-btn { 
+            background: var(--card); border: 1px solid var(--border); color: #333; 
+            padding: 14px 0; border-radius: 12px; font-weight: 700; font-size: 10px; 
+        }
+        .g-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255,153,51,0.04); }
+
+        /* BOTTOM NAV (PREMIUM MINIMALIST) */
+        .nav { height: 85px; border-top: 1px solid var(--border); display: flex; padding-bottom: 25px; background: #000; }
+        .tab { flex: 1; display: flex; align-items: center; justify-content: center; border: none; background: none; }
+        .tab svg { width: 22px; height: 22px; stroke: #222; stroke-width: 1.8; fill: none; transition: 0.3s; }
