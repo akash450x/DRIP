@@ -2,170 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DRIP</title>
     <style>
-        /* CORE RESET - IMPOSSIBLE TO CRASH */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #000; color: #fff; font-family: sans-serif; height: 100vh; overflow: hidden; }
+        :root { 
+            --primary: #FF9933; 
+            --bg: #000; 
+            --card: #080808; 
+            --border: #161616;
+            --text-main: #FFFFFF;
+            --text-dim: #444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; height: 100vh; overflow: hidden; }
 
-        /* 1. STARTUP FLAG - PURE CSS */
-        #splash { 
-            position: fixed; inset: 0; background: #000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            z-index: 9999; 
-        }
-        .flag { 
-            width: 180px; height: 110px; border-radius: 4px;
-            background: linear-gradient(to bottom, #FF9933 33%, #FFFFFF 33%, #FFFFFF 66%, #128807 66%);
-            position: relative; border: 1px solid #333;
-        }
-        .chakra { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 30px; height: 30px; border: 2px solid #000080; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; color: #000080; font-weight: bold;
-        }
-        .chakra::after { content: "☸"; font-size: 24px; }
-        .jay-hind { margin-top: 20px; color: #D4AF37; letter-spacing: 5px; font-weight: bold; }
+        /* 1. RESTORED PREMIUM SPLASH */
+        #splash { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
+        .flag-wrap { position: relative; width: 200px; height: 125px; border-radius: 4px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stripe { height: 33.33%; width: 100%; }
+        .saffron { background: #FF9933; }
+        .white { background: #FFF; display: flex; align-items: center; justify-content: center; }
+        .green { background: #128807; }
+        .chakra { width: 34px; height: 34px; background: url('https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg') no-repeat center/contain; }
+        .jay-hind { font-size: 26px; font-weight: 900; color: #D4AF37; letter-spacing: 8px; text-transform: uppercase; }
 
-        /* 2. MAIN APP - HIDDEN AT START */
+        /* 2. HEADER & BRANDING */
         #app { display: none; flex-direction: column; height: 100vh; }
-        
-        /* HEADER - BEBAS STYLE D */
-        .header { height: 60px; border-bottom: 1px solid #222; display: flex; align-items: center; padding: 0 15px; }
-        .d-logo { 
-            width: 38px; height: 38px; border: 2px solid #555; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; font-weight: 900; margin-right: 12px; background: #111;
-        }
-        .brand { color: #FF9933; font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+        .header { height: 65px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; }
+        .d-logo { width: 38px; height: 38px; border: 1.2px solid #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin-right: 15px; background: #050505; color: #FFF; }
+        .brand { color: var(--primary); font-size: 24px; font-weight: 900; letter-spacing: 1.5px; }
 
-        /* CONTENT PAGES */
+        /* 3. CONTENT AREA */
         .view { flex: 1; position: relative; overflow: hidden; }
         .page { display: none; height: 100%; width: 100%; padding: 20px; overflow-y: auto; }
         .page.active { display: block; }
 
-        /* REELS AUTO-SCROLL BUTTON */
-        .reels-scroll { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; }
-        .reel { height: 100%; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; color: #111; border-bottom: 1px solid #111; }
+        /* PREMIUM MINIMALIST TILES (Create Section) */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .tile { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 16px; 
+            padding: 30px 10px; text-align: center; transition: 0.2s; 
+        }
+        .tile svg { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 1.5; fill: none; margin-bottom: 12px; }
+        .tile p { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; color: #888; text-transform: uppercase; }
+
+        /* PREMIUM SEARCH BAR */
+        .search-box { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 14px; 
+            padding: 12px 18px; display: flex; align-items: center; 
+        }
+        .search-box input { background: none; border: none; color: #fff; margin-left: 12px; width: 100%; outline: none; font-size: 15px; }
+
+        /* PREMIUM GENDER BUTTONS */
+        .g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .g-btn { 
+            background: var(--card); border: 1px solid var(--border); color: #444; 
+            padding: 15px 0; border-radius: 12px; font-weight: 700; font-size: 10px; 
+            letter-spacing: 1px; transition: 0.3s;
+        }
+        .g-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(255,153,51,0.03); }
+
+        /* REELS AUTO-SCROLL */
         .auto-btn { 
-            position: absolute; top: 15px; right: 15px; z-index: 100;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; padding: 8px 14px; border-radius: 20px; font-size: 9px; font-weight: bold;
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        }
-
-        /* GRID FIX FOR SEARCH/CREATE/ACCOUNT */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .box { background: #0A0A0A; border: 1px solid #222; border-radius: 15px; padding: 25px 10px; text-align: center; color: #FF9933; font-weight: bold; font-size: 11px; }
-
-        /* GENDER BUTTONS */
-        .g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
-        .g-btn { background: #111; border: 1px solid #222; color: #555; padding: 12px 0; border-radius: 10px; font-weight: bold; font-size: 10px; }
-        .g-btn.active { border-color: #FF9933; color: #FF9933; background: rgba(255,153,51,0.05); }
-
-        /* BOTTOM NAVIGATION */
-        .nav { height: 80px; border-top: 1px solid #222; display: flex; padding-bottom: 25px; }
-        .tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #333; border: none; background: none; }
-        .tab.active { color: #FF9933; }
-    </style>
-</head>
-<body>
-
-    <div id="splash">
-        <div class="flag"><div class="chakra"></div></div>
-        <p class="jay-hind">JAY BHARAT</p>
-    </div>
-
-    <div id="app">
-        <header class="header">
-            <div class="d-logo">D</div>
-            <div class="brand">DRIP</div>
-        </header>
-
-        <div class="view">
-            <div id="home" class="page active">
-                <p style="text-align:center; margin-top:50px; color:#111;">FEED</p>
-            </div>
-
-            <div id="reels" class="page" style="padding:0;">
-                <button class="auto-btn" onclick="autoScroll(this)">AUTO-SCROLL</button>
-                <div class="reels-scroll" id="reel-list">
-                    <div class="reel">REEL 1</div>
-                    <div class="reel">REEL 2</div>
-                </div>
-            </div>
-
-            <div id="search" class="page">
-                <div style="background:#111; border:1px solid #222; padding:12px; border-radius:12px; display:flex; align-items:center;">
-                    🔍 <input type="text" placeholder="Search..." style="background:none; border:none; color:#fff; margin-left:10px; width:100%; outline:none;">
-                </div>
-            </div>
-
-            <div id="create" class="page">
-                <div class="grid">
-                    <div class="box">📹 VIDEO</div>
-                    <div class="box">📸 PHOTO</div>
-                    <div class="box">📄 DOCS</div>
-                    <div class="box">🎵 AUDIO</div>
-                </div>
-            </div>
-
-            <div id="profile" class="page" style="text-align:center;">
-                <div style="width:80px; height:80px; background:#111; border:1px solid #222; border-radius:22px; margin:0 auto;"></div>
-                <h2 style="margin-top:15px; font-size:28px;">AKASH</h2>
-                <div class="g-grid">
-                    <button class="g-btn" onclick="selectG(this)">MALE</button>
-                    <button class="g-btn" onclick="selectG(this)">FEMALE</button>
-                    <button class="g-btn" onclick="selectG(this)">OTHER</button>
-                </div>
-            </div>
-        </div>
-
-        <nav class="nav">
-            <button class="tab active" onclick="go('home', this)">🏠</button>
-            <button class="tab" onclick="go('reels', this)">📱</button>
-            <button class="tab" style="font-size:32px; color:#FF9933;" onclick="go('create', this)">⊕</button>
-            <button class="tab" onclick="go('search', this)">🔍</button>
-            <button class="tab" onclick="go('profile', this)">👤</button>
-        </nav>
-    </div>
-
-    <script>
-        // FORCED STARTUP
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                document.getElementById('app').style.display = 'flex';
-            }, 4000);
-        });
-
-        function go(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            btn.classList.add('active');
-        }
-
-        function selectG(btn) {
-            document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        let scrolling = false;
-        let scrollTimer;
-        function autoScroll(btn) {
-            scrolling = !scrolling;
-            if(scrolling) {
-                btn.style.color = "#FF9933";
-                scrollTimer = setInterval(() => {
-                    document.getElementById('reel-list').scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-                }, 5000);
-            } else {
-                btn.style.color = "#fff";
-                clearInterval(scrollTimer);
-            }
-        }
-    </script>
-</body>
-</html>
+            position: absolute; top: 20px; right: 20px; z-index: 100;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 20px;
