@@ -42,7 +42,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 .home-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
 .home-logo-img{width:220px;max-width:70%;margin-bottom:30px}
 .home-caption{font-size:1.2rem;line-height:1.6;color:#fff;text-align:center}
-.home-caption span{display:block;margin-top:15px;font-weight:800;letter-spacing:2px}
+.home-caption span{display:block;margin-top:10px;font-weight:800;letter-spacing:2px}
 
 /* REELS */
 #reel-list{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory}
@@ -61,7 +61,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 .ctab{flex:1;text-align:center;padding:10px;background:#111;border-radius:10px;cursor:pointer}
 .ctab.active{background:var(--primary);color:#000;font-weight:700}
 .preview{margin-top:20px}
-.preview video,.preview img,.preview audio,.preview iframe{width:100%;border-radius:16px}
+.preview video,.preview img{width:100%;border-radius:16px}
 
 /* SEARCH */
 .search-box{display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:20px}
@@ -72,8 +72,9 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 .avatar-wrap{position:relative;width:90px;height:90px;margin:0 auto}
 .avatar{width:90px;height:90px;border-radius:30px;background:#050505;border:1px solid #222}
 .edit-avatar{position:absolute;bottom:-4px;right:-4px;background:#111;border:1px solid #333;width:26px;height:26px;border-radius:50%;font-size:12px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.profile-box h1, #username{margin-top:10px;font-family:'Bebas Neue';font-size:28px;letter-spacing:1px}
-.profile-box input[type="date"]{margin-top:10px;background:#050505;border:1px solid #222;color:#fff;padding:10px;border-radius:10px;width:100%}
+.profile-box input, .profile-box h1{margin-top:15px;font-family:'Bebas Neue';font-size:32px;letter-spacing:2px;color:#fff}
+.profile-box input[type="text"]{font-size:18px;padding:8px;border-radius:10px;border:1px solid #222;width:80%;color:#fff}
+.profile-box input[type="date"]{background:#050505;border:1px solid #222;padding:10px;width:80%}
 .g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
 .g-btn{background:var(--card);border:1px solid var(--border);padding:14px 0;border-radius:12px;font-size:10px;letter-spacing:1px;color:#444;cursor:pointer}
 .g-btn.active{color:var(--primary);border-color:var(--primary)}
@@ -82,7 +83,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
 
 /* NAV */
 .nav{height:85px;border-top:1px solid var(--border);display:flex;background:#000;padding-bottom:25px}
-.tab{flex:1;border:none;background:none;cursor:pointer}
+.tab{flex:1;border:none;background:none}
 .tab svg{width:22px;height:22px;stroke:#333}
 .tab.active svg{stroke:var(--primary)}
 </style>
@@ -113,12 +114,12 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
   <div class="home-wrap">
     <img class="home-logo-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAA..." alt="DRIP Logo">
     <div class="home-caption">
-      DRIP app • Built in 2026 • Established 2026 • Designed for Gen-Z creators in India to share reels, go viral, follow trends, express creativity, monetize content, build communities, and dominate social feeds worldwide 🚀
-      <br>Showcase your talents, inspire millions, create epic content, and go viral daily.
-      <br>Upload videos, images, audio, and documents easily with our Creator Suite.
-      <br>Follow your favorite creators, engage with content, and grow your personal brand.
-      <br>BUILT IN INDIA • DRIP DIFFERENT • GO VIRAL • CREATE • SHARE • INSPIRE
-      <span></span>
+      DRIP app built 2026 • Established 2026<br>
+      Designed for Gen-Z creators in India to share reels and dominate social feeds<br>
+      Push trends, go viral, express yourself with videos, images, audios, and documents<br>
+      Follow, like, comment, and share to grow your audience in DRIP ecosystem<br>
+      Experience India's first complete reels platform with verified badges at 1M followers<br>
+      <span>BUILT IN INDIA • DRIP DIFFERENT • GO VIRAL</span>
     </div>
   </div>
 </div>
@@ -138,9 +139,14 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
       <div class="ctab" onclick="setCreate('audio', this)">AUDIO</div>
       <div class="ctab" onclick="setCreate('doc', this)">DOC</div>
     </div>
-    <input type="file" id="uploader" style="display:none" onchange="handleUpload(this)">
+    <input type="file" id="uploader" onchange="handleUpload(this)" style="display:none">
     <div class="preview" id="preview"></div>
   </div>
+</div>
+
+<!-- SEARCH -->
+<div id="search" class="page">
+  <div class="search-box"><input placeholder="Search creators..."></div>
 </div>
 
 <!-- PROFILE -->
@@ -150,8 +156,7 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
       <div class="avatar" id="avatar"></div>
       <label class="edit-avatar">✎<input type="file" hidden onchange="changeAvatar(this)"></label>
     </div>
-    <h1 contenteditable="true" id="profile-name">AKASH</h1>
-    <h1 contenteditable="true" id="username">@akash123</h1>
+    <input type="text" id="profile-name" value="AKASH" placeholder="Enter Name">
     <input type="date" id="dob">
     <div class="g-grid">
       <button class="g-btn" onclick="setGender(this)">MALE</button>
@@ -175,6 +180,103 @@ body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Se
   <button class="tab" onclick="go('profile',this)">👤</button>
 </nav>
 
-<script src="app.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const splash = document.getElementById('splash');
+  const app = document.getElementById('app');
+  setTimeout(() => {
+    splash.style.display = 'none';
+    app.style.display = 'flex';
+  }, 2500);
+
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
+    authDomain: "drip-india.firebaseapp.com",
+    projectId: "drip-india",
+    storageBucket: "drip-india.appspot.com",
+    messagingSenderId: "40598053043",
+    appId: "1:40598053043:web:b800c05afba716974690c6"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const storage = firebase.storage();
+
+  // Navigation
+  window.go = function(id,btn){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    btn.classList.add("active");
+  }
+
+  // Gender
+  window.setGender = function(btn){
+    document.querySelectorAll(".g-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    localStorage.setItem("gender", btn.innerText);
+  }
+
+  // Avatar
+  window.changeAvatar = function(input){
+    const url = URL.createObjectURL(input.files[0]);
+    document.getElementById('avatar').style.background = `url(${url}) center/cover`;
+    localStorage.setItem("avatar", url);
+  }
+
+  // CREATE
+  let currentType="video";
+  window.setCreate = function(type,el){
+    currentType=type;
+    document.querySelectorAll(".ctab").forEach(t=>t.classList.remove("active"));
+    el.classList.add("active");
+    document.getElementById('uploader').accept={video:"video/*",image:"image/*",audio:"audio/*",doc:".pdf,.doc,.docx"}[type];
+    document.getElementById('uploader').click();
+  }
+  window.handleUpload = function(input){
+    const file=input.files[0];
+    const preview=document.getElementById("preview");
+    preview.innerHTML="";if(!file)return;
+    if(currentType==="video"){
+      const v=document.createElement("video");
+      v.src=URL.createObjectURL(file);v.controls=true;v.autoplay=true;v.muted=true;
+      preview.appendChild(v);
+      const reel=document.createElement("div");
+      reel.className="reel";reel.innerHTML=`<video src="${v.src}" autoplay muted loop playsinline></video>`;
+      document.getElementById("reel-list").prepend(reel);
+    } else if(currentType==="image"){
+      const img=document.createElement("img");img.src=URL.createObjectURL(file);preview.appendChild(img);
+    } else{preview.innerHTML=`<p>${file.name}</p>`}
+  }
+
+  // AUTO SCROLL
+  let scrolling=false, scroller;
+  window.toggleAuto=function(btn){
+    scrolling=!scrolling;btn.classList.toggle("active");
+    if(scrolling){scroller=setInterval(()=>{document.getElementById("reel-list").scrollBy({top:innerHeight,behavior:"smooth"})},4500);}
+    else clearInterval(scroller);
+  }
+
+  // ACCOUNT
+  window.logout=function(){
+    auth.signOut().then(()=>{alert("Logged out"); location.reload();});
+  }
+  window.deleteAccount=function(){
+    if(confirm("This will delete your account data. Continue?")){
+      localStorage.clear();
+      alert("Account deleted");
+      location.reload();
+    }
+  }
+
+  // Load local data
+  if(localStorage.avatar) document.getElementById('avatar').style.background=`url(${localStorage.avatar}) center/cover`;
+  if(localStorage.gender) [...document.querySelectorAll(".g-btn")].find(b=>b.innerText===localStorage.gender)?.classList.add("active");
+};
+</script>
 </body>
 </html>
