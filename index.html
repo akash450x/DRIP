@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DRIP</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
@@ -14,7 +13,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
 
-/* SPLASH & AUTH GATE */
+/* SPLASH & AUTH */
 #splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
 .flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
@@ -23,48 +22,43 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 #auth-gate{ display:none; position:fixed; inset:0; background:#000; z-index:9000; flex-direction:column; align-items:center; justify-content:center; }
 .auth-btn{ padding:16px 32px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; width:80%; max-width:300px; margin-top:20px; font-size:14px; }
 
-/* APP CORE */
+/* REELS ENGINE */
+#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
+#reels::-webkit-scrollbar { display: none; }
+.reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; -webkit-transform: translateZ(0); }
+.reel video, .reel img { width:100%; height:100%; object-fit:cover; position: absolute; top: 0; left: 0; z-index: 1; }
+
+/* 🔱 MINI ACTION BAR */
+.reel-actions { 
+    position: absolute !important; right: 12px !important; bottom: 100px !important; 
+    display: flex !important; flex-direction: column !important; gap: 20px !important; 
+    z-index: 8000 !important; align-items: center !important;
+}
+.reel-actions button { 
+    background: none !important; border: none !important; color: #fff !important; 
+    width: 28px !important; height: 28px !important; font-size: 22px !important; 
+    display: flex !important; align-items: center !important; justify-content: center !important; 
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+}
+.auto-btn-mini { font-size: 7px !important; font-weight: 900; color: #888; letter-spacing: 1px; }
+
+/* HEART POP */
+.heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; z-index: 100000; animation: heartAnim 0.8s ease-out forwards; }
+@keyframes heartAnim { 0% { transform: scale(0) translate(-50%, -50%); opacity: 0; } 20% { transform: scale(1.2) translate(-50%, -50%); opacity: 1; } 100% { transform: scale(1.5) translate(-50%, -150%); opacity: 0; } }
+
+/* APP UI */
 #app{display:none; height:100vh; flex-direction:column; position: relative;}
 .header{height:60px; padding:0 16px; display:flex; align-items:center; border-bottom:1px solid var(--border);}
 .brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
 .view{flex:1;position:relative;overflow:hidden}
 .page{display:none;height:100%;overflow-y:auto}
 .page.active{display:block}
-
-/* HOME */
-.home{padding:40px 20px; text-align:center; max-width:720px; margin:auto;}
-.home p{line-height:1.8; font-size:1rem; color:#888;}
-.home span{display:block; margin-top:18px; color:var(--primary); font-weight:700; letter-spacing:2px;}
-
-/* REELS ACTIONS */
-#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
-#reels::-webkit-scrollbar { display: none; }
-.reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; -webkit-transform: translateZ(0); }
-.reel video, .reel img { width:100%; height:100%; object-fit:cover; position: absolute; top: 0; left: 0; z-index: 1; }
-
-.reel-actions { 
-    position: absolute !important; right: 10px !important; bottom: 100px !important; 
-    display: flex !important; flex-direction: column !important; gap: 18px !important; 
-    z-index: 8000 !important; align-items: center !important;
-}
-.reel-actions button { 
-    background: none !important; border: none !important; color: #fff !important; 
-    width: 30px !important; height: 30px !important; font-size: 20px !important; 
-    display: flex !important; align-items: center !important; justify-content: center !important; 
-}
-
-/* PROFILE */
-.profile{text-align:center; padding:20px;}
-.avatar-frame{ width:90px; height:90px; border-radius:30px; background:#111 center/cover; margin:0 auto 15px; border: 1px solid var(--border); }
-.p-btn { width:100%; margin-top:10px; padding:14px; background:#111; border: 1px solid var(--border); color:#fff; border-radius:12px; font-size:13px; font-weight:bold; }
-.gender-row { display:flex; justify-content:center; gap:8px; margin:15px 0; }
-.g-tab { flex:1; padding:10px; font-size:11px; background:#0a0a0a; border: 1px solid #222; color:#555; border-radius:10px; font-weight:700; }
-.g-tab.active { border-color:var(--primary); color:var(--primary); }
-
-/* NAV */
 .nav{ height:75px; display:flex; border-top:1px solid #1b1b1b; background:#000; z-index: 8500; }
 .tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
 .tab.active{color:var(--primary)}
+
+/* PROFILE */
+.p-btn { width:100%; margin-top:10px; padding:14px; background:#111; border: 1px solid var(--border); color:#fff; border-radius:12px; font-weight:bold; }
 </style>
 </head>
 
@@ -76,8 +70,7 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 </div>
 
 <div id="auth-gate">
-    <h1 style="font-family:'Bebas Neue'; font-size:50px; color:var(--primary); letter-spacing:4px;">DRIP</h1>
-    <p style="color:#555; margin-bottom:20px;">The Empire Awaits</p>
+    <h1 style="font-family:'Bebas Neue'; font-size:50px; color:var(--primary);">DRIP</h1>
     <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
 </div>
 
@@ -85,47 +78,20 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
     <header class="header"><div class="brand">DRIP</div></header>
     
     <div class="view">
-        <div id="home" class="page active home">
-            <p>
-                DRIP is India’s next-generation short-video platform built for creators who move fast and think bold.<br>
-                Create reels, share moments, and build a digital identity that actually matters.<br>
-                Designed for Gen-Z creators who want speed, simplicity, and real reach.<br>
-                No noise. No clutter. Just content that hits different.<br>
-                <span>BUILT IN INDIA • EST 2026 • DRIP DIFFERENT</span>
-            </p>
+        <div id="home" class="page active" style="padding:40px; text-align:center;">
+            <p style="color:#666; line-height:1.8;">DRIP is India’s next-generation short-video platform.<br><span>BUILT IN INDIA • EST 2026</span></p>
         </div>
-
         <div id="reels" class="page"></div>
-
         <div id="create" class="page" style="padding:20px;">
-            <div id="pre-box" style="width:100%; height:180px; background:#111; margin-bottom:15px; display:none; border-radius:12px; overflow:hidden;"></div>
-            <div style="display:flex; gap:10px;">
-                <button onclick="pick('video/*')" style="flex:1; padding:15px; background:#111; border:1px solid #222; border-radius:12px; color:#fff;">VIDEO</button>
-                <button onclick="pick('image/*')" style="flex:1; padding:15px; background:#111; border:1px solid #222; border-radius:12px; color:#fff;">IMAGE</button>
-            </div>
+            <button onclick="pick('video/*')" style="width:100%; padding:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px;">PICK MEDIA</button>
             <textarea id="desc" placeholder="Caption..." style="width:100%; margin-top:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px; padding:12px;"></textarea>
             <button onclick="publish()" style="width:100%; margin-top:15px; padding:15px; background:var(--primary); color:#000; font-weight:bold; border:none; border-radius:12px;">PUBLISH</button>
-            <input type="file" id="file" hidden onchange="showPre(this)">
+            <input type="file" id="file" hidden>
         </div>
-
-        <div id="search" class="page" style="padding:20px;">
-            <input placeholder="Search..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
-        </div>
-
-        <div id="profile" class="page profile">
-            <div class="avatar-frame" id="avatar"></div>
-            <button class="p-btn" onclick="document.getElementById('avatar-in').click()">Edit Profile Picture</button>
-            <input type="file" id="avatar-in" hidden onchange="upAv(this)">
-            <h2 id="uName" style="margin-top:15px;" contenteditable="true">AKASH</h2>
-            <p style="color:#444;" contenteditable="true">@akash</p>
-            <div class="gender-row">
-                <button onclick="sg(this)" class="g-tab">Male</button>
-                <button onclick="sg(this)" class="g-tab">Female</button>
-                <button onclick="sg(this)" class="g-tab">Other</button>
-            </div>
-            <input type="date" style="width:100%; padding:14px; background:#111; border:1px solid var(--border); color:#fff; border-radius:12px;">
+        <div id="search" class="page" style="padding:20px;"><input placeholder="Search..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;"></div>
+        <div id="profile" class="page" style="text-align:center; padding:20px;">
+            <h2 id="uName">AKASH</h2>
             <button class="p-btn" onclick="logoutEmpire()">LOG OUT</button>
-            <button class="p-btn" style="color:#ff4d4d; border-color:#331111" onclick="deleteEmpire()">DELETE ACCOUNT</button>
         </div>
     </div>
 
@@ -151,14 +117,12 @@ const config = {
 firebase.initializeApp(config);
 const auth = firebase.auth();
 
-// 🔱 AUTH OBSERVER & GOOGLE LOGIN
 auth.onAuthStateChanged(user => {
     document.getElementById('splash').style.display = 'none';
     if (user) {
         document.getElementById('auth-gate').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
         document.getElementById('uName').innerText = user.displayName || "AKASH";
-        if(user.photoURL) document.getElementById('avatar').style.backgroundImage = `url(${user.photoURL})`;
     } else {
         document.getElementById('app').style.display = 'none';
         document.getElementById('auth-gate').style.display = 'flex';
@@ -167,38 +131,39 @@ auth.onAuthStateChanged(user => {
 
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' }); // FORCES EMAIL SELECTION
+    provider.setCustomParameters({ prompt: 'select_account' });
     auth.signInWithPopup(provider);
 }
 
-function logoutEmpire() {
-    if(confirm("Are you sure you want to Log Out?")) {
-        auth.signOut().then(() => location.reload());
-    }
-}
+function logoutEmpire() { if(confirm("Log Out?")) auth.signOut().then(() => location.reload()); }
 
-function deleteEmpire() {
-    if(confirm("CRITICAL: Delete your account permanently?")) {
-        auth.signOut().then(() => location.reload());
-    }
-}
-
-// UI HANDLERS
 function go(id,btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     btn.classList.add('active');
 }
-function sg(btn){ document.querySelectorAll('.g-tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-function upAv(input){ if(input.files[0]) document.getElementById('avatar').style.backgroundImage = `url(${URL.createObjectURL(input.files[0])})`; }
+
 function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
-function showPre(input) {
-    const b = document.getElementById('pre-box'); b.innerHTML = "";
-    if (input.files[0]) {
-        b.style.display = "block"; const url = URL.createObjectURL(input.files[0]);
-        b.innerHTML = input.files[0].type.includes('video') ? `<video src="${url}" autoplay muted loop></video>` : `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
-    }
+
+// 🔱 REEL INTERACTIONS
+function shareReel(url, title) {
+    if (navigator.share) {
+        navigator.share({ title: 'DRIP Reel', text: title, url: url });
+    } else { alert("Sharing link: " + url); }
+}
+
+function downloadReel(url) {
+    const a = document.createElement('a');
+    a.href = url; a.download = 'DRIP_Reel.mp4';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+let auto=false, autoInt;
+function toggleAuto(btn){
+    auto = !auto; btn.style.color = auto ? "var(--primary)" : "#888";
+    if(auto) autoInt = setInterval(() => document.getElementById('reels').scrollBy({top: window.innerHeight, behavior: 'smooth'}), 4000);
+    else clearInterval(autoInt);
 }
 
 function publish(){
@@ -206,19 +171,34 @@ function publish(){
     if(!f.files[0]) return alert("Select media!");
     const url = URL.createObjectURL(f.files[0]); const isVid = f.files[0].type.includes('video');
     const reel = document.createElement("div"); reel.className = "reel";
+
+    // 🔱 DOUBLE TAP LIKE SYSTEM
+    reel.onmousedown = (e) => {
+        const now = Date.now();
+        if (now - (reel.dataset.lt || 0) < 300) {
+            const likeBtn = reel.querySelector('.btn-like');
+            likeBtn.style.color = '#FF9933';
+            const h = document.createElement('div'); h.className='heart-pop'; h.innerHTML='❤️';
+            h.style.left = e.clientX+'px'; h.style.top = (e.clientY - reel.getBoundingClientRect().top)+'px';
+            reel.appendChild(h); setTimeout(()=>h.remove(), 800);
+        }
+        reel.dataset.lt = now;
+    };
+
     reel.innerHTML = `
         ${isVid ? `<video src="${url}" autoplay muted loop playsinline webkit-playsinline></video>` : `<img src="${url}">`}
-        <div style="position:absolute; bottom:20px; left:16px; font-size:12px; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; z-index:99;">${d.value || "New Drip Post"}</div>
+        <div style="position:absolute; bottom:20px; left:16px; font-size:12px; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; z-index:99;">${d.value || "DRIP Empire"}</div>
         <div class="reel-actions">
-            <button onclick="this.style.color='var(--primary)'">❤️</button>
-            <button onclick="alert('Comments Locked')">💬</button>
-            <button onclick="alert('Shared')">↗️</button>
-            <button onclick="alert('Saved')">⬇️</button>
-            <button onclick="this.innerText='✅'">👤</button>
-            <button onclick="toggleAuto(this)" style="font-size:7px; font-weight:900; color:#888;">AUTO</button>
+            <button class="btn-like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
+            <button onclick="event.stopPropagation(); alert('Opening Comments...')">💬</button>
+            <button onclick="event.stopPropagation(); shareReel('${url}', '${d.value}')">↗️</button>
+            <button onclick="event.stopPropagation(); downloadReel('${url}')">⬇️</button>
+            <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
+            <button onclick="event.stopPropagation(); toggleAuto(this)" class="auto-btn-mini">AUTO</button>
         </div>`;
+    
     document.getElementById('reels').appendChild(reel);
-    d.value = ""; f.value = ""; document.getElementById('pre-box').style.display = "none";
+    d.value = ""; f.value = "";
     go('reels', document.querySelectorAll('.tab')[1]);
 }
 </script>
