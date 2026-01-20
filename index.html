@@ -4,81 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DRIP</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 <style>
-:root{
-  --primary:#FF9933;
-  --bg:#000;
-  --card:#080808;
-  --border:#161616;
-}
+:root{--primary:#FF9933;--bg:#000;--card:#080808;--border:#161616}
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:#000;
-  color:#fff;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  height:100vh;
-  overflow:hidden;
-}
+body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;height:100vh;overflow:hidden}
 
 /* SPLASH */
-#splash{
-  position:fixed;inset:0;
-  background:#000;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
-.flag-wrap{width:200px;height:125px;overflow:hidden;border-radius:6px}
+#splash{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+.flag-wrap{width:200px;height:125px;overflow:hidden;border-radius:6px;margin-bottom:10px}
 .stripe{height:33.33%}
 .saffron{background:#FF9933}
 .white{background:#fff;display:flex;align-items:center;justify-content:center}
 .green{background:#128807}
-.chakra{
-  width:34px;height:34px;
-  background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat
-}
-.jay-hind{
-  margin-top:15px;
-  font-family:'Bebas Neue';
-  font-size:28px;
-  letter-spacing:8px;
-  color:#D4AF37;
-}
+.chakra{width:34px;height:34px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
+.jay-hind{margin-top:10px;font-family:'Bebas Neue';font-size:28px;letter-spacing:8px;color:#D4AF37}
 
 /* APP */
 #app{display:none;flex-direction:column;height:100vh}
 
 /* HEADER */
-.header{
-  height:65px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  padding:0 18px;
-}
-.d-logo{
-  width:38px;height:38px;
-  border-radius:10px;
-  background:#050505;
-  border:1px solid #222;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:'Bebas Neue';
-  font-size:26px;
-}
-.brand{
-  margin-left:10px;
-  font-family:'Bebas Neue';
-  font-size:26px;
-  letter-spacing:2px;
-  color:var(--primary);
-}
+.header{height:65px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px}
+.d-logo{width:38px;height:38px;border-radius:10px;background:#050505;border:1px solid #222;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:26px}
+.brand{margin-left:10px;font-family:'Bebas Neue';font-size:26px;letter-spacing:2px;color:var(--primary)}
 
 /* VIEW */
 .view{flex:1;overflow:hidden;position:relative}
@@ -86,129 +38,68 @@ body{
 .page.active{display:block}
 
 /* HOME */
-.home-wrap{
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:20px;
-}
-.home-logo-img{
-  width:220px;
-  max-width:70%;
-  margin-bottom:30px;
-}
-.home-caption{
-  font-size:1.25rem;
-  line-height:1.6;
-}
-.home-caption span{
-  display:block;
-  margin-top:14px;
-  font-weight:800;
-  letter-spacing:2px;
-}
+.home-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.home-logo-img{width:220px;max-width:70%;margin-bottom:30px}
+.home-caption{font-size:1.2rem;line-height:1.5;color:#fff;text-align:center}
+.home-caption span{display:block;margin-top:10px;font-weight:800;letter-spacing:2px}
 
 /* REELS */
 #reel-list{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory}
-.reel{height:100vh;scroll-snap-align:start}
-.reel video{width:100%;height:100%;object-fit:cover}
+.reel{height:100vh;scroll-snap-align:start;position:relative}
+.reel video,.reel img{width:100%;height:100%;object-fit:cover}
+.reel .actions{position:absolute;right:10px;bottom:50px;display:flex;flex-direction:column;gap:10px}
+.reel .actions button{background:rgba(0,0,0,0.3);color:#fff;border:none;padding:6px 8px;border-radius:10px;cursor:pointer;font-size:12px}
 
-/* AUTO */
-.auto-btn{
-  position:absolute;
-  top:14px;
-  right:14px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.15);
-  color:rgba(255,255,255,.6);
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:9px;
-  font-weight:800;
-}
+/* AUTO SCROLL */
+.auto-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:6px 14px;border-radius:20px;font-size:9px;font-weight:800;backdrop-filter:blur(10px);z-index:10}
+.auto-btn.active{color:var(--primary);border-color:var(--primary)}
 
 /* CREATE */
 .create-wrap{padding:20px}
-.ctabs{display:flex;gap:10px}
-.ctab{
-  flex:1;
-  padding:12px;
-  background:#111;
-  border-radius:10px;
-  text-align:center;
-  cursor:pointer;
-}
+.ctabs{display:flex;gap:10px;margin-bottom:15px}
+.ctab{flex:1;text-align:center;padding:10px;background:#111;border-radius:10px;cursor:pointer}
 .ctab.active{background:var(--primary);color:#000;font-weight:700}
 .preview{margin-top:20px}
 .preview video,.preview img{width:100%;border-radius:16px}
 
 /* SEARCH */
-.search-box{
-  display:flex;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:12px 16px;
-  margin:20px;
-}
-.search-box input{
-  flex:1;
-  background:none;
-  border:none;
-  color:#fff;
-  font-size:15px;
-}
+.search-box{display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin:20px}
+.search-box input{flex:1;margin-left:10px;background:none;border:none;outline:none;color:#fff;font-size:15px}
 
 /* PROFILE */
 .profile-box{text-align:center;padding:20px}
 .avatar-wrap{position:relative;width:90px;height:90px;margin:0 auto}
-.avatar{
-  width:90px;height:90px;
-  border-radius:30px;
-  background:#050505;
-  border:1px solid #222;
-}
-.edit-avatar{
-  position:absolute;
-  bottom:-4px;right:-4px;
-  background:#111;
-  border:1px solid #333;
-  width:26px;height:26px;
-  border-radius:50%;
-  cursor:pointer;
-}
-.profile-box h1{
-  margin-top:15px;
-  font-family:'Bebas Neue';
-  font-size:32px;
-}
-.account-actions button{
-  width:100%;
-  margin-top:12px;
-  padding:14px;
-  background:#0A0A0A;
-  border:1px solid #222;
-  color:#FF4D4D;
-  font-weight:700;
-}
+.avatar{width:90px;height:90px;border-radius:30px;background:#050505;border:1px solid #222}
+.edit-avatar{position:absolute;bottom:-4px;right:-4px;background:#111;border:1px solid #333;width:26px;height:26px;border-radius:50%;font-size:12px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.profile-box h1{margin-top:15px;font-family:'Bebas Neue';font-size:32px;letter-spacing:2px}
+.profile-box input[type="date"]{margin-top:10px;background:#050505;border:1px solid #222;color:#fff;padding:10px;border-radius:10px;width:100%}
+.g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+.g-btn{background:var(--card);border:1px solid var(--border);padding:14px 0;border-radius:12px;font-size:10px;letter-spacing:1px;color:#444;cursor:pointer}
+.g-btn.active{color:var(--primary);border-color:var(--primary)}
+.account-actions{margin-top:20px}
+.account-actions button{width:100%;margin-top:12px;padding:14px;border-radius:14px;border:1px solid #222;background:#0A0A0A;color:#FF4D4D;font-weight:700;cursor:pointer}
 
 /* NAV */
-.nav{
-  height:85px;
-  border-top:1px solid var(--border);
-  display:flex;
-  padding-bottom:25px;
-}
-.tab{flex:1;background:none;border:none;font-size:20px;color:#666}
-.tab.active{color:var(--primary)}
+.nav{height:85px;border-top:1px solid var(--border);display:flex;background:#000;padding-bottom:25px}
+.tab{flex:1;border:none;background:none}
+.tab svg{width:22px;height:22px;stroke:#333}
+.tab.active svg{stroke:var(--primary)}
+
+/* LOGIN */
+#login{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999}
+.login-btn{padding:12px 20px;margin:10px;border:none;border-radius:10px;background:var(--primary);color:#000;font-weight:700;cursor:pointer;font-size:16px}
 </style>
 </head>
-
 <body>
 
+<!-- LOGIN -->
+<div id="login">
+  <h1 style="margin-bottom:20px;">Sign In to DRIP</h1>
+  <button class="login-btn" onclick="signInGoogle()">Sign in with Google</button>
+  <button class="login-btn" onclick="signInPhone()">Sign in with Phone</button>
+</div>
+
+<!-- SPLASH -->
 <div id="splash">
   <div class="flag-wrap">
     <div class="stripe saffron"></div>
@@ -230,13 +121,10 @@ body{
 <!-- HOME -->
 <div id="home" class="page active">
   <div class="home-wrap">
-    <img class="home-logo-img"
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAA..." />
+    <img class="home-logo-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+e0eKAAA..." alt="DRIP Logo">
     <div class="home-caption">
-      DRIP built in India 🇮🇳 • DRIP App established 2026 • A next-gen social platform
-      for Gen-Z creators to go viral, create fearless content, start trends,
-      own the feed and dominate the future.
-      <span>BUILT IN INDIA • DRIP DIFFERENT • EST. 2026</span>
+      DRIP app built 2026 • Established 2026 • Designed for Gen-Z creators in India to share reels, go viral, follow trends, and express themselves 🚀
+      <span>BUILT IN INDIA • DRIP DIFFERENT • GO VIRAL</span>
     </div>
   </div>
 </div>
@@ -251,21 +139,19 @@ body{
 <div id="create" class="page">
   <div class="create-wrap">
     <div class="ctabs">
-      <div class="ctab active" onclick="setCreate('video',this)">VIDEO</div>
-      <div class="ctab" onclick="setCreate('image',this)">IMAGE</div>
-      <div class="ctab" onclick="setCreate('audio',this)">AUDIO</div>
-      <div class="ctab" onclick="setCreate('doc',this)">DOC</div>
+      <div class="ctab active" onclick="setCreate('video', this)">VIDEO</div>
+      <div class="ctab" onclick="setCreate('image', this)">IMAGE</div>
+      <div class="ctab" onclick="setCreate('audio', this)">AUDIO</div>
+      <div class="ctab" onclick="setCreate('doc', this)">DOC</div>
     </div>
-    <input type="file" id="uploader" hidden onchange="handleUpload(this)">
+    <input type="file" id="uploader" onchange="handleUpload(this)" style="display:none">
     <div class="preview" id="preview"></div>
   </div>
 </div>
 
 <!-- SEARCH -->
 <div id="search" class="page">
-  <div class="search-box">
-    <input placeholder="Search creators...">
-  </div>
+  <div class="search-box"><input placeholder="Search creators..."></div>
 </div>
 
 <!-- PROFILE -->
@@ -273,11 +159,15 @@ body{
   <div class="profile-box">
     <div class="avatar-wrap">
       <div class="avatar" id="avatar"></div>
-      <label class="edit-avatar">
-        ✎ <input type="file" hidden onchange="changeAvatar(this)">
-      </label>
+      <label class="edit-avatar">✎<input type="file" hidden onchange="changeAvatar(this)"></label>
     </div>
-    <h1 contenteditable="true">AKASH</h1>
+    <h1 contenteditable="true" id="profile-name">AKASH</h1>
+    <input type="date" id="dob">
+    <div class="g-grid">
+      <button class="g-btn" onclick="setGender(this)">MALE</button>
+      <button class="g-btn" onclick="setGender(this)">FEMALE</button>
+      <button class="g-btn" onclick="setGender(this)">TRANS</button>
+    </div>
     <div class="account-actions">
       <button onclick="logout()">LOG OUT</button>
       <button onclick="deleteAccount()">DELETE ACCOUNT</button>
@@ -295,14 +185,32 @@ body{
   <button class="tab" onclick="go('profile',this)">👤</button>
 </nav>
 
-</div>
-
 <script>
-setTimeout(()=>{
-  splash.style.display="none";
-  app.style.display="flex";
-},2000);
+setTimeout(()=>{splash.style.display="none";app.style.display="flex"},1800);
 
+// ====== FIREBASE INIT ======
+const firebaseConfig = {
+  apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
+  authDomain: "drip-india.firebaseapp.com",
+  projectId: "drip-india",
+  storageBucket: "drip-india.appspot.com",
+  messagingSenderId: "40598053043",
+  appId: "1:40598053043:web:b800c05afba716974690c6",
+  measurementId: "G-EV7RDJ3EDJ"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+// ====== GLOBAL VARS ======
+let uid;
+const avatar = document.getElementById("avatar");
+const uploader = document.getElementById("uploader");
+const preview = document.getElementById("preview");
+let currentType = "video";
+
+// ====== NAV ======
 function go(id,btn){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -310,40 +218,130 @@ function go(id,btn){
   btn.classList.add("active");
 }
 
-let currentType="video";
+// ====== PROFILE ======
+function setGender(btn){
+  document.querySelectorAll(".g-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  if(uid) db.collection("users").doc(uid).set({gender:btn.innerText},{merge:true});
+}
+function changeAvatar(input){
+  const file=input.files[0];
+  const url=URL.createObjectURL(file);
+  avatar.style.background=`url(${url}) center/cover`;
+  if(uid && file){
+    const ref=storage.ref(`avatars/${uid}`);
+    ref.put(file).then(()=>ref.getDownloadURL().then(url=>db.collection("users").doc(uid).set({avatar:url},{merge:true})));
+  }
+}
+
+// ====== CREATE ======
 function setCreate(type,el){
   currentType=type;
   document.querySelectorAll(".ctab").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
   uploader.accept={video:"video/*",image:"image/*",audio:"audio/*",doc:".pdf,.doc,.docx"}[type];
-  uploader.click();
 }
-
 function handleUpload(input){
-  const file=input.files[0];
-  if(!file) return;
-  preview.innerHTML="";
-  if(currentType==="video"){
-    const v=document.createElement("video");
-    v.src=URL.createObjectURL(file);
-    v.controls=true;v.autoplay=true;v.muted=true;
-    preview.appendChild(v);
-
-    const reel=document.createElement("div");
-    reel.className="reel";
-    reel.innerHTML=`<video src="${v.src}" autoplay muted loop></video>`;
-    document.getElementById("reel-list").prepend(reel);
+  const file=input.files[0]; preview.innerHTML=""; if(!file) return;
+  const v=document.createElement(currentType==="video"?"video":"img");
+  v.src=URL.createObjectURL(file);
+  if(currentType==="video") v.controls=true,v.autoplay=true,v.muted=true;
+  preview.appendChild(v);
+  if(uid){
+    const ext=file.name.split(".").pop();
+    const storageRef=storage.ref(`reels/${uid}_${Date.now()}.${ext}`);
+    storageRef.put(file).then(()=>storageRef.getDownloadURL().then(url=>{
+      db.collection("reels").add({url,type:currentType,uid,likes:[],comments:[],timestamp:Date.now()});
+    }));
   }
 }
 
-function toggleAuto(btn){}
-
-function changeAvatar(input){
-  avatar.style.background=`url(${URL.createObjectURL(input.files[0])}) center/cover`;
+// ====== LOAD REELS ======
+function loadReels(){
+  db.collection("reels").orderBy("timestamp","desc").onSnapshot(snap=>{
+    const reelList=document.getElementById("reel-list");
+    reelList.innerHTML="";
+    snap.forEach(doc=>{
+      const data=doc.data();
+      const reel=document.createElement("div");
+      reel.className="reel";
+      reel.innerHTML=`
+      ${data.type==='video'?`<video src="${data.url}" autoplay muted loop playsinline></video>`:`<img src="${data.url}">`}
+      <div class="actions">
+        <button onclick="likeReel('${doc.id}')">❤️ ${data.likes.length}</button>
+        <button onclick="commentReel('${doc.id}')">💬 ${data.comments.length}</button>
+      </div>`;
+      reelList.appendChild(reel);
+    });
+  });
 }
 
-function logout(){localStorage.clear();location.reload()}
-function deleteAccount(){if(confirm("Delete account?")){localStorage.clear();location.reload()}}
+// ====== LIKES / COMMENTS ======
+function likeReel(reelId){
+  const reelRef=db.collection("reels").doc(reelId);
+  reelRef.get().then(doc=>{
+    const data=doc.data();
+    const likes=data.likes||[];
+    if(!likes.includes(uid)) likes.push(uid); else likes.splice(likes.indexOf(uid),1);
+    reelRef.update({likes});
+  });
+}
+function commentReel(reelId){
+  const comment=prompt("Enter comment:");
+  if(!comment) return;
+  db.collection("reels").doc(reelId).update({comments:firebase.firestore.FieldValue.arrayUnion(comment)});
+}
+
+// ====== FOLLOWERS / VERIFIED ======
+function updateFollowers(){
+  db.collection("users").doc(uid).get().then(doc=>{
+    let followers=doc.data()?.followers||0;
+    document.getElementById("profile-name").innerHTML=doc.data()?.name||"USER";
+    if(followers>=1000000) document.getElementById("profile-name").innerHTML+=" ✅";
+  });
+}
+
+// ====== AUTO SCROLL ======
+let scrolling=false,scroller;
+function toggleAuto(btn){scrolling=!scrolling;btn.classList.toggle("active");
+if(scrolling) scroller=setInterval(()=>document.getElementById("reel-list").scrollBy({top:innerHeight,behavior:"smooth"}),4500);
+else clearInterval(scroller);}
+
+// ====== LOGOUT / DELETE ======
+function logout(){auth.signOut().then(()=>location.reload());}
+function deleteAccount(){if(confirm("Delete account?")){db.collection("users").doc(uid).delete();auth.currentUser.delete();location.reload();}}
+
+// ====== AUTH ======
+function signInGoogle(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
+}
+function signInPhone(){
+  const phone=prompt("Enter phone number with country code (+91...)");
+  if(!phone) return;
+  const appVerifier=new firebase.auth.RecaptchaVerifier('login',{size:'invisible'});
+  auth.signInWithPhoneNumber(phone,appVerifier).then(confirmationResult=>{
+    const code=prompt("Enter OTP");
+    if(!code) return;
+    confirmationResult.confirm(code);
+  });
+}
+
+// ====== LOAD PROFILE ======
+auth.onAuthStateChanged(user=>{
+  if(user){
+    uid=user.uid;
+    document.getElementById('login').style.display='none';
+    document.getElementById('app').style.display='flex';
+    loadReels();
+    updateFollowers();
+    db.collection("users").doc(uid).get().then(doc=>{
+      if(!doc.exists) db.collection("users").doc(uid).set({name:user.displayName||"USER",followers:0});
+      if(doc.data()?.avatar) avatar.style.background=`url(${doc.data().avatar}) center/cover`;
+      if(doc.data()?.gender) [...document.querySelectorAll(".g-btn")].find(b=>b.innerText===doc.data().gender)?.classList.add("active");
+    });
+  }
+});
 </script>
 
 </body>
