@@ -13,23 +13,27 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body { background:#000; color:#fff; font-family:'Poppins', sans-serif; height:100vh; overflow:hidden; }
 
-/* 🔱 GUARANTEED SPLASH CURTAIN */
-#splash-curtain { position:fixed; inset:0; background:#000; z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center; transition: transform 0.8s cubic-bezier(0.9, 0, 0.1, 1); }
+/* 🔱 THE GUARANTEED CURTAIN */
+#splash-curtain { 
+    position:fixed; inset:0; background:#000; 
+    display:flex; flex-direction:column; align-items:center; justify-content:center; 
+    z-index:100000; transition: transform 0.6s cubic-bezier(0.9, 0, 0.1, 1);
+}
 .flag-wrap { width:180px; height:110px; background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%); position:relative; border-radius:6px; overflow:hidden; }
 .chakra { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:30px; height:30px; background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat; }
 .namaste { margin-top:15px; font-family:'Bebas Neue'; letter-spacing:6px; color:var(--gold); font-size:26px; }
 
-/* 🔱 MAIN APP CONTAINER */
+/* 🔱 APP ENGINE */
 #app-shell { display: flex; flex-direction: column; height: 100vh; width: 100%; position: relative; }
 .view { flex:1; position:relative; overflow:hidden; }
 .page { display:none; height:100%; overflow-y:auto; }
 .page.active { display:block; }
 
-/* 🔱 HOME SECTION - BIG DESCRIPTION */
+/* 🔱 HOME: BIG DESCRIPTION */
 .home-page { padding: 60px 20px; text-align:center; }
-.home-desc { line-height:1.8; font-size:15px; color:#aaa; margin-bottom:20px; text-align: center; }
+.home-desc { line-height:1.8; font-size:15px; color:#aaa; margin-bottom:20px; }
 
-/* 🔱 CREATE - COMMENT TOGGLE */
+/* 🔱 CREATE & PRIVACY */
 .privacy-row { display:flex; align-items:center; justify-content:space-between; background:var(--card); padding:15px; border-radius:12px; margin-top:12px; border:1px solid var(--border); }
 .switch { position:relative; display:inline-block; width:40px; height:20px; }
 .switch input { opacity:0; width:0; height:0; }
@@ -38,20 +42,20 @@ body { background:#000; color:#fff; font-family:'Poppins', sans-serif; height:10
 input:checked + .slider { background-color: var(--primary); }
 input:checked + .slider:before { transform: translateX(20px); }
 
-/* 🔱 ACCOUNT - RESTORED FEATURES */
+/* 🔱 ACCOUNT IDENTITY */
 .avatar-l { width:95px; height:95px; border-radius:32px; background:var(--card) center/cover; margin:0 auto 10px; border:1px solid var(--gold); }
-.bio-area { width:100%; background:#0a0a0a; border:1px solid #1a1a1a; border-radius:12px; padding:12px; color:#777; font-size:12px; margin:10px 0; outline:none; text-align: center; }
+.bio-area { width:100%; background:#0a0a0a; border:1px solid #1a1a1a; border-radius:12px; padding:12px; color:#777; font-size:12px; margin:10px 0; outline:none; }
 .gender-row { display:flex; gap:8px; margin:15px 0; }
 .g-tab { flex:1; padding:10px; background:var(--card); border:1px solid #222; color:#555; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer; }
 .g-tab.active { border-color:var(--primary); color:var(--primary); }
 
-/* FEED & GRID */
+/* REELS & GRID */
 .reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; }
 .reel video { width:100%; height:100%; object-fit:cover; position:absolute; }
 .profile-grid { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2px; margin-top:15px; }
 .grid-tile { aspect-ratio:1/1; background:#111; border:0.5px solid #000; overflow:hidden; }
 
-/* NAV */
+/* NAVIGATION */
 .nav { height:75px; display:flex; border-top:1px solid var(--border); background:#000; }
 .tab { flex:1; background:none; border:none; color:#333; font-size:22px; cursor:pointer; }
 .tab.active { color:var(--primary); }
@@ -65,208 +69,12 @@ input:checked + .slider:before { transform: translateX(20px); }
     <div class="namaste">NAMASTE</div>
 </div>
 
-<div id="app-shell">
-    <header style="height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);">
-        <div style="font-family:'Bebas Neue'; font-size:28px; color:var(--primary);">DRIP</div>
-    </header>
-
-    <div class="view">
-        <div id="home" class="page active home-page">
-            <div class="home-desc">
-                DRIP is India’s next-generation short-video platform built for creators who move fast and think bold.<br>
-                Create reels, share moments, and build a digital identity that actually matters.<br>
-                Designed for Gen-Z creators who want speed, simplicity, and real reach.<br>
-                No noise. No clutter. Just content that hits different.
-            </div>
-            <div style="color:var(--primary); font-weight:900; font-family:'Bebas Neue'; letter-spacing:2px;">BUILT IN INDIA • EST 2026</div>
-        </div>
-
-        <div id="reels" class="page" style="overflow-y: scroll; scroll-snap-type: y mandatory;"></div>
-
-        <div id="create" class="page" style="padding:20px;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
-                <button onclick="pick('video/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:12px;">📹 VIDEO</button>
-                <button onclick="pick('image/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:12px;">📸 PHOTO</button>
-            </div>
-            <textarea id="desc" placeholder="Caption your Reel..." style="width:100%; background:#111; border:1px solid #222; padding:15px; color:#fff; border-radius:15px; min-height:100px; outline:none;"></textarea>
-            
-            <div class="privacy-row">
-                <span style="font-size:13px; font-weight:600;">Allow Comments</span>
-                <label class="switch"><input type="checkbox" id="comm-switch" checked><span class="slider"></span></label>
-            </div>
-
-            <button onclick="publish()" style="width:100%; margin-top:20px; padding:18px; background:var(--primary); color:#000; border:none; border-radius:15px; font-weight:900;">PUBLISH</button>
-            <input type="file" id="file" hidden>
-        </div>
-
-        <div id="notifications" class="page" style="padding:20px;"><h3 style="font-family:'Bebas Neue'; color:var(--gold);">Notifications</h3></div>
-
-        <div id="profile" class="page" style="padding:20px; text-align:center;">
-            <div id="uAvatar" class="avatar-l"></div>
-            <button onclick="document.getElementById('av-in').click()" style="color:var(--primary); font-size:11px; background:none; border:none; font-weight:bold; cursor:pointer;">Edit Profile Picture</button>
-            <input type="file" id="av-in" hidden onchange="upAv(this)">
-            
-            <h2 id="uName" contenteditable="true" style="margin-top:10px;">Name</h2>
-            <p id="uHandle" contenteditable="true" style="color:#555; font-size:13px;">@username</p>
-            
-            <div class="bio-area" contenteditable="true">Describe your mission...</div>
-
-            <div class="gender-row">
-                <button onclick="sg(this)" class="g-tab active">Male</button>
-                <button onclick="sg(this)" class="g-tab">Female</button>
-                <button onclick="sg(this)" class="g-tab">Other</button>
-            </div>
-
-            <input type="date" style="width:100%; background:#111; border:1px solid #222; color:#fff; padding:12px; border-radius:12px; font-size:12px; margin-bottom:10px;">
-
-            <div id="my-grid" class="profile-grid"></div>
-
-            <button onclick="auth.signOut().then(()=>location.reload())" style="width:100%; margin-top:30px; padding:15px; background:var(--card); color:#fff; border:1px solid #333; border-radius:12px; cursor:pointer;">LOG OUT</button>
-            <button onclick="confirm('Delete Account Permanently?') && auth.signOut().then(()=>location.reload())" style="width:100%; margin-top:10px; padding:15px; background:#111; color:#ff4444; border:1px solid #331111; border-radius:12px; font-weight:bold; cursor:pointer;">DELETE ACCOUNT</button>
-        </div>
-    </div>
-
-    <nav class="nav">
-        <button class="tab active" onclick="go('home',this)">🏠</button>
-        <button class="tab" onclick="go('reels',this)">▶</button>
-        <button class="tab" onclick="go('create',this)">＋</button>
-        <button class="tab" onclick="go('notifications',this)">🔔</button>
-        <button class="tab" onclick="go('profile',this)">👤</button>
-    </nav>
-</div>
-
 <script>
-// 🔱 FAST INITIALIZATION
-const config = { apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM", authDomain: "drip-india.firebaseapp.com", projectId: "drip-india" };
-firebase.initializeApp(config);
-const auth = firebase.auth();
-
-function liftCurtain() { 
-    document.getElementById('splash-curtain').style.transform = 'translateY(-100%)'; 
-}
-
-auth.onAuthStateChanged(user => {
-    if (user) {
-        document.getElementById('uName').innerHTML = user.displayName + ' <span style="color:var(--gold);">✅</span>';
-        document.getElementById('uHandle').innerText = '@' + user.displayName.split(' ')[0].toLowerCase();
-        if(user.photoURL) document.getElementById('uAvatar').style.backgroundImage = `url(${user.photoURL})`;
-    }
-    setTimeout(liftCurtain, 1500); 
-});
-
-// UI NAVIGATION
-function go(id, btn){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    btn.classList.add('active');
-}
-
-function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
-function upAv(i){ if(i.files[0]) document.getElementById('uAvatar').style.backgroundImage = `url(${URL.createObjectURL(i.files[0])})`; }
-function sg(b){ document.querySelectorAll('.g-tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }
-
-// 🔱 DUAL-SYNC PUBLISHING ENGINE
-function publish(){
-    const f = document.getElementById('file'); const d = document.getElementById('desc');
-    const allowComm = document.getElementById('comm-switch').checked;
-    if(!f.files[0]) return alert("Select media!");
-    
-    const url = URL.createObjectURL(f.files[0]);
-    const isVid = f.files[0].type.includes('video');
-
-    // 1. GLOBAL REEL
-    const reel = document.createElement("div"); 
-    reel.className = "reel";
-    reel.innerHTML = `
-        ${isVid ? `<video src="${url}" autoplay muted loop playsinline></video>` : `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`}
-        <div style="position:absolute; bottom:25px; left:16px; z-index:90; background:rgba(0,0,0,0.6); padding:12px; border-radius:12px; backdrop-filter:blur(5px);">
-            <b style="font-size:14px;">${document.getElementById('uName').innerText}</b><br>
-            <span style="font-size:12px; color:#ccc;">${d.value}</span>
-        </div>
-        <div style="position:absolute; right:12px; bottom:100px; display:flex; flex-direction:column; gap:20px; z-index:100;">
-            <button style="background:none; border:none; color:#fff; font-size:24px;">❤️</button>
-            ${allowComm ? `<button style="background:none; border:none; color:#fff; font-size:24px;">💬</button>` : ''}
-        </div>`;
-    document.getElementById('reels').appendChild(reel);
-
-    // 2. ACCOUNT GRID
-    const tile = document.createElement('div');
-    tile.className = 'grid-tile';
-    tile.innerHTML = isVid ? `<video src="${url}" muted style="width:100%; height:100%; object-fit:cover;"></video>` : `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
-    document.getElementById('my-grid').appendChild(tile);
-
-    d.value = ""; f.value = "";
-    go('reels', document.querySelectorAll('.tab')[1]);
-}
+    setTimeout(function() {
+        const curtain = document.getElementById('splash-curtain');
+        if (curtain) curtain.style.transform = 'translateY(-100%)';
+    }, 1500);
 </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DRIP - THE EMPIRE</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-<style>
-:root{ --primary:#FF9933; --bg:#000; --card:#0b0b0b; --border:#1b1b1b; --gold:#D4AF37; }
-*{margin:0;padding:0;box-sizing:border-box}
-body { background:#000; color:#fff; font-family:'Poppins', sans-serif; height:100vh; overflow:hidden; }
-
-/* 🔱 GUARANTEED SPLASH CURTAIN */
-#splash-curtain { position:fixed; inset:0; background:#000; z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center; transition: transform 0.8s cubic-bezier(0.9, 0, 0.1, 1); }
-.flag-wrap { width:180px; height:110px; background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%); position:relative; border-radius:6px; overflow:hidden; }
-.chakra { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:30px; height:30px; background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat; }
-.namaste { margin-top:15px; font-family:'Bebas Neue'; letter-spacing:6px; color:var(--gold); font-size:26px; }
-
-/* 🔱 MAIN APP CONTAINER */
-#app-shell { display: flex; flex-direction: column; height: 100vh; width: 100%; position: relative; }
-.view { flex:1; position:relative; overflow:hidden; }
-.page { display:none; height:100%; overflow-y:auto; }
-.page.active { display:block; }
-
-/* 🔱 HOME SECTION - BIG DESCRIPTION */
-.home-page { padding: 60px 20px; text-align:center; }
-.home-desc { line-height:1.8; font-size:15px; color:#aaa; margin-bottom:20px; text-align: center; }
-
-/* 🔱 CREATE - COMMENT TOGGLE */
-.privacy-row { display:flex; align-items:center; justify-content:space-between; background:var(--card); padding:15px; border-radius:12px; margin-top:12px; border:1px solid var(--border); }
-.switch { position:relative; display:inline-block; width:40px; height:20px; }
-.switch input { opacity:0; width:0; height:0; }
-.slider { position:absolute; cursor:pointer; inset:0; background-color:#333; transition:.4s; border-radius:20px; }
-.slider:before { position:absolute; content:""; height:14px; width:14px; left:3px; bottom:3px; background-color:white; transition:.4s; border-radius:50%; }
-input:checked + .slider { background-color: var(--primary); }
-input:checked + .slider:before { transform: translateX(20px); }
-
-/* 🔱 ACCOUNT - RESTORED FEATURES */
-.avatar-l { width:95px; height:95px; border-radius:32px; background:var(--card) center/cover; margin:0 auto 10px; border:1px solid var(--gold); }
-.bio-area { width:100%; background:#0a0a0a; border:1px solid #1a1a1a; border-radius:12px; padding:12px; color:#777; font-size:12px; margin:10px 0; outline:none; text-align: center; }
-.gender-row { display:flex; gap:8px; margin:15px 0; }
-.g-tab { flex:1; padding:10px; background:var(--card); border:1px solid #222; color:#555; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer; }
-.g-tab.active { border-color:var(--primary); color:var(--primary); }
-
-/* FEED & GRID */
-.reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; }
-.reel video { width:100%; height:100%; object-fit:cover; position:absolute; }
-.profile-grid { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2px; margin-top:15px; }
-.grid-tile { aspect-ratio:1/1; background:#111; border:0.5px solid #000; overflow:hidden; }
-
-/* NAV */
-.nav { height:75px; display:flex; border-top:1px solid var(--border); background:#000; }
-.tab { flex:1; background:none; border:none; color:#333; font-size:22px; cursor:pointer; }
-.tab.active { color:var(--primary); }
-</style>
-</head>
-
-<body>
-
-<div id="splash-curtain">
-    <div class="flag-wrap"><div class="chakra"></div></div>
-    <div class="namaste">NAMASTE</div>
-</div>
 
 <div id="app-shell">
     <header style="height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);">
@@ -325,7 +133,7 @@ input:checked + .slider:before { transform: translateX(20px); }
             <div id="my-grid" class="profile-grid"></div>
 
             <button onclick="auth.signOut().then(()=>location.reload())" style="width:100%; margin-top:30px; padding:15px; background:var(--card); color:#fff; border:1px solid #333; border-radius:12px; cursor:pointer;">LOG OUT</button>
-            <button onclick="confirm('Delete Account Permanently?') && auth.signOut().then(()=>location.reload())" style="width:100%; margin-top:10px; padding:15px; background:#111; color:#ff4444; border:1px solid #331111; border-radius:12px; font-weight:bold; cursor:pointer;">DELETE ACCOUNT</button>
+            <button onclick="confirm('Delete Account?') && auth.signOut().then(()=>location.reload())" style="width:100%; margin-top:10px; padding:15px; background:#111; color:#ff4444; border:1px solid #331111; border-radius:12px; font-weight:bold; cursor:pointer;">DELETE ACCOUNT</button>
         </div>
     </div>
 
@@ -339,14 +147,10 @@ input:checked + .slider:before { transform: translateX(20px); }
 </div>
 
 <script>
-// 🔱 FAST INITIALIZATION
+// FIREBASE CONFIG
 const config = { apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM", authDomain: "drip-india.firebaseapp.com", projectId: "drip-india" };
 firebase.initializeApp(config);
 const auth = firebase.auth();
-
-function liftCurtain() { 
-    document.getElementById('splash-curtain').style.transform = 'translateY(-100%)'; 
-}
 
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -354,22 +158,20 @@ auth.onAuthStateChanged(user => {
         document.getElementById('uHandle').innerText = '@' + user.displayName.split(' ')[0].toLowerCase();
         if(user.photoURL) document.getElementById('uAvatar').style.backgroundImage = `url(${user.photoURL})`;
     }
-    setTimeout(liftCurtain, 1500); 
 });
 
-// UI NAVIGATION
+// UI HELPERS
 function go(id, btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     btn.classList.add('active');
 }
-
 function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
 function upAv(i){ if(i.files[0]) document.getElementById('uAvatar').style.backgroundImage = `url(${URL.createObjectURL(i.files[0])})`; }
 function sg(b){ document.querySelectorAll('.g-tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }
 
-// 🔱 DUAL-SYNC PUBLISHING ENGINE
+// DUAL-SYNC PUBLISHING
 function publish(){
     const f = document.getElementById('file'); const d = document.getElementById('desc');
     const allowComm = document.getElementById('comm-switch').checked;
@@ -378,7 +180,6 @@ function publish(){
     const url = URL.createObjectURL(f.files[0]);
     const isVid = f.files[0].type.includes('video');
 
-    // 1. GLOBAL REEL
     const reel = document.createElement("div"); 
     reel.className = "reel";
     reel.innerHTML = `
@@ -393,7 +194,6 @@ function publish(){
         </div>`;
     document.getElementById('reels').appendChild(reel);
 
-    // 2. ACCOUNT GRID
     const tile = document.createElement('div');
     tile.className = 'grid-tile';
     tile.innerHTML = isVid ? `<video src="${url}" muted style="width:100%; height:100%; object-fit:cover;"></video>` : `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
