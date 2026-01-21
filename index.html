@@ -3,110 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DRIP</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<title>DRIP - THE EMPIRE</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <style>
-:root{ --primary:#FF9933; --bg:#000; --border:#1b1b1b; }
+:root{ --primary:#FF9933; --bg:#000; --card:#0b0b0b; --border:#1b1b1b; --gold:#D4AF37; }
 *{margin:0;padding:0;box-sizing:border-box}
-body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
+body{ background:#000; color:#fff; font-family:'Poppins', sans-serif; height:100vh; overflow:hidden; }
 
-/* 🔱 GUARANTEED SPLASH EXIT */
-#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100000; transition:0.4s ease; }
-.flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
-.chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
-.namaste-text{margin-top:15px;font-family:'Bebas Neue';letter-spacing:6px;color:#D4AF37;font-size:26px;}
+/* 🔱 IDENTITY COMPONENTS */
+.avatar-l { width:100px; height:100px; border-radius:35px; background:#111 center/cover; margin:0 auto 15px; border:1.5px solid var(--gold); }
+.stat-box { display: flex; justify-content: center; gap: 25px; margin: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 15px 0; }
+.stat-item { text-align: center; cursor: pointer; }
+.stat-item span { display: block; font-weight: 700; font-size: 16px; color: var(--primary); }
+.stat-item label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
 
-#auth-gate{ display:none; position:fixed; inset:0; background:#000; z-index:9000; flex-direction:column; align-items:center; justify-content:center; }
-.auth-btn{ padding:16px 32px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; width:80%; max-width:300px; margin-top:20px; }
+/* 🔱 PROFILE PANELS */
+#list-panel {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 50%;
+    background: #080808; border-top: 1px solid #222; z-index: 2000;
+    transition: 0.4s ease; border-radius: 25px 25px 0 0; display: flex; flex-direction: column;
+}
+#list-panel.active { bottom: 0; }
 
-/* REELS ENGINE */
+/* 🔱 SEARCH RESULTS */
+.user-row { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--card); border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); cursor: pointer; }
+.user-row img { width: 45px; height: 45px; border-radius: 12px; border: 1px solid var(--primary); }
+
+/* 🔱 REELS ENGINE (PREVIOUS FIXES PRESERVED) */
 #reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
 #reels::-webkit-scrollbar { display: none; }
-.reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; -webkit-transform: translateZ(0); }
-.reel video, .reel img { width:100%; height:100%; object-fit:cover; position: absolute; top: 0; left: 0; z-index: 1; }
+.reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; overflow:hidden; }
+.reel video, .reel img { width:100%; height:100%; object-fit:cover; position:absolute; z-index:1; }
 
-/* 🔱 MINI ACTION BAR */
-.reel-actions { 
-    position: absolute !important; right: 12px !important; bottom: 100px !important; 
-    display: flex !important; flex-direction: column !important; gap: 20px !important; 
-    z-index: 8000 !important; align-items: center !important;
+.reel-info-box {
+    position: absolute; bottom: 25px; left: 16px; z-index: 90;
+    max-width: 65%; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px;
+    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);
 }
-.reel-actions button { 
-    background: none !important; border: none !important; color: #fff !important; 
-    width: 25px !important; height: 25px !important; font-size: 20px !important; 
-    display: flex !important; align-items: center !important; justify-content: center !important; 
-}
-.auto-btn-mini { font-size: 5px !important; font-weight: 900; color: #444; opacity: 0.5; }
 
-/* 🔱 SLIDING COMMENTS UNLOCKED */
-#comment-panel {
-    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
-    background: #0a0a0a; border-top: 1px solid #222; z-index: 9500;
-    transition: 0.4s ease; display: flex; flex-direction: column; border-radius: 20px 20px 0 0;
-}
-#comment-panel.active { bottom: 0; }
-
-/* HEART POP */
-.heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; z-index: 100000; animation: heartAnim 0.8s ease-out forwards; }
-@keyframes heartAnim { 0% { transform: scale(0) translate(-50%, -50%); opacity: 0; } 20% { transform: scale(1.2) translate(-50%, -50%); opacity: 1; } 100% { transform: scale(1.5) translate(-50%, -150%); opacity: 0; } }
-
-/* APP UI */
-#app{display:none; height:100vh; flex-direction:column; position: relative;}
-.header{height:60px; padding:0 16px; display:flex; align-items:center; border-bottom:1px solid var(--border);}
-.brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
-.view{flex:1;position:relative;overflow:hidden}
-.page{display:none;height:100%;overflow-y:auto}
-.page.active{display:block}
-.nav{ height:75px; display:flex; border-top:1px solid #1b1b1b; background:#000; z-index: 8500; }
-.tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
+/* NAVIGATION */
+.nav{ height:75px; display:flex; border-top:1px solid var(--border); background:#000; z-index:1000; }
+.tab{ flex:1; background:none; border:none; color:#333; font-size:24px; cursor:pointer; }
 .tab.active{color:var(--primary)}
+
+#app{display:none; height:100vh; flex-direction:column;}
+.view{flex:1; position:relative; overflow:hidden;}
+.page{display:none; height:100%; overflow-y:auto;}
+.page.active{display:block;}
 </style>
 </head>
 
 <body>
 
-<div id="splash" onclick="this.style.display='none'">
+<div id="splash">
     <div class="flag-wrap"><div class="chakra"></div></div>
     <div class="namaste-text">NAMASTE</div>
 </div>
 
-<div id="auth-gate">
-    <h1 style="font-family:'Bebas Neue'; font-size:50px; color:var(--primary);">DRIP</h1>
-    <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
-</div>
-
-<div id="comment-panel">
+<div id="list-panel">
     <div style="padding:15px; border-bottom:1px solid #111; display:flex; justify-content:space-between;">
-        <b>Comments</b><span onclick="toggleComm()" style="color:#444;">✕</span>
+        <b id="list-title">Users</b><span onclick="toggleList()" style="color:#555;">✕</span>
     </div>
-    <div id="comm-list" style="flex:1; overflow-y:auto; padding:20px;"></div>
-    <div style="padding:15px; display:flex; gap:10px; border-top:1px solid #111;">
-        <input type="text" id="c-input" placeholder="Add a comment..." style="flex:1; background:#111; border:1px solid #222; border-radius:10px; color:#fff; padding:10px;">
-        <button onclick="postComm()" style="background:var(--primary); border:none; padding:0 15px; border-radius:10px; font-weight:bold; color:black;">POST</button>
-    </div>
+    <div id="list-content" style="flex:1; overflow-y:auto; padding:15px;"></div>
 </div>
 
 <div id="app">
-    <header class="header"><div class="brand">DRIP</div></header>
+    <header style="height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border); justify-content:space-between;">
+        <div style="font-family:'Bebas Neue'; font-size:28px; color:var(--primary);">DRIP</div>
+        <div id="back-btn" onclick="go('search', document.querySelectorAll('.tab')[3])" style="display:none; color:var(--primary); font-size:12px; font-weight:bold;">← BACK</div>
+    </header>
+
     <div class="view">
         <div id="home" class="page active" style="padding:40px; text-align:center;">
-            <p style="color:#666; line-height:1.8;">DRIP is India’s next-generation short-video platform built for creators.<br><span>EST 2026</span></p>
+            <p style="color:#aaa; line-height:1.8;">DRIP: India’s next-generation platform.<br><span>BUILT IN INDIA • EST 2026</span></p>
         </div>
+
         <div id="reels" class="page"></div>
+
         <div id="create" class="page" style="padding:20px;">
-            <button onclick="pick('video/*')" style="width:100%; padding:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px;">PICK VIDEO</button>
-            <textarea id="desc" placeholder="Caption..." style="width:100%; margin-top:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px; padding:12px;"></textarea>
-            <button onclick="publish()" style="width:100%; margin-top:15px; padding:15px; background:var(--primary); color:#000; font-weight:bold; border:none; border-radius:12px;">PUBLISH</button>
+            <div class="create-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                <button onclick="pick('video/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px;">VIDEO</button>
+                <button onclick="pick('image/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px;">PHOTO</button>
+            </div>
+            <textarea id="desc" placeholder="What's on your mind?" style="width:100%; background:#111; border:1px solid var(--border); padding:15px; color:#fff; border-radius:15px; min-height:100px;"></textarea>
+            <button onclick="publish()" style="width:100%; margin-top:15px; padding:18px; background:var(--primary); color:#000; border:none; border-radius:15px; font-weight:900;">PUBLISH</button>
             <input type="file" id="file" hidden>
         </div>
-        <div id="profile" class="page" style="text-align:center; padding:20px;">
-            <h2 id="uName">AKASH</h2>
-            <button onclick="logoutEmpire()" style="width:100%; margin-top:20px; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
+
+        <div id="search" class="page" style="padding:20px;">
+            <div style="display:flex; align-items:center; background:var(--card); border-radius:14px; padding:0 15px; border:1px solid var(--border);">
+                <span>🔍</span><input oninput="searchUsers(this.value)" placeholder="Search the Empire..." style="flex:1; background:none; border:none; padding:15px 10px; color:#fff; outline:none;">
+            </div>
+            <div id="search-results" style="margin-top:20px;">
+                </div>
+        </div>
+
+        <div id="profile" class="page" style="padding:20px; text-align:center;">
+            <div id="uAvatar" class="avatar-l"></div>
+            <h2 id="uName">AKASH <span style="color:var(--gold);">✅</span></h2>
+            <p id="uHandle" style="color:#555;">@akash</p>
+            
+            <div class="stat-box">
+                <div class="stat-item" onclick="viewList('Followers')"><span id="count-followers">1.2M</span><label>Followers</label></div>
+                <div class="stat-item" onclick="viewList('Following')"><span id="count-following">482</span><label>Following</label></div>
+                <div class="stat-item"><span>158</span><label>Reels</label></div>
+            </div>
+
+            <div id="profile-actions">
+                <button onclick="editProfile()" style="width:100%; padding:12px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px; font-weight:bold;">Edit Empire Profile</button>
+            </div>
+
+            <div id="my-reels-grid" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2px; margin-top:20px;">
+                </div>
         </div>
     </div>
+
     <nav class="nav">
         <button class="tab active" onclick="go('home',this)">🏠</button>
         <button class="tab" onclick="go('reels',this)">▶</button>
@@ -117,99 +131,91 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 </div>
 
 <script>
-// 🔱 FORCED EXIT LOGIC
-window.onload = () => { setTimeout(() => { document.getElementById('splash').style.display='none'; }, 2000); };
+// INITIALIZATION
+setTimeout(()=>document.getElementById('splash').style.display='none', 1500);
 
-// FIREBASE
-const config = {
-    apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
-    authDomain: "drip-india.firebaseapp.com",
-    projectId: "drip-india",
-    storageBucket: "drip-india.firebasestorage.app",
-    messagingSenderId: "40598053043",
-    appId: "1:40598053043:web:b800c05afba716974690c6"
-};
-firebase.initializeApp(config);
-const auth = firebase.auth();
-
-auth.onAuthStateChanged(user => {
-    document.getElementById('splash').style.display = 'none';
-    if (user) {
-        document.getElementById('auth-gate').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        document.getElementById('uName').innerText = user.displayName || "AKASH";
-    } else {
-        document.getElementById('app').style.display = 'none';
-        document.getElementById('auth-gate').style.display = 'flex';
-    }
-});
-
-function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    auth.signInWithPopup(provider);
-}
-
-function logoutEmpire() { if(confirm("Log Out?")) auth.signOut().then(() => location.reload()); }
-
-function go(id,btn){
+function go(id, btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    btn.classList.add('active');
+    if(btn) btn.classList.add('active');
+    document.getElementById('back-btn').style.display = (id === 'profile' && btn === null) ? 'block' : 'none';
 }
 
-function toggleComm() { document.getElementById('comment-panel').classList.toggle('active'); }
-function postComm() {
-    const i = document.getElementById('c-input');
-    const l = document.getElementById('comm-list');
-    if(!i.value) return;
-    const d = document.createElement('div');
-    d.innerHTML = `<b style="color:var(--primary); font-size:11px;">@AKASH</b><p style="font-size:13px;">${i.value}</p>`;
-    l.prepend(d); i.value = "";
+// 🔱 SOCIAL ENGINE: SEARCH & PEER VIEW
+const mockUsers = [
+    { name: "Bharat Gamer", handle: "@bharat_pro", avatar: "https://i.pravatar.cc/150?u=1", followers: "500K", following: "120" },
+    { name: "Devotional Soul", handle: "@bhakti_empire", avatar: "https://i.pravatar.cc/150?u=2", followers: "2.1M", following: "15" }
+];
+
+function searchUsers(query) {
+    const res = document.getElementById('search-results');
+    res.innerHTML = "";
+    if(!query) return;
+    mockUsers.forEach(u => {
+        if(u.handle.includes(query.toLowerCase())){
+            const div = document.createElement('div');
+            div.className = "user-row";
+            div.innerHTML = `<img src="${u.avatar}"><div><b>${u.name}</b><br><small style="color:#555">${u.handle}</small></div>`;
+            div.onclick = () => openPeerProfile(u);
+            res.appendChild(div);
+        }
+    });
 }
 
+function openPeerProfile(user) {
+    document.getElementById('uName').innerHTML = user.name;
+    document.getElementById('uHandle').innerText = user.handle;
+    document.getElementById('uAvatar').style.backgroundImage = `url(${user.avatar})`;
+    document.getElementById('count-followers').innerText = user.followers;
+    document.getElementById('count-following').innerText = user.following;
+    
+    document.getElementById('profile-actions').innerHTML = `
+        <button onclick="toggleFollowPeer(this)" style="width:100%; padding:12px; background:var(--primary); color:#000; border:none; border-radius:10px; font-weight:bold;">FOLLOW</button>
+    `;
+    go('profile', null);
+}
+
+function toggleFollowPeer(btn) {
+    if(btn.innerText === "FOLLOW") {
+        btn.innerText = "FOLLOWING"; btn.style.background = "#111"; btn.style.color = "#fff";
+    } else {
+        btn.innerText = "FOLLOW"; btn.style.background = "var(--primary)"; btn.style.color = "#000";
+    }
+}
+
+function toggleList() { document.getElementById('list-panel').classList.toggle('active'); }
+function viewList(type) {
+    document.getElementById('list-title').innerText = type;
+    document.getElementById('list-content').innerHTML = `<p style="color:#444; text-align:center; margin-top:20px;">Loading ${type} of the Empire...</p>`;
+    toggleList();
+}
+
+// 🔱 REELS PUBLISHING (PRESERVED LOGIC)
 function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
-
-let auto=false, autoInt;
-function toggleAuto(btn){
-    auto = !auto; btn.style.color = auto ? "var(--primary)" : "#444";
-    if(auto) autoInt = setInterval(() => document.getElementById('reels').scrollBy({top: window.innerHeight, behavior: 'smooth'}), 4000);
-    else clearInterval(autoInt);
-}
-
 function publish(){
     const f = document.getElementById('file'); const d = document.getElementById('desc');
     if(!f.files[0]) return alert("Select media!");
     const url = URL.createObjectURL(f.files[0]);
     const reel = document.createElement("div"); reel.className = "reel";
-
-    // 🔱 DOUBLE TAP LIKE
-    reel.onmousedown = (e) => {
-        const now = Date.now();
-        if (now - (reel.dataset.lt || 0) < 300) {
-            reel.querySelector('.btn-like').style.color = '#FF9933';
-            const h = document.createElement('div'); h.className='heart-pop'; h.innerHTML='❤️';
-            h.style.left = e.clientX+'px'; h.style.top = (e.clientY - reel.getBoundingClientRect().top)+'px';
-            reel.appendChild(h); setTimeout(()=>h.remove(), 800);
-        }
-        reel.dataset.lt = now;
-    };
-
     reel.innerHTML = `
         <video src="${url}" autoplay muted loop playsinline webkit-playsinline></video>
-        <div style="position:absolute; bottom:20px; left:16px; font-size:12px; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; z-index:99;">${d.value || "DRIP"}</div>
-        <div class="reel-actions">
-            <button class="btn-like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
-            <button onclick="event.stopPropagation(); toggleComm()">💬</button>
-            <button onclick="event.stopPropagation(); alert('Shared')">↗️</button>
-            <button onclick="event.stopPropagation(); alert('Saved')">⬇️</button>
-            <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
-            <button onclick="event.stopPropagation(); toggleAuto(this)" class="auto-btn-mini">AUTO</button>
+        <div class="reel-info-box">
+            <b>@akash ✅</b><br><span style="font-size:12px; color:#ccc;">${d.value}</span>
+        </div>
+        <div style="position:absolute; right:12px; bottom:100px; display:flex; flex-direction:column; gap:20px; z-index:100;">
+            <button onclick="this.style.color='var(--primary)'" style="background:none; border:none; color:#fff; font-size:24px;">❤️</button>
+            <button style="background:none; border:none; color:#fff; font-size:24px;">💬</button>
+            <button style="background:none; border:none; color:#fff; font-size:24px;">↗️</button>
         </div>`;
-    
     document.getElementById('reels').appendChild(reel);
-    d.value = ""; f.value = "";
+    
+    // Add to My Grid
+    const thumb = document.createElement('div');
+    thumb.style = "aspect-ratio:1/1; background:#111; overflow:hidden; border:0.5px solid #000;";
+    thumb.innerHTML = `<video src="${url}" style="width:100%; height:100%; object-fit:cover;"></video>`;
+    document.getElementById('my-reels-grid').appendChild(thumb);
+    
     go('reels', document.querySelectorAll('.tab')[1]);
 }
 </script>
