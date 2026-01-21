@@ -13,46 +13,31 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{ background:#000; color:#fff; font-family:'Poppins', sans-serif; height:100vh; overflow:hidden; }
 
-/* 🔱 IDENTITY COMPONENTS */
-.avatar-l { width:100px; height:100px; border-radius:35px; background:#111 center/cover; margin:0 auto 15px; border:1.5px solid var(--gold); }
-.stat-box { display: flex; justify-content: center; gap: 25px; margin: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 15px 0; }
-.stat-item { text-align: center; cursor: pointer; }
-.stat-item span { display: block; font-weight: 700; font-size: 16px; color: var(--primary); }
-.stat-item label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+/* 🔱 LEADERBOARD COMPONENTS */
+.leaderboard-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
+.rank-num { font-family: 'Bebas Neue'; font-size: 20px; color: var(--gold); width: 25px; }
+.leader-avatar { width: 35px; height: 35px; border-radius: 10px; border: 1px solid var(--primary); }
+.leader-info { flex: 1; font-size: 13px; }
+.leader-score { font-size: 11px; color: var(--primary); font-weight: bold; }
 
-/* 🔱 PROFILE PANELS */
-#list-panel {
-    position: fixed; bottom: -100%; left: 0; width: 100%; height: 50%;
-    background: #080808; border-top: 1px solid #222; z-index: 2000;
-    transition: 0.4s ease; border-radius: 25px 25px 0 0; display: flex; flex-direction: column;
-}
-#list-panel.active { bottom: 0; }
+/* SEARCH & TRENDS PRESERVATION */
+.trend-tag { display: inline-block; padding: 8px 15px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; margin: 4px; font-size: 11px; cursor: pointer; }
+.section-title { padding: 15px 0 10px; font-family: 'Bebas Neue'; letter-spacing: 2px; font-size: 18px; color: var(--gold); }
 
-/* 🔱 SEARCH RESULTS */
-.user-row { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--card); border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); cursor: pointer; }
-.user-row img { width: 45px; height: 45px; border-radius: 12px; border: 1px solid var(--primary); }
-
-/* 🔱 REELS ENGINE (PREVIOUS FIXES PRESERVED) */
-#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
-#reels::-webkit-scrollbar { display: none; }
-.reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; overflow:hidden; }
-.reel video, .reel img { width:100%; height:100%; object-fit:cover; position:absolute; z-index:1; }
-
-.reel-info-box {
-    position: absolute; bottom: 25px; left: 16px; z-index: 90;
-    max-width: 65%; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px;
-    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* NAVIGATION */
-.nav{ height:75px; display:flex; border-top:1px solid var(--border); background:#000; z-index:1000; }
-.tab{ flex:1; background:none; border:none; color:#333; font-size:24px; cursor:pointer; }
-.tab.active{color:var(--primary)}
+/* REELS & UI PRESERVATION */
+#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100000; }
+.flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:6px; overflow:hidden;}
+.chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
+.namaste-text{margin-top:15px;font-family:'Bebas Neue';letter-spacing:6px;color:var(--gold);font-size:26px;}
 
 #app{display:none; height:100vh; flex-direction:column;}
 .view{flex:1; position:relative; overflow:hidden;}
 .page{display:none; height:100%; overflow-y:auto;}
 .page.active{display:block;}
+
+.nav{ height:75px; display:flex; border-top:1px solid var(--border); background:#000; z-index:1000; }
+.tab{ flex:1; background:none; border:none; color:#333; font-size:22px; cursor:pointer; }
+.tab.active{color:var(--primary)}
 </style>
 </head>
 
@@ -63,61 +48,66 @@ body{ background:#000; color:#fff; font-family:'Poppins', sans-serif; height:100
     <div class="namaste-text">NAMASTE</div>
 </div>
 
-<div id="list-panel">
-    <div style="padding:15px; border-bottom:1px solid #111; display:flex; justify-content:space-between;">
-        <b id="list-title">Users</b><span onclick="toggleList()" style="color:#555;">✕</span>
-    </div>
-    <div id="list-content" style="flex:1; overflow-y:auto; padding:15px;"></div>
-</div>
-
 <div id="app">
-    <header style="height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border); justify-content:space-between;">
+    <header style="height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);">
         <div style="font-family:'Bebas Neue'; font-size:28px; color:var(--primary);">DRIP</div>
-        <div id="back-btn" onclick="go('search', document.querySelectorAll('.tab')[3])" style="display:none; color:var(--primary); font-size:12px; font-weight:bold;">← BACK</div>
     </header>
 
     <div class="view">
         <div id="home" class="page active" style="padding:40px; text-align:center;">
-            <p style="color:#aaa; line-height:1.8;">DRIP: India’s next-generation platform.<br><span>BUILT IN INDIA • EST 2026</span></p>
+            <p style="color:#aaa; line-height:1.8;">DRIP is India’s next-generation short-video platform built for creators who move fast and think bold.<br><span>BUILT IN INDIA • EST 2026</span></p>
         </div>
 
         <div id="reels" class="page"></div>
 
         <div id="create" class="page" style="padding:20px;">
-            <div class="create-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-                <button onclick="pick('video/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px;">VIDEO</button>
-                <button onclick="pick('image/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px;">PHOTO</button>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                <button onclick="pick('video/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px;">📹 VIDEO</button>
+                <button onclick="pick('image/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px;">📸 PHOTO</button>
             </div>
-            <textarea id="desc" placeholder="What's on your mind?" style="width:100%; background:#111; border:1px solid var(--border); padding:15px; color:#fff; border-radius:15px; min-height:100px;"></textarea>
+            <textarea id="desc" placeholder="What's happening in your Empire?" style="width:100%; background:#111; border:1px solid var(--border); padding:15px; color:#fff; border-radius:15px; min-height:100px;"></textarea>
             <button onclick="publish()" style="width:100%; margin-top:15px; padding:18px; background:var(--primary); color:#000; border:none; border-radius:15px; font-weight:900;">PUBLISH</button>
             <input type="file" id="file" hidden>
         </div>
 
         <div id="search" class="page" style="padding:20px;">
             <div style="display:flex; align-items:center; background:var(--card); border-radius:14px; padding:0 15px; border:1px solid var(--border);">
-                <span>🔍</span><input oninput="searchUsers(this.value)" placeholder="Search the Empire..." style="flex:1; background:none; border:none; padding:15px 10px; color:#fff; outline:none;">
+                <span>🔍</span><input placeholder="Search the Empire..." style="flex:1; background:none; border:none; padding:15px 10px; color:#fff; outline:none;">
             </div>
-            <div id="search-results" style="margin-top:20px;">
+            
+            <div class="section-title">Trending Hashtags</div>
+            <div>
+                <span class="trend-tag">#BharatPride</span><span class="trend-tag">#EmpireGamer</span><span class="trend-tag">#Namaste</span>
+            </div>
+
+            <div class="section-title">Top Contributors</div>
+            <div id="leaderboard">
+                <div class="leaderboard-row">
+                    <div class="rank-num">01</div>
+                    <div class="leader-avatar" style="background:url('https://i.pravatar.cc/150?u=1') center/cover;"></div>
+                    <div class="leader-info"><b>@akash ✅</b></div>
+                    <div class="leader-score">Founder</div>
                 </div>
+                <div class="leaderboard-row">
+                    <div class="rank-num">02</div>
+                    <div class="leader-avatar" style="background:url('https://i.pravatar.cc/150?u=2') center/cover;"></div>
+                    <div class="leader-info"><b>@bharat_pro</b></div>
+                    <div class="leader-score">982K Drip</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notifications" class="page" style="padding:20px;">
+            <div class="section-title" style="font-size:22px;">Empire Activity</div>
+            <div id="notif-list">
+                <div style="padding:15px; background:var(--card); border-radius:12px; border:1px solid var(--border); font-size:13px;"><b>@system</b> Welcome to your Empire.</div>
+            </div>
         </div>
 
         <div id="profile" class="page" style="padding:20px; text-align:center;">
-            <div id="uAvatar" class="avatar-l"></div>
+            <div id="uAvatar" style="width:100px; height:100px; border-radius:35px; background:#111 center/cover; margin:0 auto 15px; border:1.5px solid var(--gold);"></div>
             <h2 id="uName">AKASH <span style="color:var(--gold);">✅</span></h2>
-            <p id="uHandle" style="color:#555;">@akash</p>
-            
-            <div class="stat-box">
-                <div class="stat-item" onclick="viewList('Followers')"><span id="count-followers">1.2M</span><label>Followers</label></div>
-                <div class="stat-item" onclick="viewList('Following')"><span id="count-following">482</span><label>Following</label></div>
-                <div class="stat-item"><span>158</span><label>Reels</label></div>
-            </div>
-
-            <div id="profile-actions">
-                <button onclick="editProfile()" style="width:100%; padding:12px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:10px; font-weight:bold;">Edit Empire Profile</button>
-            </div>
-
-            <div id="my-reels-grid" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2px; margin-top:20px;">
-                </div>
+            <div id="my-reels-grid" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2px; margin-top:20px;"></div>
         </div>
     </div>
 
@@ -126,6 +116,7 @@ body{ background:#000; color:#fff; font-family:'Poppins', sans-serif; height:100
         <button class="tab" onclick="go('reels',this)">▶</button>
         <button class="tab" onclick="go('create',this)">＋</button>
         <button class="tab" onclick="go('search',this)">🔍</button>
+        <button class="tab" onclick="go('notifications',this)">🔔</button>
         <button class="tab" onclick="go('profile',this)">👤</button>
     </nav>
 </div>
@@ -138,84 +129,23 @@ function go(id, btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    document.getElementById('back-btn').style.display = (id === 'profile' && btn === null) ? 'block' : 'none';
+    btn.classList.add('active');
 }
 
-// 🔱 SOCIAL ENGINE: SEARCH & PEER VIEW
-const mockUsers = [
-    { name: "Bharat Gamer", handle: "@bharat_pro", avatar: "https://i.pravatar.cc/150?u=1", followers: "500K", following: "120" },
-    { name: "Devotional Soul", handle: "@bhakti_empire", avatar: "https://i.pravatar.cc/150?u=2", followers: "2.1M", following: "15" }
-];
-
-function searchUsers(query) {
-    const res = document.getElementById('search-results');
-    res.innerHTML = "";
-    if(!query) return;
-    mockUsers.forEach(u => {
-        if(u.handle.includes(query.toLowerCase())){
-            const div = document.createElement('div');
-            div.className = "user-row";
-            div.innerHTML = `<img src="${u.avatar}"><div><b>${u.name}</b><br><small style="color:#555">${u.handle}</small></div>`;
-            div.onclick = () => openPeerProfile(u);
-            res.appendChild(div);
-        }
-    });
-}
-
-function openPeerProfile(user) {
-    document.getElementById('uName').innerHTML = user.name;
-    document.getElementById('uHandle').innerText = user.handle;
-    document.getElementById('uAvatar').style.backgroundImage = `url(${user.avatar})`;
-    document.getElementById('count-followers').innerText = user.followers;
-    document.getElementById('count-following').innerText = user.following;
-    
-    document.getElementById('profile-actions').innerHTML = `
-        <button onclick="toggleFollowPeer(this)" style="width:100%; padding:12px; background:var(--primary); color:#000; border:none; border-radius:10px; font-weight:bold;">FOLLOW</button>
-    `;
-    go('profile', null);
-}
-
-function toggleFollowPeer(btn) {
-    if(btn.innerText === "FOLLOW") {
-        btn.innerText = "FOLLOWING"; btn.style.background = "#111"; btn.style.color = "#fff";
-    } else {
-        btn.innerText = "FOLLOW"; btn.style.background = "var(--primary)"; btn.style.color = "#000";
-    }
-}
-
-function toggleList() { document.getElementById('list-panel').classList.toggle('active'); }
-function viewList(type) {
-    document.getElementById('list-title').innerText = type;
-    document.getElementById('list-content').innerHTML = `<p style="color:#444; text-align:center; margin-top:20px;">Loading ${type} of the Empire...</p>`;
-    toggleList();
-}
-
-// 🔱 REELS PUBLISHING (PRESERVED LOGIC)
+// 🔱 REELS PUBLISHING (PRESERVED)
 function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
 function publish(){
     const f = document.getElementById('file'); const d = document.getElementById('desc');
     if(!f.files[0]) return alert("Select media!");
     const url = URL.createObjectURL(f.files[0]);
-    const reel = document.createElement("div"); reel.className = "reel";
+    const reel = document.createElement("div"); 
+    reel.style = "height:100%; width:100%; position:relative; scroll-snap-align:start; background:#000;";
     reel.innerHTML = `
-        <video src="${url}" autoplay muted loop playsinline webkit-playsinline></video>
-        <div class="reel-info-box">
+        <video src="${url}" autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+        <div style="position:absolute; bottom:25px; left:16px; z-index:90; background:rgba(0,0,0,0.5); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
             <b>@akash ✅</b><br><span style="font-size:12px; color:#ccc;">${d.value}</span>
-        </div>
-        <div style="position:absolute; right:12px; bottom:100px; display:flex; flex-direction:column; gap:20px; z-index:100;">
-            <button onclick="this.style.color='var(--primary)'" style="background:none; border:none; color:#fff; font-size:24px;">❤️</button>
-            <button style="background:none; border:none; color:#fff; font-size:24px;">💬</button>
-            <button style="background:none; border:none; color:#fff; font-size:24px;">↗️</button>
         </div>`;
     document.getElementById('reels').appendChild(reel);
-    
-    // Add to My Grid
-    const thumb = document.createElement('div');
-    thumb.style = "aspect-ratio:1/1; background:#111; overflow:hidden; border:0.5px solid #000;";
-    thumb.innerHTML = `<video src="${url}" style="width:100%; height:100%; object-fit:cover;"></video>`;
-    document.getElementById('my-reels-grid').appendChild(thumb);
-    
     go('reels', document.querySelectorAll('.tab')[1]);
 }
 </script>
