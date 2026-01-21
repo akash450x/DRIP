@@ -13,25 +13,22 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:100vh; overflow:hidden; }
 
-/* 🔱 STICKY FIX: Splash Screen */
-#splash{ 
-    position:fixed; inset:0; background:#000; 
-    display:flex; flex-direction:column; align-items:center; justify-content:center; 
-    z-index:100000; transition: opacity 0.5s ease;
-}
+/* 🔱 GUARANTEED SPLASH EXIT */
+#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100000; transition:0.4s ease; }
 .flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
 .chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
 .namaste-text{margin-top:15px;font-family:'Bebas Neue';letter-spacing:6px;color:#D4AF37;font-size:26px;}
 
 #auth-gate{ display:none; position:fixed; inset:0; background:#000; z-index:9000; flex-direction:column; align-items:center; justify-content:center; }
-.auth-btn{ padding:16px 32px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; width:80%; max-width:300px; margin-top:20px; font-size:14px; }
+.auth-btn{ padding:16px 32px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; width:80%; max-width:300px; margin-top:20px; }
 
-/* REELS & INTERACTIONS */
+/* REELS ENGINE */
 #reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
 #reels::-webkit-scrollbar { display: none; }
 .reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; -webkit-transform: translateZ(0); }
 .reel video, .reel img { width:100%; height:100%; object-fit:cover; position: absolute; top: 0; left: 0; z-index: 1; }
 
+/* 🔱 MINI ACTION BAR */
 .reel-actions { 
     position: absolute !important; right: 12px !important; bottom: 100px !important; 
     display: flex !important; flex-direction: column !important; gap: 20px !important; 
@@ -42,7 +39,15 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
     width: 25px !important; height: 25px !important; font-size: 20px !important; 
     display: flex !important; align-items: center !important; justify-content: center !important; 
 }
-.auto-btn-mini { font-size: 5px !important; font-weight: 900; color: #555; opacity: 0.6; }
+.auto-btn-mini { font-size: 5px !important; font-weight: 900; color: #444; opacity: 0.5; }
+
+/* 🔱 SLIDING COMMENTS UNLOCKED */
+#comment-panel {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
+    background: #0a0a0a; border-top: 1px solid #222; z-index: 9500;
+    transition: 0.4s ease; display: flex; flex-direction: column; border-radius: 20px 20px 0 0;
+}
+#comment-panel.active { bottom: 0; }
 
 /* HEART POP */
 .heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; z-index: 100000; animation: heartAnim 0.8s ease-out forwards; }
@@ -63,7 +68,7 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 
 <body>
 
-<div id="splash">
+<div id="splash" onclick="this.style.display='none'">
     <div class="flag-wrap"><div class="chakra"></div></div>
     <div class="namaste-text">NAMASTE</div>
 </div>
@@ -73,15 +78,26 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
     <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
 </div>
 
+<div id="comment-panel">
+    <div style="padding:15px; border-bottom:1px solid #111; display:flex; justify-content:space-between;">
+        <b>Comments</b><span onclick="toggleComm()" style="color:#444;">✕</span>
+    </div>
+    <div id="comm-list" style="flex:1; overflow-y:auto; padding:20px;"></div>
+    <div style="padding:15px; display:flex; gap:10px; border-top:1px solid #111;">
+        <input type="text" id="c-input" placeholder="Add a comment..." style="flex:1; background:#111; border:1px solid #222; border-radius:10px; color:#fff; padding:10px;">
+        <button onclick="postComm()" style="background:var(--primary); border:none; padding:0 15px; border-radius:10px; font-weight:bold; color:black;">POST</button>
+    </div>
+</div>
+
 <div id="app">
     <header class="header"><div class="brand">DRIP</div></header>
     <div class="view">
         <div id="home" class="page active" style="padding:40px; text-align:center;">
-            <p style="color:#666; line-height:1.8;">DRIP is India’s next-generation platform.<br><span>EST 2026</span></p>
+            <p style="color:#666; line-height:1.8;">DRIP is India’s next-generation short-video platform built for creators.<br><span>EST 2026</span></p>
         </div>
         <div id="reels" class="page"></div>
         <div id="create" class="page" style="padding:20px;">
-            <button onclick="pick('video/*')" style="width:100%; padding:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px;">PICK MEDIA</button>
+            <button onclick="pick('video/*')" style="width:100%; padding:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px;">PICK VIDEO</button>
             <textarea id="desc" placeholder="Caption..." style="width:100%; margin-top:15px; background:#111; color:#fff; border:1px solid #222; border-radius:12px; padding:12px;"></textarea>
             <button onclick="publish()" style="width:100%; margin-top:15px; padding:15px; background:var(--primary); color:#000; font-weight:bold; border:none; border-radius:12px;">PUBLISH</button>
             <input type="file" id="file" hidden>
@@ -101,18 +117,10 @@ body{ background:#000; color:#fff; font-family:-apple-system,sans-serif; height:
 </div>
 
 <script>
-// 🔱 HARD-EXIT SCRIPT (Guarantees Splash disappears)
-function forceHideSplash() {
-    const splash = document.getElementById('splash');
-    splash.style.opacity = '0';
-    setTimeout(() => {
-        splash.style.display = 'none';
-    }, 500);
-}
-// Run forceHideSplash after 2.5 seconds no matter what
-window.onload = () => { setTimeout(forceHideSplash, 2500); };
+// 🔱 FORCED EXIT LOGIC
+window.onload = () => { setTimeout(() => { document.getElementById('splash').style.display='none'; }, 2000); };
 
-// FIREBASE CONFIG
+// FIREBASE
 const config = {
     apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
     authDomain: "drip-india.firebaseapp.com",
@@ -125,8 +133,7 @@ firebase.initializeApp(config);
 const auth = firebase.auth();
 
 auth.onAuthStateChanged(user => {
-    // Hide splash if Firebase responds faster than the timer
-    forceHideSplash();
+    document.getElementById('splash').style.display = 'none';
     if (user) {
         document.getElementById('auth-gate').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
@@ -152,11 +159,21 @@ function go(id,btn){
     btn.classList.add('active');
 }
 
+function toggleComm() { document.getElementById('comment-panel').classList.toggle('active'); }
+function postComm() {
+    const i = document.getElementById('c-input');
+    const l = document.getElementById('comm-list');
+    if(!i.value) return;
+    const d = document.createElement('div');
+    d.innerHTML = `<b style="color:var(--primary); font-size:11px;">@AKASH</b><p style="font-size:13px;">${i.value}</p>`;
+    l.prepend(d); i.value = "";
+}
+
 function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
 
 let auto=false, autoInt;
 function toggleAuto(btn){
-    auto = !auto; btn.style.color = auto ? "var(--primary)" : "#555";
+    auto = !auto; btn.style.color = auto ? "var(--primary)" : "#444";
     if(auto) autoInt = setInterval(() => document.getElementById('reels').scrollBy({top: window.innerHeight, behavior: 'smooth'}), 4000);
     else clearInterval(autoInt);
 }
@@ -164,9 +181,10 @@ function toggleAuto(btn){
 function publish(){
     const f = document.getElementById('file'); const d = document.getElementById('desc');
     if(!f.files[0]) return alert("Select media!");
-    const url = URL.createObjectURL(f.files[0]); const isVid = f.files[0].type.includes('video');
+    const url = URL.createObjectURL(f.files[0]);
     const reel = document.createElement("div"); reel.className = "reel";
 
+    // 🔱 DOUBLE TAP LIKE
     reel.onmousedown = (e) => {
         const now = Date.now();
         if (now - (reel.dataset.lt || 0) < 300) {
@@ -179,11 +197,11 @@ function publish(){
     };
 
     reel.innerHTML = `
-        ${isVid ? `<video src="${url}" autoplay muted loop playsinline webkit-playsinline></video>` : `<img src="${url}">`}
+        <video src="${url}" autoplay muted loop playsinline webkit-playsinline></video>
         <div style="position:absolute; bottom:20px; left:16px; font-size:12px; background:rgba(0,0,0,0.5); padding:8px; border-radius:8px; z-index:99;">${d.value || "DRIP"}</div>
         <div class="reel-actions">
             <button class="btn-like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
-            <button onclick="event.stopPropagation(); alert('Comments Panel Opening...')">💬</button>
+            <button onclick="event.stopPropagation(); toggleComm()">💬</button>
             <button onclick="event.stopPropagation(); alert('Shared')">↗️</button>
             <button onclick="event.stopPropagation(); alert('Saved')">⬇️</button>
             <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
