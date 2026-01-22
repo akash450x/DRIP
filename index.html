@@ -3,199 +3,529 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DRIP - THE EMPIRE</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>DRIP</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <style>
-:root{ --primary:#FF9933; --bg:#000; --card:#0b0b0b; --border:#1b1b1b; --gold:#D4AF37; }
+:root{ --primary:#FF9933; --bg:#000; --card:#0b0b0b; --border:#1b1b1b; }
 *{margin:0;padding:0;box-sizing:border-box}
-body { background:#000; color:#fff; font-family:'Poppins', sans-serif; height:100vh; overflow:hidden; }
+body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,sans-serif; height:100vh; overflow:hidden; }
 
-/* 🔱 GUARANTEED CURTAIN FIX */
-#splash-curtain { 
-    position:fixed; inset:0; background:#000; 
-    display:flex; flex-direction:column; align-items:center; justify-content:center; 
-    z-index:100000; transition: transform 0.6s cubic-bezier(0.9, 0, 0.1, 1);
+/* SPLASH */
+#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
+.flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
+.chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
+.jay-hind{margin-top:15px;font-family:'Bebas Neue';letter-spacing:5px;color:#D4AF37}
+
+/* AUTH */
+#auth-page{ display:none; height:100vh; flex-direction:column; align-items:center; justify-content:center; }
+.auth-btn{ padding:15px 30px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; margin-top:20px; width:80%; max-width:300px; }
+
+/* APP CORE */
+#app{display:none;height:100vh;flex-direction:column}
+.header{height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);}
+.brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
+.view{flex:1;position:relative;overflow:hidden}
+.page{display:none;height:100%;overflow-y:auto}
+.page.active{display:block}
+
+/* REELS & ACTION BUTTONS FIX */
+#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
+#reels::-webkit-scrollbar { display: none; }
+.reel{ height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; overflow: hidden; }
+.reel video, .reel img { width:100%; height:100%; object-fit:cover; }
+
+.reel-actions{ 
+    position:absolute !important; 
+    right:12px !important; 
+    bottom:100px !important; 
+    display:flex !important; 
+    flex-direction:column !important; 
+    gap:18px !important; 
+    align-items:center !important; 
+    z-index:999 !important; 
 }
-.flag-wrap { width:180px; height:110px; background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%); position:relative; border-radius:6px; overflow:hidden; }
-.chakra { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:30px; height:30px; background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat; }
-.namaste { margin-top:15px; font-family:'Bebas Neue'; letter-spacing:6px; color:var(--gold); font-size:26px; }
-
-/* 🔱 OUTRO WATERMARK */
-.reel-outro {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.8);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 95; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+.reel-actions button{ 
+    background:rgba(255,255,255,0.12) !important; 
+    border:none !important; 
+    color:#fff !important; 
+    padding:14px !important; 
+    border-radius:50% !important; 
+    font-size:20px !important; 
+    cursor:pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
-.outro-active { opacity: 1; }
-.outro-logo { font-family: 'Bebas Neue'; font-size: 50px; color: var(--primary); letter-spacing: 5px; }
-.outro-user { font-weight: 600; color: #fff; margin-top: 10px; }
 
-/* UI STRUCTURE */
-#app-shell { display: flex; flex-direction: column; height: 100vh; width: 100%; position: relative; }
-.view { flex:1; position:relative; overflow:hidden; }
-.page { display:none; height:100%; overflow-y:auto; }
-.page.active { display:block; }
-.home-desc { line-height:1.8; font-size:15px; color:#aaa; margin-bottom:20px; padding: 40px; text-align: center; }
+.auto-btn-reel { 
+    font-size:9px!important; 
+    font-weight:bold!important; 
+    padding:10px 8px!important; 
+    background:rgba(255,255,255,0.05)!important; 
+    border:1px solid rgba(255,255,255,0.2)!important; 
+    color:#fff !important; 
+    text-transform:uppercase; 
+    border-radius: 20px !important;
+}
+.auto-btn-reel.active { color:var(--primary)!important; border-color:var(--primary)!important; background:rgba(255,153,51,0.1) !important; }
 
-/* CREATE & PRIVACY */
-.privacy-row { display:flex; align-items:center; justify-content:space-between; background:var(--card); padding:15px; border-radius:12px; margin-top:12px; border: 1px solid var(--border); }
-.switch { position:relative; display:inline-block; width:40px; height:20px; }
-.switch input { opacity:0; width:0; height:0; }
-.slider { position:absolute; cursor:pointer; inset:0; background-color:#333; transition:.4s; border-radius:20px; }
-.slider:before { position:absolute; content:""; height:14px; width:14px; left:3px; bottom:3px; background-color:white; transition:.4s; border-radius:50%; }
-input:checked + .slider { background-color: var(--primary); }
-input:checked + .slider:before { transform: translateX(20px); }
+.heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; animation: heartAnim 0.8s ease-out forwards; z-index: 50; }
+@keyframes heartAnim { 0% { transform: scale(0) translate(-50%,-50%); opacity:0; } 20% { transform: scale(1.2) translate(-50%,-50%); opacity:1; } 100% { transform: scale(1.5) translate(-50%,-150%); opacity:0; } }
+.reel-desc{ position:absolute; bottom:25px; left:16px; max-width:65%; font-size:13px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:10px; backdrop-filter:blur(10px); z-index:10; border: 1px solid rgba(255,255,255,0.1); }
 
-/* REELS & PROFILE */
-.reel { height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; }
-.reel video { width:100%; height:100%; object-fit:cover; position:absolute; }
-.avatar-v63 { width:95px; height:95px; border-radius:32px; background:var(--card) center/cover; margin:0 auto 10px; border:1px solid var(--gold); }
-.bio-box { width:100%; background:#0a0a0a; border:1px solid #1a1a1a; border-radius:12px; padding:12px; color:#777; font-size:12px; margin:10px 0; outline:none; }
-.grid-tile { aspect-ratio:1/1; background:#111; border:0.5px solid #000; overflow:hidden; }
+/* GENDER & TABS */
+.gender{display:flex; justify-content:center; gap:8px; margin:15px 0;}
+.gender button{ flex:1; padding:10px 0; font-size:11px; background:#0a0a0a; border:1px solid #222; color:#555; border-radius:10px; font-weight:700; }
+.gender button.active{ border-color:var(--primary); color:var(--primary); }
 
 /* NAV */
-.nav { height:75px; display:flex; border-top:1px solid var(--border); background:#000; }
-.tab { flex:1; background:none; border:none; color:#333; font-size:22px; cursor:pointer; }
-.tab.active { color:var(--primary); }
+.nav{ height:75px; display:flex; border-top:1px solid var(--border); background:#000; padding-bottom:env(safe-area-inset-bottom); }
+.tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
+.tab.active{color:var(--primary)}
 </style>
 </head>
 
 <body>
 
-<div id="splash-curtain">
-    <div class="flag-wrap"><div class="chakra"></div></div>
-    <div class="namaste">NAMASTE</div>
+<div id="splash">
+  <div class="flag-wrap"><div class="chakra"></div></div>
+  <div class="jay-hind">JAY HIND</div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(function() {
-            document.getElementById('splash-curtain').style.transform = 'translateY(-100%)';
-        }, 1200);
-    });
-</script>
+<div id="auth-page">
+    <h1 style="font-family:'Bebas Neue'; font-size:60px; color:var(--primary);">DRIP</h1>
+    <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
+</div>
 
-<div id="app-shell">
-    <header style="height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);">
-        <div style="font-family:'Bebas Neue'; font-size:28px; color:var(--primary);">DRIP</div>
-    </header>
-
+<div id="app">
+    <header class="header"><div class="brand">DRIP</div></header>
     <div class="view">
-        <div id="home" class="page active">
-            <div class="home-desc">
+        <div id="home" class="page active" style="padding:40px; text-align:center;">
+            <p style="color:#666; line-height:1.8;">
                 DRIP is India’s next-generation short-video platform built for creators who move fast and think bold.<br>
                 Create reels, share moments, and build a digital identity that actually matters.<br>
                 Designed for Gen-Z creators who want speed, simplicity, and real reach.<br>
-                No noise. No clutter. Just content that hits different.
-            </div>
-            <div style="color:var(--primary); font-weight:900; text-align:center; font-family:'Bebas Neue';">BUILT IN INDIA • EST 2026</div>
+                No noise. No clutter. Just content that hits different.<br>
+                <span style="color:var(--primary); font-weight:900; display:block; margin-top:15px;">BUILT IN INDIA • EST 2026 • DRIP DIFFERENT</span>
+            </p>
         </div>
 
-        <div id="reels" class="page" style="overflow-y: scroll; scroll-snap-type: y mandatory;"></div>
+        <div id="reels" class="page"></div>
 
         <div id="create" class="page" style="padding:20px;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button onclick="pick('video/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:12px;">📹 VIDEO</button>
-                <button onclick="pick('image/*')" style="padding:15px; background:var(--card); border:1px solid var(--border); color:#fff; border-radius:12px;">📸 PHOTO</button>
+            <div id="preview-box" style="width:100%; height:180px; background:#111; border-radius:12px; margin-bottom:12px; display:none; overflow:hidden; border:1px solid #222;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                <button onclick="pick('video/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; font-weight:bold;">VIDEO</button>
+                <button onclick="pick('image/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; font-weight:bold;">IMAGE</button>
             </div>
-            <textarea id="desc" placeholder="Caption your Reel..." style="width:100%; background:#111; border:1px solid #222; padding:15px; color:#fff; border-radius:15px; margin-top:10px; min-height:80px; outline:none;"></textarea>
-            <div class="privacy-row">
-                <span style="font-size:13px; font-weight:600;">Allow Comments</span>
-                <label class="switch"><input type="checkbox" id="comm-switch" checked><span class="slider"></span></label>
-            </div>
-            <button onclick="publish()" style="width:100%; margin-top:15px; padding:18px; background:var(--primary); color:#000; border:none; border-radius:15px; font-weight:900;">PUBLISH</button>
-            <input type="file" id="file" hidden>
+            <textarea id="desc" rows="3" placeholder="Description..." style="width:100%; background:#111; border:1px solid #222; padding:12px; color:#fff; border-radius:12px;"></textarea>
+            <button onclick="publish()" style="margin-top:14px; width:100%; padding:15px; background:var(--primary); border:none; border-radius:12px; font-weight:bold; color:#000;">PUBLISH</button>
+            <input type="file" id="file" hidden onchange="handlePreview(this)">
         </div>
 
-        <div id="notifications" class="page" style="padding:20px;"><h3 style="font-family:'Bebas Neue'; color:var(--gold);">Notifications</h3></div>
-
-        <div id="profile" class="page" style="padding:20px; text-align:center;">
-            <div id="uAvatar" class="avatar-v63"></div>
-            <button onclick="document.getElementById('av-in').click()" style="color:var(--primary); font-size:11px; background:none; border:none; font-weight:bold;">Edit Profile Picture</button>
-            <input type="file" id="av-in" hidden onchange="upAv(this)">
-            <h2 id="uName" contenteditable="true" style="margin-top:10px;">Name</h2>
-            <p id="uHandle" contenteditable="true" style="color:#555; font-size:13px;">@username</p>
-            <div class="bio-box" contenteditable="true">Describe your Empire admission...</div>
-            <div style="display:flex; gap:8px; margin:10px 0;">
-                <button onclick="sg(this)" class="g-tab active">Male</button><button onclick="sg(this)" class="g-tab">Female</button><button onclick="sg(this)" class="g-tab">Other</button>
+        <div id="search" class="page" style="padding:20px;">
+            <input placeholder="Search creators..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
+            <div class="search-tabs" style="display:flex;gap:5px;margin-top:10px;">
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">TOP</button>
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">LATEST</button>
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">USERS</button>
             </div>
-            <input type="date" style="width:100%; background:#111; border:1px solid #222; color:#fff; padding:12px; border-radius:12px; font-size:12px; margin-bottom:10px;">
-            <div id="my-grid" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2px; margin-top:15px;"></div>
-            <button onclick="auth.signOut().then(()=>location.reload())" style="width:100%; margin-top:20px; padding:15px; background:var(--card); color:#fff; border:1px solid #333; border-radius:12px;">LOG OUT</button>
-            <button onclick="confirm('Delete?') && auth.signOut().then(()=>location.reload())" style="width:100%; margin-top:8px; color:#ff4444; border:1px solid #331111; border-radius:12px;">DELETE ACCOUNT</button>
+        </div>
+
+        <div id="profile" class="page" style="text-align:center; padding:20px;">
+            <div id="userAvatar" style="width:90px; height:90px; border-radius:30px; background:#111 center/cover; margin:auto; border:1px solid #222;"></div>
+            <button onclick="document.getElementById('avatarFile').click()" style="width:100%; margin-top:10px; padding:12px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">Edit Profile Picture</button>
+            <input type="file" id="avatarFile" hidden accept="image/*" onchange="updateAvatar(this)">
+            
+            <h2 id="userName" style="margin-top:15px;" contenteditable="true">AKASH</h2>
+            <p style="color:#444" contenteditable="true">@akash</p>
+            
+            <div class="gender"><button class="g-sel" onclick="setG(this)">Male</button><button class="g-sel" onclick="setG(this)">Female</button><button class="g-sel" onclick="setG(this)">Other</button></div>
+            
+            <input type="date" id="dob" style="width:100%; background:#111; padding:12px; color:#fff; border:1px solid #222; border-radius:12px; margin-bottom:10px;">
+
+            <button onclick="logoutEmpire()" style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
+            <button onclick="deleteEmpire()" style="width:100%; margin-top:10px; padding:15px; background:#111; border:1px solid #331111; color:#ff4d4d; border-radius:12px;">DELETE ACCOUNT</button>
         </div>
     </div>
-
     <nav class="nav">
         <button class="tab active" onclick="go('home',this)">🏠</button>
         <button class="tab" onclick="go('reels',this)">▶</button>
         <button class="tab" onclick="go('create',this)">＋</button>
-        <button class="tab" onclick="go('notifications',this)">🔔</button>
+        <button class="tab" onclick="go('search',this)">🔍</button>
         <button class="tab" onclick="go('profile',this)">👤</button>
     </nav>
 </div>
 
 <script>
-const config = { apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM", authDomain: "drip-india.firebaseapp.com", projectId: "drip-india" };
+const config = {
+    apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
+    authDomain: "drip-india.firebaseapp.com",
+    projectId: "drip-india",
+    storageBucket: "drip-india.firebasestorage.app",
+    messagingSenderId: "40598053043",
+    appId: "1:40598053043:web:b800c05afba716974690c6"
+};
 firebase.initializeApp(config);
 const auth = firebase.auth();
 
 auth.onAuthStateChanged(user => {
+    document.getElementById('splash').style.display = 'none';
     if (user) {
-        document.getElementById('uName').innerHTML = user.displayName + ' <span style="color:var(--gold);">✅</span>';
-        document.getElementById('uHandle').innerText = '@' + user.displayName.split(' ')[0].toLowerCase();
-        if(user.photoURL) document.getElementById('uAvatar').style.backgroundImage = `url(${user.photoURL})`;
+        document.getElementById('auth-page').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        document.getElementById('userName').innerText = user.displayName || "AKASH";
+        if(user.photoURL) document.getElementById('userAvatar').style.backgroundImage = `url(${user.photoURL})`;
+    } else {
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('auth-page').style.display = 'flex';
     }
 });
 
-function go(id, btn){
+function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+}
+
+function logoutEmpire() { if(confirm("Log out?")) auth.signOut().then(() => location.reload()); }
+function deleteEmpire() { if(confirm("Permanently Delete?")) auth.signOut().then(() => location.reload()); }
+
+function go(id,btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     btn.classList.add('active');
 }
-function pick(t){ const f = document.getElementById('file'); f.accept = t; f.click(); }
-function upAv(i){ if(i.files[0]) document.getElementById('uAvatar').style.backgroundImage = `url(${URL.createObjectURL(i.files[0])})`; }
-function sg(b){ document.querySelectorAll('.g-tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }
+function setG(btn) { document.querySelectorAll('.g-sel').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+function setTab(btn) { document.querySelectorAll('.s-tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+function pick(type){ const f = document.getElementById('file'); f.accept = type; f.click(); }
+function handlePreview(input) {
+    const box = document.getElementById('preview-box');
+    box.innerHTML = "";
+    if (input.files[0]) {
+        box.style.display = "block";
+        const url = URL.createObjectURL(input.files[0]);
+        if (input.files[0].type.includes('video')) box.innerHTML = `<video src="${url}" autoplay muted loop></video>`;
+        else box.innerHTML = `<img src="${url}">`;
+    }
+}
+function updateAvatar(input){ if(input.files[0]) document.getElementById('userAvatar').style.backgroundImage = `url(${URL.createObjectURL(input.files[0])})`; }
+
+let auto=false, autoInt;
+function toggleAuto(btn){
+    auto = !auto; btn.classList.toggle('active');
+    if(auto) autoInt = setInterval(() => document.getElementById('reels').scrollBy({top: window.innerHeight, behavior: 'smooth'}), 4000);
+    else clearInterval(autoInt);
+}
 
 function publish(){
-    const f = document.getElementById('file'); const d = document.getElementById('desc');
-    const allowComm = document.getElementById('comm-switch').checked;
-    if(!f.files[0]) return alert("Select media!");
-    const url = URL.createObjectURL(f.files[0]);
-    const isVid = f.files[0].type.includes('video');
-    const uName = document.getElementById('uName').innerText;
-
-    const reel = document.createElement("div"); 
+    const file = document.getElementById('file');
+    if(!file.files[0]) return alert("Select media!");
+    const url = URL.createObjectURL(file.files[0]);
+    const isVid = file.files[0].type.includes('video');
+    const reel = document.createElement("div");
     reel.className = "reel";
-    reel.innerHTML = `
-        ${isVid ? `<video src="${url}" playsinline onended="showOutro(this)"></video>` : `<img src="${url}">`}
-        <div class="reel-outro"><div class="outro-logo">DRIP</div><div class="outro-user">${uName}</div></div>
-        <div style="position:absolute; bottom:25px; left:16px; z-index:90; background:rgba(0,0,0,0.6); padding:12px; border-radius:12px; backdrop-filter:blur(5px);">
-            <b style="font-size:14px;">${uName}</b><br><span style="font-size:12px; color:#ccc;">${d.value}</span>
-        </div>
-        <div style="position:absolute; right:12px; bottom:100px; display:flex; flex-direction:column; gap:20px; z-index:100;">
-            <button style="background:none; border:none; color:#fff; font-size:24px;">❤️</button>
-            ${allowComm ? `<button style="background:none; border:none; color:#fff; font-size:24px;">💬</button>` : ''}
-        </div>
-        <button onclick="playVid(this)" style="position:absolute; inset:0; background:none; border:none; z-index:50;"></button>`;
     
+    // Heart Pop Interaction
+    reel.onclick = (e) => {
+        const now = Date.now();
+        if (now - (reel.dataset.lt || 0) < 300) {
+            reel.querySelector('.like').style.color = '#FF9933';
+            const h = document.createElement('div'); h.className='heart-pop'; h.innerHTML='❤️';
+            h.style.left = (e.clientX || (e.touches ? e.touches[0].clientX : 0))+'px'; 
+            h.style.top = (e.clientY-reel.getBoundingClientRect().top)+'px';
+            reel.appendChild(h); setTimeout(()=>h.remove(), 800);
+        }
+        reel.dataset.lt = now;
+    };
+
+    // 🔱 FORCED ACTION BUTTONS - ABSOLUTE VISIBILITY
+    reel.innerHTML = `
+        ${isVid ? `<video src="${url}" autoplay muted loop playsinline></video>` : `<img src="${url}">`}
+        <div class="reel-desc">${document.getElementById('desc').value || "Bharat Pride"}</div>
+        <div class="reel-actions">
+            <button class="like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
+            <button onclick="event.stopPropagation(); alert('Comments coming soon')">💬</button>
+            <button onclick="event.stopPropagation(); alert('Sharing...')">↗️</button>
+            <button onclick="event.stopPropagation(); alert('Downloading...')">⬇️</button>
+            <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
+            <button class="auto-btn-reel" onclick="event.stopPropagation(); toggleAuto(this)">AUTO</button>
+        </div>`;
+        
     document.getElementById('reels').appendChild(reel);
-    const tile = document.createElement('div'); tile.className='grid-tile';
-    tile.innerHTML = isVid ? `<video src="${url}" muted></video>` : `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
-    document.getElementById('my-grid').appendChild(tile);
-    d.value = ""; f.value = "";
+    document.getElementById('desc').value = ""; file.value = "";
+    document.getElementById('preview-box').style.display = "none";
     go('reels', document.querySelectorAll('.tab')[1]);
 }
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DRIP</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-function playVid(btn) { 
-    const v = btn.parentElement.querySelector('video'); 
-    if(v) { v.paused ? v.play() : v.pause(); btn.parentElement.querySelector('.reel-outro').classList.remove('outro-active'); }
+<style>
+:root{ --primary:#FF9933; --bg:#000; --card:#0b0b0b; --border:#1b1b1b; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{ background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,sans-serif; height:100vh; overflow:hidden; }
+
+/* SPLASH */
+#splash{ position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10000; }
+.flag-wrap{width:180px;height:110px;background:linear-gradient(to bottom, #FF9933 33.3%, #fff 33.3%, #fff 66.6%, #128807 66.6%);position:relative;border-radius:4px;}
+.chakra{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:url("https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg") center/contain no-repeat}
+.jay-hind{margin-top:15px;font-family:'Bebas Neue';letter-spacing:5px;color:#D4AF37}
+
+/* AUTH */
+#auth-page{ display:none; height:100vh; flex-direction:column; align-items:center; justify-content:center; }
+.auth-btn{ padding:15px 30px; background:#fff; color:#000; border:none; border-radius:50px; font-weight:bold; margin-top:20px; width:80%; max-width:300px; }
+
+/* APP CORE */
+#app{display:none;height:100vh;flex-direction:column}
+.header{height:60px; display:flex; align-items:center; padding:0 16px; border-bottom:1px solid var(--border);}
+.brand{font-family:'Bebas Neue'; font-size:28px; color:var(--primary);}
+.view{flex:1;position:relative;overflow:hidden}
+.page{display:none;height:100%;overflow-y:auto}
+.page.active{display:block}
+
+/* REELS & ACTION BUTTONS FIX */
+#reels { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
+#reels::-webkit-scrollbar { display: none; }
+.reel{ height: 100%; width: 100%; position:relative; scroll-snap-align: start; background: #000; overflow: hidden; }
+.reel video, .reel img { width:100%; height:100%; object-fit:cover; }
+
+.reel-actions{ 
+    position:absolute !important; 
+    right:12px !important; 
+    bottom:100px !important; 
+    display:flex !important; 
+    flex-direction:column !important; 
+    gap:18px !important; 
+    align-items:center !important; 
+    z-index:999 !important; 
 }
-function showOutro(vid) { vid.parentElement.querySelector('.reel-outro').classList.add('outro-active'); }
+.reel-actions button{ 
+    background:rgba(255,255,255,0.12) !important; 
+    border:none !important; 
+    color:#fff !important; 
+    padding:14px !important; 
+    border-radius:50% !important; 
+    font-size:20px !important; 
+    cursor:pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.auto-btn-reel { 
+    font-size:9px!important; 
+    font-weight:bold!important; 
+    padding:10px 8px!important; 
+    background:rgba(255,255,255,0.05)!important; 
+    border:1px solid rgba(255,255,255,0.2)!important; 
+    color:#fff !important; 
+    text-transform:uppercase; 
+    border-radius: 20px !important;
+}
+.auto-btn-reel.active { color:var(--primary)!important; border-color:var(--primary)!important; background:rgba(255,153,51,0.1) !important; }
+
+.heart-pop { position: absolute; font-size: 80px; color: #ff4d4d; pointer-events: none; animation: heartAnim 0.8s ease-out forwards; z-index: 50; }
+@keyframes heartAnim { 0% { transform: scale(0) translate(-50%,-50%); opacity:0; } 20% { transform: scale(1.2) translate(-50%,-50%); opacity:1; } 100% { transform: scale(1.5) translate(-50%,-150%); opacity:0; } }
+.reel-desc{ position:absolute; bottom:25px; left:16px; max-width:65%; font-size:13px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:10px; backdrop-filter:blur(10px); z-index:10; border: 1px solid rgba(255,255,255,0.1); }
+
+/* GENDER & TABS */
+.gender{display:flex; justify-content:center; gap:8px; margin:15px 0;}
+.gender button{ flex:1; padding:10px 0; font-size:11px; background:#0a0a0a; border:1px solid #222; color:#555; border-radius:10px; font-weight:700; }
+.gender button.active{ border-color:var(--primary); color:var(--primary); }
+
+/* NAV */
+.nav{ height:75px; display:flex; border-top:1px solid var(--border); background:#000; padding-bottom:env(safe-area-inset-bottom); }
+.tab{ flex:1; background:none; border:none; color:#333; font-size:24px; }
+.tab.active{color:var(--primary)}
+</style>
+</head>
+
+<body>
+
+<div id="splash">
+  <div class="flag-wrap"><div class="chakra"></div></div>
+  <div class="jay-hind">JAY HIND</div>
+</div>
+
+<div id="auth-page">
+    <h1 style="font-family:'Bebas Neue'; font-size:60px; color:var(--primary);">DRIP</h1>
+    <button class="auth-btn" onclick="googleLogin()">Sign In with Google</button>
+</div>
+
+<div id="app">
+    <header class="header"><div class="brand">DRIP</div></header>
+    <div class="view">
+        <div id="home" class="page active" style="padding:40px; text-align:center;">
+            <p style="color:#666; line-height:1.8;">
+                DRIP is India’s next-generation short-video platform built for creators who move fast and think bold.<br>
+                Create reels, share moments, and build a digital identity that actually matters.<br>
+                Designed for Gen-Z creators who want speed, simplicity, and real reach.<br>
+                No noise. No clutter. Just content that hits different.<br>
+                <span style="color:var(--primary); font-weight:900; display:block; margin-top:15px;">BUILT IN INDIA • EST 2026 • DRIP DIFFERENT</span>
+            </p>
+        </div>
+
+        <div id="reels" class="page"></div>
+
+        <div id="create" class="page" style="padding:20px;">
+            <div id="preview-box" style="width:100%; height:180px; background:#111; border-radius:12px; margin-bottom:12px; display:none; overflow:hidden; border:1px solid #222;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                <button onclick="pick('video/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; font-weight:bold;">VIDEO</button>
+                <button onclick="pick('image/*')" style="padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px; font-weight:bold;">IMAGE</button>
+            </div>
+            <textarea id="desc" rows="3" placeholder="Description..." style="width:100%; background:#111; border:1px solid #222; padding:12px; color:#fff; border-radius:12px;"></textarea>
+            <button onclick="publish()" style="margin-top:14px; width:100%; padding:15px; background:var(--primary); border:none; border-radius:12px; font-weight:bold; color:#000;">PUBLISH</button>
+            <input type="file" id="file" hidden onchange="handlePreview(this)">
+        </div>
+
+        <div id="search" class="page" style="padding:20px;">
+            <input placeholder="Search creators..." style="width:100%; background:#111; padding:14px; color:#fff; border:none; border-radius:12px;">
+            <div class="search-tabs" style="display:flex;gap:5px;margin-top:10px;">
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">TOP</button>
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">LATEST</button>
+                <button class="s-tab" onclick="setTab(this)" style="flex:1;padding:8px;font-size:10px;background:#111;border:1px solid #222;color:#666;border-radius:8px;">USERS</button>
+            </div>
+        </div>
+
+        <div id="profile" class="page" style="text-align:center; padding:20px;">
+            <div id="userAvatar" style="width:90px; height:90px; border-radius:30px; background:#111 center/cover; margin:auto; border:1px solid #222;"></div>
+            <button onclick="document.getElementById('avatarFile').click()" style="width:100%; margin-top:10px; padding:12px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">Edit Profile Picture</button>
+            <input type="file" id="avatarFile" hidden accept="image/*" onchange="updateAvatar(this)">
+            
+            <h2 id="userName" style="margin-top:15px;" contenteditable="true">AKASH</h2>
+            <p style="color:#444" contenteditable="true">@akash</p>
+            
+            <div class="gender"><button class="g-sel" onclick="setG(this)">Male</button><button class="g-sel" onclick="setG(this)">Female</button><button class="g-sel" onclick="setG(this)">Other</button></div>
+            
+            <input type="date" id="dob" style="width:100%; background:#111; padding:12px; color:#fff; border:1px solid #222; border-radius:12px; margin-bottom:10px;">
+
+            <button onclick="logoutEmpire()" style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#fff; border-radius:12px;">LOG OUT</button>
+            <button onclick="deleteEmpire()" style="width:100%; margin-top:10px; padding:15px; background:#111; border:1px solid #331111; color:#ff4d4d; border-radius:12px;">DELETE ACCOUNT</button>
+        </div>
+    </div>
+    <nav class="nav">
+        <button class="tab active" onclick="go('home',this)">🏠</button>
+        <button class="tab" onclick="go('reels',this)">▶</button>
+        <button class="tab" onclick="go('create',this)">＋</button>
+        <button class="tab" onclick="go('search',this)">🔍</button>
+        <button class="tab" onclick="go('profile',this)">👤</button>
+    </nav>
+</div>
+
+<script>
+const config = {
+    apiKey: "AIzaSyA8SMoQI3UxfhZwdq65H81Jv31Q8wUKxMM",
+    authDomain: "drip-india.firebaseapp.com",
+    projectId: "drip-india",
+    storageBucket: "drip-india.firebasestorage.app",
+    messagingSenderId: "40598053043",
+    appId: "1:40598053043:web:b800c05afba716974690c6"
+};
+firebase.initializeApp(config);
+const auth = firebase.auth();
+
+auth.onAuthStateChanged(user => {
+    document.getElementById('splash').style.display = 'none';
+    if (user) {
+        document.getElementById('auth-page').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        document.getElementById('userName').innerText = user.displayName || "AKASH";
+        if(user.photoURL) document.getElementById('userAvatar').style.backgroundImage = `url(${user.photoURL})`;
+    } else {
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('auth-page').style.display = 'flex';
+    }
+});
+
+function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+}
+
+function logoutEmpire() { if(confirm("Log out?")) auth.signOut().then(() => location.reload()); }
+function deleteEmpire() { if(confirm("Permanently Delete?")) auth.signOut().then(() => location.reload()); }
+
+function go(id,btn){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+}
+function setG(btn) { document.querySelectorAll('.g-sel').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+function setTab(btn) { document.querySelectorAll('.s-tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+function pick(type){ const f = document.getElementById('file'); f.accept = type; f.click(); }
+function handlePreview(input) {
+    const box = document.getElementById('preview-box');
+    box.innerHTML = "";
+    if (input.files[0]) {
+        box.style.display = "block";
+        const url = URL.createObjectURL(input.files[0]);
+        if (input.files[0].type.includes('video')) box.innerHTML = `<video src="${url}" autoplay muted loop></video>`;
+        else box.innerHTML = `<img src="${url}">`;
+    }
+}
+function updateAvatar(input){ if(input.files[0]) document.getElementById('userAvatar').style.backgroundImage = `url(${URL.createObjectURL(input.files[0])})`; }
+
+let auto=false, autoInt;
+function toggleAuto(btn){
+    auto = !auto; btn.classList.toggle('active');
+    if(auto) autoInt = setInterval(() => document.getElementById('reels').scrollBy({top: window.innerHeight, behavior: 'smooth'}), 4000);
+    else clearInterval(autoInt);
+}
+
+function publish(){
+    const file = document.getElementById('file');
+    if(!file.files[0]) return alert("Select media!");
+    const url = URL.createObjectURL(file.files[0]);
+    const isVid = file.files[0].type.includes('video');
+    const reel = document.createElement("div");
+    reel.className = "reel";
+    
+    // Heart Pop Interaction
+    reel.onclick = (e) => {
+        const now = Date.now();
+        if (now - (reel.dataset.lt || 0) < 300) {
+            reel.querySelector('.like').style.color = '#FF9933';
+            const h = document.createElement('div'); h.className='heart-pop'; h.innerHTML='❤️';
+            h.style.left = (e.clientX || (e.touches ? e.touches[0].clientX : 0))+'px'; 
+            h.style.top = (e.clientY-reel.getBoundingClientRect().top)+'px';
+            reel.appendChild(h); setTimeout(()=>h.remove(), 800);
+        }
+        reel.dataset.lt = now;
+    };
+
+    // 🔱 FORCED ACTION BUTTONS - ABSOLUTE VISIBILITY
+    reel.innerHTML = `
+        ${isVid ? `<video src="${url}" autoplay muted loop playsinline></video>` : `<img src="${url}">`}
+        <div class="reel-desc">${document.getElementById('desc').value || "Bharat Pride"}</div>
+        <div class="reel-actions">
+            <button class="like" onclick="event.stopPropagation(); this.style.color='#FF9933'">❤️</button>
+            <button onclick="event.stopPropagation(); alert('Comments coming soon')">💬</button>
+            <button onclick="event.stopPropagation(); alert('Sharing...')">↗️</button>
+            <button onclick="event.stopPropagation(); alert('Downloading...')">⬇️</button>
+            <button onclick="event.stopPropagation(); this.innerText='✅'">👤</button>
+            <button class="auto-btn-reel" onclick="event.stopPropagation(); toggleAuto(this)">AUTO</button>
+        </div>`;
+        
+    document.getElementById('reels').appendChild(reel);
+    document.getElementById('desc').value = ""; file.value = "";
+    document.getElementById('preview-box').style.display = "none";
+    go('reels', document.querySelectorAll('.tab')[1]);
+}
 </script>
 </body>
 </html>
