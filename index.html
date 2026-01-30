@@ -1,634 +1,95 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import CurtainSplash from './components/CurtainSplash';
-import VideoCard from './components/VideoCard';
-import Navbar from './components/Navbar';
-import DripLogo from './components/DripLogo';
-import AuthGate from './components/AuthGate';
-import { 
-  Grid, Settings, Heart, ArrowLeft, MoreVertical, Bookmark, Radio, Edit3, Camera, 
-  Trash2, LogOut, X, Upload, MessageSquare, Shield, Bell, Moon, Trash, Globe, Search, ChevronRight, Check, Sliders, Zap, UserCheck, BadgeCheck, Plus, EyeOff
-} from 'lucide-react';
-import { VideoData, User } from './types';
-
-type AppView = 'home' | 'search' | 'create' | 'inbox' | 'profile';
-
-const FILTERS = [
-  { name: 'Original', value: 'none' },
-  { name: 'Vibrant', value: 'saturate(1.5) contrast(1.1)' },
-  { name: 'Cinema', value: 'sepia(0.2) contrast(1.2) brightness(0.9)' },
-  { name: 'Mono', value: 'grayscale(1)' },
-  { name: 'Nocturnal', value: 'invert(0.1) hue-rotate(180deg) brightness(0.8)' },
-];
-
-const TRANSLATIONS: Record<string, Record<string, string>> = {
-  English: { home: "Home", empire: "Empire", pulse: "Pulse", soul: "Soul", follow: "Following", foryou: "For You", settings: "Settings", release: "Release Drip", releasing: "Releasing..." },
-  Hindi: { home: "घर", empire: "साम्राज्य", pulse: "नाड़ी", soul: "आत्मा", follow: "अनुगमन", foryou: "आपके लिए", settings: "सेटिंग्स", release: "ड्रिप प्रकाशित करें", releasing: "प्रकाशित हो रहा है..." },
-  Japanese: { home: "ホーム", empire: "帝国", pulse: "脈拍", soul: "魂", follow: "フォロー中", foryou: "おすすめ", settings: "設定", release: "ドリップを公開", releasing: "公開中..." },
-};
-
-const COUNTRIES = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
-  "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia",
-  "Bosnia", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon",
-  "Canada", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia",
-  "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea",
-  "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece",
-  "Grenada", "Guatemala", "Guinea", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
-  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kuwait", "Kyrgyzstan",
-  "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi",
-  "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
-  "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua",
-  "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines",
-  "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia",
-  "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "Spain",
-  "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste",
-  "Togo", "Tonga", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
-  "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
-];
-
-const ALL_LANGUAGES_GLOBAL = [
-  "English", "Hindi", "Japanese", "Mandarin", "Spanish", "French", "Arabic", "Bengali", "Portuguese", "Russian", "Urdu", 
-  "Indonesian", "German", "Marathi", "Telugu", "Turkish", "Tamil", "Yue Chinese", 
-  "Vietnamese", "Tagalog", "Wu Chinese", "Korean", "Iranian Persian", "Hausa", "Swahili", "Javanese", "Italian", "Punjabi", 
-  "Kannada", "Gujarati", "Thai", "Amharic", "Oromo", "Pashto", "Maithili", "Ukrainian", "Yoruba", "Uzbek", "Malayalam", 
-  "Sindhi", "Azerbaijani", "Romanian", "Dutch", "Assamese", "Magahi", "Haryanvi", "Chhattisgarhi", "Nepali", 
-  "Sinhala", "Kazakh", "Khmer", "Greek", "Hungarian", "Czech", "Swedish", "Zulu", "Hebrew", "Afrikaans", "Danish", 
-  "Finnish", "Norwegian", "Slovak", "Bulgarian", "Lithuanian", "Latvian", "Estonian", "Icelandic", "Basque", "Catalan",
-  "Portuguese (Brazil)", "Portuguese (Portugal)", "Irish", "Welsh", "Scottish Gaelic", "Breton", "Maltese", "Luxembourgish",
-  "Interlingua", "Kurdish", "Burmese", "Lao", "Tibetan", "Mongolian", "Somali", "Igbo", "Quechua", "Guarani", "Aymara", "Nahuatl", "Maori", "Hawaiian", "Samoan", "Fijian"
-];
-
-const App: React.FC = () => {
-  const [showSplash, setShowSplash] = useState(true);
-  const [splashMessage, setSplashMessage] = useState("NAMASTE");
-  const [user, setUser] = useState<User | null>(null);
-  const [currentView, setCurrentView] = useState<AppView>('home');
-  const [activeTab, setActiveTab] = useState<'following' | 'forYou'>('forYou');
-  const [profileTab, setProfileTab] = useState<'posts' | 'likes' | 'saved'>('posts');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoScroll, setIsAutoScroll] = useState(false);
-  
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  
-  // Settings State
-  const [selectedCountry, setSelectedCountry] = useState('India');
-  const [appLanguage, setAppLanguage] = useState('English');
-  const [isPrivateAccount, setIsPrivateAccount] = useState(false);
-  const [notificationsOn, setNotificationsOn] = useState(true);
-  const [dataSaverOn, setDataSaverOn] = useState(false);
-  const [incognitoMode, setIncognitoMode] = useState(false);
-
-  const [followersCount, setFollowersCount] = useState(0);
-
-  const [allPosts, setAllPosts] = useState<VideoData[]>([]);
-  const [likedVideoIds, setLikedVideoIds] = useState<Set<string>>(new Set());
-  const [savedPosts, setSavedPosts] = useState<VideoData[]>([]);
-  const [followingHandles, setFollowingHandles] = useState<Set<string>>(new Set());
-  
-  // Default Identity State: Blank as requested
-  const [editProfile, setEditProfile] = useState({
-    name: '',
-    handle: '',
-    bio: '',
-    gender: 'Other',
-    avatar: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
-  });
-
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [caption, setCaption] = useState("");
-  const [commentsEnabled, setCommentsEnabled] = useState(true);
-  const [selectedFilter, setSelectedFilter] = useState(FILTERS[0].value);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const profilePicInputRef = useRef<HTMLInputElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const creationPreviewRef = useRef<HTMLVideoElement>(null);
-  const isJumpingRef = useRef(false);
-
-  const t = (key: string) => TRANSLATIONS[appLanguage]?.[key] || TRANSLATIONS['English'][key];
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem('drip_auth_user');
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
-      const savedIdentity = localStorage.getItem(`drip_identity_${parsedUser.uid}`);
-      if (savedIdentity) {
-        setEditProfile(JSON.parse(savedIdentity));
-      }
-      loadUserData(parsedUser.uid);
-    }
-  }, []);
-
-  const loadUserData = (uid: string) => {
-    const savedData = localStorage.getItem(`drip_soul_${uid}`);
-    if (savedData) {
-      const parsed = JSON.parse(savedData);
-      setAllPosts(parsed.posts || []);
-      setLikedVideoIds(new Set(parsed.likes || []));
-      setSavedPosts(parsed.saved || []);
-      setFollowingHandles(new Set(parsed.handles || []));
-      setFollowersCount(parsed.followersCount || 0);
-      if (parsed.country) setSelectedCountry(parsed.country);
-      if (parsed.language) setAppLanguage(parsed.language);
-      if (parsed.isPrivate !== undefined) setIsPrivateAccount(parsed.isPrivate);
-      if (parsed.notificationsOn !== undefined) setNotificationsOn(parsed.notificationsOn);
-      if (parsed.dataSaverOn !== undefined) setDataSaverOn(parsed.dataSaverOn);
-      if (parsed.incognitoMode !== undefined) setIncognitoMode(parsed.incognitoMode);
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      const data = {
-        posts: allPosts,
-        likes: Array.from(likedVideoIds),
-        saved: savedPosts,
-        handles: Array.from(followingHandles),
-        followersCount: followersCount,
-        country: selectedCountry,
-        language: appLanguage,
-        isPrivate: isPrivateAccount,
-        notificationsOn,
-        dataSaverOn,
-        incognitoMode
-      };
-      localStorage.setItem(`drip_soul_${user.uid}`, JSON.stringify(data));
-      localStorage.setItem(`drip_identity_${user.uid}`, JSON.stringify(editProfile));
-    }
-  }, [allPosts, likedVideoIds, savedPosts, followingHandles, followersCount, user, editProfile, selectedCountry, appLanguage, isPrivateAccount, notificationsOn, dataSaverOn, incognitoMode]);
-
-  const handleLogin = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem('drip_auth_user', JSON.stringify(userData));
-    loadUserData(userData.uid);
-  };
-
-  const handleLogout = () => {
-    if (!window.confirm("Terminate this Drip Session?")) return;
-    setUser(null);
-    localStorage.removeItem('drip_auth_user');
-    setEditProfile({ name: '', handle: '', bio: '', gender: 'Other', avatar: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png' });
-    setShowSplash(true);
-    setCurrentView('home');
-    setIsSettingsOpen(false);
-  };
-
-  const handleDeleteAccount = () => {
-    if (!window.confirm("CRITICAL: Delete your Drip Matrix? Irreversible action.")) return;
-    if (user) {
-      // Release handle in global registry
-      const registry = JSON.parse(localStorage.getItem('drip_global_handles') || '{}');
-      delete registry[editProfile.handle.toLowerCase()];
-      localStorage.setItem('drip_global_handles', JSON.stringify(registry));
-
-      localStorage.removeItem(`drip_soul_${user.uid}`);
-      localStorage.removeItem(`drip_identity_${user.uid}`);
-    }
-    localStorage.removeItem('drip_auth_user');
-    setAllPosts([]);
-    setSavedPosts([]);
-    setLikedVideoIds(new Set());
-    setFollowingHandles(new Set());
-    setFollowersCount(0);
-    setUser(null);
-    setEditProfile({ name: '', handle: '', bio: '', gender: 'Other', avatar: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png' });
-    setShowSplash(true);
-    setCurrentView('home');
-    setIsSettingsOpen(false);
-  };
-
-  const handleUpdateIdentity = () => {
-    const rawHandle = editProfile.handle.trim().toLowerCase();
-    if (!rawHandle) {
-      setIsEditModalOpen(false);
-      return;
-    }
-
-    // Handle uniqueness logic
-    const registry = JSON.parse(localStorage.getItem('drip_global_handles') || '{}');
-    if (registry[rawHandle] && registry[rawHandle] !== user?.uid) {
-      alert("IDENTITY ERROR: This handle is already claimed. Please refine your identifier.");
-      return;
-    }
-
-    // Update registry
-    registry[rawHandle] = user?.uid;
-    localStorage.setItem('drip_global_handles', JSON.stringify(registry));
-    
-    setIsEditModalOpen(false);
-  };
-
-  const filteredPosts = useMemo(() => {
-    let base = [...allPosts];
-    if (activeTab === 'following') {
-      base = base.filter(p => followingHandles.has(p.creator.handle) || p.isUserPost);
-    }
-    return base;
-  }, [allPosts, activeTab, followingHandles]);
-
-  const stats = useMemo(() => {
-    return {
-      following: followingHandles.size,
-      followers: followersCount,
-      posts: allPosts.filter(p => p.isUserPost).length
-    };
-  }, [followingHandles.size, followersCount, allPosts]);
-
-  const deletePost = (id: string) => {
-    setAllPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-    setSavedPosts((prevSaved) => prevSaved.filter((post) => post.id !== id));
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setEditProfile(prev => ({ ...prev, avatar: event.target!.result as string }));
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>DRIP - Indian Social Video</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sab: env(safe-area-inset-bottom);
         }
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            font-style: normal !important;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+        }
+        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-  useEffect(() => {
-    const ref = scrollRef.current;
-    if (!ref || currentView !== 'home') return;
-    const handleScroll = () => {
-      if (isJumpingRef.current) return;
-      const height = ref.clientHeight;
-      if (height <= 0) return;
-      const newIndex = Math.round(ref.scrollTop / height);
-      if (!isNaN(newIndex) && newIndex !== currentIndex && newIndex >= 0 && newIndex < filteredPosts.length) {
-        setCurrentIndex(newIndex);
-      }
-    };
-    ref.addEventListener('scroll', handleScroll, { passive: true });
-    return () => ref.removeEventListener('scroll', handleScroll);
-  }, [currentIndex, currentView, filteredPosts.length]);
+        /* Magnet-like Scroll Snap Container */
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100dvh;
+            width: 100%;
+            overscroll-behavior-y: contain;
+            background-color: #000;
+        }
 
-  useEffect(() => {
-    if (currentView === 'home' && scrollRef.current) {
-      const ref = scrollRef.current;
-      const height = ref.clientHeight || window.innerHeight;
-      const targetScroll = currentIndex * height;
-      if (Math.abs(ref.scrollTop - targetScroll) > 5) {
-        isJumpingRef.current = true;
-        ref.style.scrollSnapType = 'none';
-        ref.scrollTop = targetScroll;
-        void ref.offsetHeight; 
-        ref.style.scrollSnapType = 'y mandatory';
-        const timeout = setTimeout(() => { isJumpingRef.current = false; }, 150);
-        return () => clearTimeout(timeout);
-      }
-    }
-  }, [currentView, filteredPosts.length, currentIndex]);
+        /* Individual Reel Magnet Snap */
+        .video-card {
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            height: 100dvh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-  const publishPost = () => {
-    if (!selectedFile) return;
-    setIsPublishing(true);
-    setTimeout(() => {
-      const url = URL.createObjectURL(selectedFile);
-      const newPost: VideoData = {
-        id: `user-${Date.now()}`,
-        url: url,
-        creator: { 
-          name: editProfile.name || 'Soul Traveler', 
-          handle: editProfile.handle ? `@${editProfile.handle}` : `@unnamed_${Date.now().toString().slice(-4)}`, 
-          avatar: editProfile.avatar
-        },
-        description: caption,
-        hashtags: caption.match(/#\w+/g) || ['#Originals'],
-        likes: 0,
-        commentsCount: 0,
-        shares: 0,
-        music: 'Original Flow',
-        comments: [],
-        isUserPost: true,
-        commentsEnabled: commentsEnabled,
-        filter: selectedFilter,
-        playbackSpeed: playbackSpeed
-      };
-      setAllPosts(prev => {
-        const updated = [...prev, newPost];
-        const nextIdx = updated.length - 1;
-        setCurrentView('home');
-        setCurrentIndex(nextIdx);
-        requestAnimationFrame(() => {
-          if (scrollRef.current) {
-            const h = scrollRef.current.clientHeight;
-            scrollRef.current.style.scrollSnapType = 'none';
-            scrollRef.current.scrollTop = nextIdx * h;
-            void scrollRef.current.offsetHeight; 
-            scrollRef.current.style.scrollSnapType = 'y mandatory';
-          }
-        });
-        return updated;
-      });
-      setIsPublishing(false);
-      setSelectedFile(null);
-      setCaption("");
-      setSelectedFilter(FILTERS[0].value);
-    }, 1200);
-  };
+        /* Mobile Container Max-Width for PC */
+        @media (min-width: 768px) {
+            #root {
+                max-width: 450px;
+                margin: 0 auto;
+                border-left: 1px solid #222;
+                border-right: 1px solid #222;
+                position: relative;
+                height: 100dvh;
+                box-shadow: 0 0 100px rgba(0,0,0,0.8);
+            }
+        }
 
-  return (
-    <div className="relative w-screen h-screen bg-black overflow-hidden font-inter text-white">
-      <CurtainSplash onComplete={() => setShowSplash(false)} message={splashMessage} />
-
-      {!showSplash && !user && <AuthGate onAuth={handleLogin} />}
-
-      {!showSplash && user && (
-        <>
-          <header className="fixed top-0 left-0 right-0 p-4 pt-[calc(env(safe-area-inset-top)+1rem)] z-50 flex items-center justify-between pointer-events-none">
-            <div className="flex items-center gap-2 pointer-events-auto cursor-pointer" onClick={() => {setCurrentView('home'); setCurrentIndex(0);}}>
-                <div className="w-10 h-10 bg-black/40 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center">
-                    <DripLogo size={36} />
-                </div>
-            </div>
-            {currentView === 'home' && (
-              <div className="flex gap-4 items-center pointer-events-auto bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/5">
-                <button onClick={() => { setActiveTab('following'); setCurrentIndex(0); }} className={`text-[7px] font-black uppercase tracking-widest ${activeTab === 'following' ? 'text-white border-b border-white' : 'text-white/20'}`}>{t('follow')}</button>
-                <button onClick={() => { setActiveTab('forYou'); setCurrentIndex(0); }} className={`text-[7px] font-black uppercase tracking-widest ${activeTab === 'forYou' ? 'text-white border-b border-white' : 'text-white/20'}`}>{t('foryou')}</button>
-              </div>
-            )}
-            <div className="w-10 h-10" />
-          </header>
-
-          <div className="w-full h-full">
-            {currentView === 'home' && (
-              <main ref={scrollRef} className="video-container no-scrollbar">
-                {filteredPosts.length > 0 ? filteredPosts.map((video, index) => (
-                  <VideoCard 
-                    key={video.id} video={video} isActive={index === currentIndex} 
-                    isAutoScroll={isAutoScroll} 
-                    onAutoScrollToggle={() => setIsAutoScroll(prev => !prev)}
-                    onNext={() => {
-                        const nextIdx = currentIndex + 1;
-                        if (nextIdx < filteredPosts.length) {
-                            const height = scrollRef.current?.clientHeight || window.innerHeight;
-                            scrollRef.current?.scrollTo({ top: nextIdx * height, behavior: 'smooth' });
-                        }
-                    }}
-                    onLike={(id) => {
-                      const next = new Set(likedVideoIds);
-                      next.add(id);
-                      setLikedVideoIds(next);
-                      setAllPosts(prev => prev.map(p => p.id === id ? {...p, likes: p.likes + 1} : p));
-                    }} 
-                    onUnlike={(id) => {
-                      const next = new Set(likedVideoIds);
-                      next.delete(id);
-                      setLikedVideoIds(next);
-                      setAllPosts(prev => prev.map(p => p.id === id ? {...p, likes: Math.max(0, p.likes - 1)} : p));
-                    }}
-                    onComment={(id) => setAllPosts(prev => prev.map(p => p.id === id ? {...p, commentsCount: p.commentsCount + 1} : p))}
-                    onSave={(v) => setSavedPosts(prev => prev.find(p => p.id === v.id) ? prev.filter(p => p.id !== v.id) : [v, ...prev])}
-                    isSaved={!!savedPosts.find(p => p.id === video.id)}
-                    isLiked={likedVideoIds.has(video.id)}
-                    onFollowToggle={(h) => setFollowingHandles(prev => {
-                      const next = new Set(prev);
-                      if (next.has(h)) next.delete(h); else next.add(h);
-                      return next;
-                    })}
-                    isFollowing={followingHandles.has(video.creator.handle)}
-                  />
-                )) : (
-                  <div className="h-full w-full flex flex-col items-center justify-center p-12 text-center opacity-20">
-                    <DripLogo size={120} color="gray" />
-                    <p className="font-black italic text-xs uppercase tracking-widest mt-4">The empire is empty. Create your first drip.</p>
-                  </div>
-                )}
-              </main>
-            )}
-
-            {currentView === 'search' && (
-              <div className="w-full h-full bg-black pt-32 px-6 overflow-y-auto no-scrollbar pb-32">
-                <div className="relative mb-6">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={16} />
-                  <input placeholder="Search trends..." className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 text-xs font-bold outline-none focus:border-[#FF9933]/40" />
-                </div>
-                {/* Restored Old Detailed Description Section */}
-                <div className="bg-gradient-to-br from-[#FF9933]/10 via-black to-[#138808]/5 p-8 rounded-[40px] border border-white/5 mb-10">
-                  <h2 className="text-xl font-black italic tracking-tighter mb-6 uppercase text-[#FF9933]">DRIP: THE SOVEREIGN EMPIRE</h2>
-                  <div className="text-[10px] font-bold tracking-tight text-white/40 leading-relaxed space-y-4 uppercase">
-                    <p>DRIP: THE SOVEREIGN EMPIRE stands as the definitive pinnacle of Indian short-form digital architecture. It is not merely a platform; it is an expansive ecosystem engineered specifically for the visionaries, the disruptors, and the digital monarchs of tomorrow who demand absolute perfection.</p>
-                    <p>We have built a digital kingdom where your creativity is the currency and your influence is the law. In the world of DRIP, you don't just 'post'—you dominate.</p>
-                    <p>Every line of code in the DRIP architecture is forged to facilitate the rise of a new class of creators. It is designed with surgical precision for a Gen-Z elite that values speed, aesthetic supremacy, and authentic reach.</p>
-                    <p className="text-white/70 italic tracking-widest">STRICTLY ARCHITECTED IN INDIA • FORGED FOR GLOBAL DOMINANCE • THE EMPIRE ESTABLISHED 2026</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentView === 'create' && (
-              <div className="w-full h-full bg-[#050505] flex flex-col items-center p-8 pt-24 pb-60 overflow-y-auto no-scrollbar">
-                {!selectedFile ? (
-                  <div onClick={() => fileInputRef.current?.click()} className="w-full aspect-[9/16] max-h-[50vh] mt-10 rounded-[32px] border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-4 bg-white/5 cursor-pointer">
-                    <Upload size={24} className="text-[#FF9933]" />
-                    <p className="font-black text-[9px] uppercase tracking-widest text-white/30">Select Media</p>
-                    <input type="file" ref={fileInputRef} className="hidden" accept="video/*" onChange={(e) => e.target.files && setSelectedFile(e.target.files[0])} />
-                  </div>
-                ) : (
-                  <div className="w-full flex flex-col gap-6 relative">
-                    <div className="relative aspect-[9/16] max-h-[35vh] rounded-2xl overflow-hidden bg-black border border-white/10 mx-auto w-[70%]">
-                      <video ref={creationPreviewRef} src={URL.createObjectURL(selectedFile)} className="w-full h-full object-cover" muted playsInline style={{ filter: selectedFilter }} />
-                      <button onClick={() => setSelectedFile(null)} className="absolute top-2 right-2 bg-black/60 p-1.5 rounded-full"><X size={14}/></button>
-                    </div>
-                    <div className="bg-white/5 p-4 rounded-3xl border border-white/10 space-y-4">
-                      <div className="space-y-2">
-                         <h4 className="text-[9px] font-black uppercase tracking-widest text-white/40">Filters</h4>
-                         <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
-                            {FILTERS.map(f => (
-                              <button key={f.name} onClick={() => setSelectedFilter(f.value)} className={`px-3 py-1.5 rounded-full whitespace-nowrap text-[7px] font-black uppercase tracking-widest border ${selectedFilter === f.value ? 'bg-[#FF9933] border-[#FF9933]' : 'bg-white/5 border-white/10 text-white/30'}`}>{f.name}</button>
-                            ))}
-                         </div>
-                      </div>
-                    </div>
-                    <textarea value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Vibe description..." className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-xs font-bold outline-none h-16" />
-                    
-                    {/* Working Comment Toggle */}
-                    <div className="flex items-center justify-between bg-white/5 p-4 rounded-xl border border-white/5">
-                      <div className="flex items-center gap-3"><MessageSquare size={16} /><span className="text-[10px] font-bold uppercase tracking-wider">Enable Comments</span></div>
-                      <button onClick={() => setCommentsEnabled(!commentsEnabled)} className={`w-10 h-5 rounded-full relative transition-colors ${commentsEnabled ? 'bg-[#FF9933]' : 'bg-white/10'}`}>
-                        <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${commentsEnabled ? 'left-5.5' : 'left-0.5'}`} />
-                      </button>
-                    </div>
-
-                    <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] left-8 right-8 z-50">
-                      <button onClick={publishPost} disabled={isPublishing} className="w-full py-5 bg-[#FF9933] text-black font-black uppercase tracking-widest text-[10px] rounded-xl shadow-2xl active:scale-95 transition-all">
-                        {isPublishing ? t('releasing') : t('release')}
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {currentView === 'inbox' && (
-              <div className="w-full h-full bg-black pt-32 px-6 overflow-y-auto no-scrollbar pb-32 text-center opacity-20">
-                <p className="font-black italic text-xs tracking-widest uppercase">No pulses detected.</p>
-              </div>
-            )}
-
-            {currentView === 'profile' && (
-              <div className="w-full h-full bg-black overflow-y-auto no-scrollbar pb-40 pt-32">
-                <div className="relative px-8 flex flex-col items-center">
-                  <button onClick={() => setIsSettingsOpen(true)} className="absolute top-0 right-8 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center border border-white/10"><Settings size={16} /></button>
-                  <div className="relative mb-6">
-                    <div className="w-24 h-24 rounded-full border-4 border-[#FF9933]/30 p-1 bg-black overflow-hidden ring-2 ring-[#138808]/20">
-                       <img src={editProfile.avatar} className="w-full h-full rounded-full object-cover" alt="Profile" />
-                    </div>
-                    <button onClick={() => profilePicInputRef.current?.click()} className="absolute bottom-0 right-0 w-8 h-8 bg-[#FF9933] rounded-full flex items-center justify-center border-2 border-black text-black">
-                        <Camera size={14} />
-                    </button>
-                    <input type="file" ref={profilePicInputRef} className="hidden" accept="image/*" onChange={handleAvatarChange} />
-                  </div>
-                  <h2 className="text-xl font-black italic uppercase tracking-tighter mb-1">{editProfile.name || 'Soul Traveler'}</h2>
-                  <p className="text-[9px] font-black italic mb-2 tracking-widest uppercase text-[#FF9933]">@{editProfile.handle || 'soul_identity'}</p>
-                  <p className="text-[10px] font-medium text-white/50 text-center mb-6 max-w-[240px] italic">{editProfile.bio || 'Architecting digital presence...'}</p>
-                  <div className="grid grid-cols-3 gap-6 mb-8 text-center w-full max-w-[300px]">
-                    <div><p className="text-lg font-black italic">{stats.following}</p><p className="text-[7px] text-white/20 uppercase font-black">Following</p></div>
-                    <div><p className="text-lg font-black italic">{stats.followers}</p><p className="text-[7px] text-white/20 uppercase font-black">Followers</p></div>
-                    <div><p className="text-lg font-black italic">{stats.posts}</p><p className="text-[7px] text-white/20 uppercase font-black">Posts</p></div>
-                  </div>
-                  <button onClick={() => setIsEditModalOpen(true)} className="w-full max-w-[280px] py-3.5 bg-[#FF9933] text-black font-black uppercase tracking-[0.2em] text-[9px] rounded-2xl mb-10 italic">Edit Identity</button>
-                </div>
-                
-                <div className="flex border-t border-white/5 sticky top-0 bg-black/90 backdrop-blur-xl z-20 px-4">
-                  <button onClick={() => setProfileTab('posts')} className={`flex-1 py-5 flex justify-center transition-all ${profileTab === 'posts' ? 'border-b-2 border-[#FF9933] text-white' : 'text-white/10'}`}><Grid size={20} /></button>
-                  <button onClick={() => setProfileTab('likes')} className={`flex-1 py-5 flex justify-center transition-all ${profileTab === 'likes' ? 'border-b-2 border-[#FF9933] text-white' : 'text-white/10'}`}><Heart size={20} /></button>
-                  <button onClick={() => setProfileTab('saved')} className={`flex-1 py-5 flex justify-center transition-all ${profileTab === 'saved' ? 'border-b-2 border-[#FF9933] text-white' : 'text-white/10'}`}><Bookmark size={20} /></button>
-                </div>
-
-                <div className="p-1 grid grid-cols-3 gap-1 min-h-[40vh]">
-                  {profileTab === 'posts' && allPosts.filter(p => p.isUserPost).map(post => (
-                    <div key={post.id} className="aspect-[3/4] bg-white/5 relative group cursor-pointer overflow-hidden" onClick={() => { 
-                      const idx = allPosts.indexOf(post);
-                      if (idx !== -1) { setCurrentIndex(idx); setCurrentView('home'); }
-                    }}>
-                      <video src={post.url} className="w-full h-full object-cover" muted playsInline style={{ filter: post.filter }} />
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); deletePost(post.id); }} 
-                        className="absolute top-1 right-1 bg-black/60 p-2 rounded-full text-white/40 hover:text-red-500 hover:bg-black transition-all z-10"
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <Navbar currentView={currentView} onNavigate={(v) => { setCurrentView(v); if(v === 'home') setCurrentIndex(0); }} translations={TRANSLATIONS[appLanguage]} />
-
-          {isSettingsOpen && (
-            <div className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-3xl p-8 overflow-y-auto no-scrollbar pt-[calc(env(safe-area-inset-top)+2rem)] pb-40">
-              <div className="w-full max-w-[450px] mx-auto">
-                <div className="flex justify-between items-center mb-12">
-                  <h3 className="text-3xl font-black italic tracking-tighter uppercase">{t('settings')}</h3>
-                  <button onClick={() => setIsSettingsOpen(false)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10"><X size={20} /></button>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Region Matrix */}
-                  <div className="bg-white/5 p-6 rounded-[24px] border border-white/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[#FF9933] mb-4">Region Matrix</p>
-                    <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3"><Globe size={18} className="text-white/40"/><span className="text-[11px] font-black italic uppercase tracking-wider">Sector Identity</span></div>
-                        <select value={selectedCountry} onChange={e => setSelectedCountry(e.target.value)} className="bg-transparent text-[11px] font-black italic uppercase text-white/60 outline-none cursor-pointer max-w-[120px] truncate">
-                            {COUNTRIES.map(c => <option key={c} value={c} className="bg-black">{c}</option>)}
-                        </select>
-                    </div>
-                  </div>
-
-                  {/* Language Matrix - UI FIX: Added flex-1 and max-w to select */}
-                  <div className="bg-white/5 p-6 rounded-[24px] border border-white/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">Language Matrix</p>
-                    <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3"><Sliders size={18} className="text-white/40"/><span className="text-[11px] font-black italic uppercase tracking-wider">Dialect</span></div>
-                        <select value={appLanguage} onChange={e => setAppLanguage(e.target.value)} className="bg-transparent text-[11px] font-black italic uppercase text-white/60 outline-none cursor-pointer max-w-[120px] truncate">
-                            {ALL_LANGUAGES_GLOBAL.map(l => <option key={l} value={l} className="bg-black">{l}</option>)}
-                        </select>
-                    </div>
-                  </div>
-
-                  {/* Security Protocol */}
-                  <div className="bg-white/5 p-6 rounded-[24px] border border-white/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">Security Protocol</p>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3"><Shield size={18} className="text-white/40"/><span className="text-[11px] font-black italic uppercase tracking-wider">Private Presence</span></div>
-                        <button onClick={() => setIsPrivateAccount(!isPrivateAccount)} className={`w-10 h-5 rounded-full relative transition-colors ${isPrivateAccount ? 'bg-[#FF9933]' : 'bg-white/10'}`}>
-                          <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${isPrivateAccount ? 'left-5.5' : 'left-0.5'}`} />
-                        </button>
-                    </div>
-                  </div>
-
-                  {/* Additional Working Features */}
-                  <div className="bg-white/5 p-6 rounded-[24px] border border-white/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">Notification Pulse</p>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3"><Bell size={18} className="text-white/40"/><span className="text-[11px] font-black italic uppercase tracking-wider">Pulse Alerts</span></div>
-                        <button onClick={() => setNotificationsOn(!notificationsOn)} className={`w-10 h-5 rounded-full relative transition-colors ${notificationsOn ? 'bg-[#FF9933]' : 'bg-white/10'}`}>
-                          <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${notificationsOn ? 'left-5.5' : 'left-0.5'}`} />
-                        </button>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 p-6 rounded-[24px] border border-white/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">Empire Optimization</p>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3"><Zap size={18} className="text-white/40"/><span className="text-[11px] font-black italic uppercase tracking-wider">Data Saver</span></div>
-                        <button onClick={() => setDataSaverOn(!dataSaverOn)} className={`w-10 h-5 rounded-full relative transition-colors ${dataSaverOn ? 'bg-[#FF9933]' : 'bg-white/10'}`}>
-                          <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${dataSaverOn ? 'left-5.5' : 'left-0.5'}`} />
-                        </button>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/5 p-6 rounded-[24px] border border-white/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">Ghost Matrix</p>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3"><EyeOff size={18} className="text-white/40"/><span className="text-[11px] font-black italic uppercase tracking-wider">Incognito Mode</span></div>
-                        <button onClick={() => setIncognitoMode(!incognitoMode)} className={`w-10 h-5 rounded-full relative transition-colors ${incognitoMode ? 'bg-[#FF9933]' : 'bg-white/10'}`}>
-                          <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${incognitoMode ? 'left-5.5' : 'left-0.5'}`} />
-                        </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-16 space-y-4">
-                  <button onClick={handleLogout} className="w-full flex items-center gap-4 p-6 bg-white/5 rounded-[24px] text-white/40 active:scale-95 transition-all"><LogOut size={20} /><span className="font-black italic uppercase tracking-widest text-[9px]">TERMINATE SESSION</span></button>
-                  <button onClick={handleDeleteAccount} className="w-full flex items-center gap-4 p-6 bg-red-500/10 border border-red-500/10 rounded-[24px] text-red-500 active:scale-95 transition-all"><Trash2 size={20} /><span className="font-black italic uppercase tracking-widest text-[9px]">Delete MATRIX</span></button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {isEditModalOpen && (
-            <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-8">
-              <div className="w-full max-w-[360px] bg-[#0a0a0a] rounded-[36px] p-8 border border-white/10 shadow-2xl">
-                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-xs font-black uppercase tracking-widest italic text-[#FF9933]">Identity Matrix</h3>
-                  <button onClick={() => setIsEditModalOpen(false)}><X size={20} /></button>
-                </div>
-                <div className="space-y-4">
-                  <input value={editProfile.name} onChange={e => setEditProfile({...editProfile, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 font-bold text-xs outline-none" placeholder="Soul Name" />
-                  <input value={editProfile.handle} onChange={e => setEditProfile({...editProfile, handle: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 font-bold text-xs outline-none text-[#FF9933]" placeholder="Handle (Unique identifier)" />
-                  <textarea value={editProfile.bio} onChange={e => setEditProfile({...editProfile, bio: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 font-bold text-[10px] h-20 outline-none resize-none" placeholder="Bio description..." />
-                  <button onClick={handleUpdateIdentity} className="w-full py-4 bg-[#FF9933] text-black font-black uppercase text-[9px] rounded-xl italic mt-4">Update Presence</button>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-};
-
-export default App;
+        .animate-in {
+            animation-duration: 0.3s;
+            animation-fill-mode: both;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
